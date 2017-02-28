@@ -4,6 +4,7 @@ require ".env";
 if($_GET['user']) $_COOKIE['user']=$_GET['user'];
 
 $user = (isset($_COOKIE['user'])?$_COOKIE['user']:'Test');
+setcookie("user", $user, time()+3600);
 $key = $key[$user];
 switch ($user) {
     case 'Alice':
