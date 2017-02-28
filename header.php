@@ -12,7 +12,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.php"><img alt="PM Core" height="22" src="http://www.processmaker.com/sites/all/themes/pmthemev2/img/white-badge.png"></a>
+      <img alt="PM Core" height="48" src="http://www.processmaker.com/sites/all/themes/pmthemev2/img/white-badge.png">
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -29,7 +29,7 @@
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><img height="32" src="<?php echo $avatar;?>">&nbsp;<?php echo $user;?></li>
+        <li><img height="48" src="<?php echo $avatar;?>">&nbsp;<?php echo $user;?></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
           <ul class="dropdown-menu">
