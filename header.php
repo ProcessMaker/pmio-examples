@@ -18,6 +18,7 @@
 <li<?php echo (preg_match('/import_form.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="/import_form.html">Import</a></li>
 <li<?php echo (preg_match('/processes_form.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="processes_form.html">Process List</a></li>
 <li<?php echo (preg_match('/manual_request.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="manual_request.html">Manual Request</a></li>
+<li><a href="https://docs.google.com/a/processmaker.com/forms/d/e/1FAIpQLSeEqBZjYVXKIATk-p1enNJCtUgmVMYiZ4lFx9w5o_8kjJ5N4w/viewform" target="_new">Google Form</a></li>
 <li<?php echo (preg_match('/record_customer.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="record_customer.html">Record Customer</a></li>
 <li<?php echo (preg_match('/validate_workspace.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="validate_workspace.html">Validate Workspace</a></li>
 <li<?php echo (preg_match('/verify_on_boarding_data.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="verify_on_boarding_data.html">Verify Onboarding data</a></li>
