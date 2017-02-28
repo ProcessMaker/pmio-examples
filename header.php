@@ -29,7 +29,7 @@
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><img height="32" src="<?php echo $avatar;?>"><?php echo $user;?></a></li>
+        <li><img height="32" src="<?php echo $avatar;?>">&nbsp;<?php echo $user;?></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
           <ul class="dropdown-menu">
