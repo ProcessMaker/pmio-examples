@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>New client  workspace request</title>
+    
+
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+<?php include "header.php";?>
+    <center>
+    <form class="col-xs-6 col-xs-offset-3 form-horizontal">
+    
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading"><h1>Manual request</h1></div>
+    <div class="panel-body">
+          <div class="form-group">
+    <label for="inputName" class="col-sm-3 control-label">Client Name</label>
+    <div class="col-sm-7">
+      <input name="client_name" type="text" value="Client Name" class="form-control" id="inputName" placeholder="Client Name">
+    </div>
+    </div>
+
+    <div class="form-group">
+    <label for="inputEmail" class="col-sm-3 control-label">Client Email</label>
+    <div class="col-sm-7">
+      <input value="client@email.com" name="client_email" type="email" class="form-control" id="inputEmail" placeholder="Client Email">
+    </div>
+    </div>
+      </div>
+    </div>
+    
+    
+
+    <div class="panel panel-primary">
+      <div class="panel-heading"><h2>Requester and approver section</h2></div>
+    <div class="panel-body">
+
+        <div class="form-group">
+        <label for="inputRequesterName" class="col-sm-3 control-label">Requester Name</label>
+        <div class="col-sm-7">
+          <input value="Requester Name" name="requester_name" type="text" class="form-control" id="inputRequesterName" placeholder="Requester Name">
+        </div>
+        </div>
+
+        <div class="form-group">
+        <label for="inputRequesterEmail" class="col-sm-3 control-label">Requester Email</label>
+        <div class="col-sm-7">
+          <input value="requester@email.com" name="requester_email" type="email" class="form-control" id="inputRequesterEmail" placeholder="Requester Email">
+        </div>
+        </div>
+
+        <div class="form-group">
+        <label for="inputApproverName" class="col-sm-3 control-label">Approver Name</label>
+        <div class="col-sm-7">
+          <input value="Approver Name" name="approver_name" type="text" class="form-control" id="inputApproverName" placeholder="Approver Name">
+        </div>
+        </div>
+
+        <div class="form-group">
+        <label for="inputApproverEmail" class="col-sm-3 control-label">Approver Email</label>
+        <div class="col-sm-7">
+          <input value="approver@email.com" name="approver_email" type="email" class="form-control" id="inputApproverEmail" placeholder="Approver Name">
+        </div>
+        </div>
+        
+        <div class="form-group">
+        <label for="additionalNotes" class="col-sm-3 control-label">Additional notes</label>
+        <div class="col-sm-7">
+          <textarea name="notes" id="additionalNotes" class="form-control" rows="5" placeholder="Please add additional information and comments">Some additional notes from manual request</textarea>
+        </div>
+        </div>
+
+      </div>
+      </div>
+      <div class="form-group">
+        <a class="btn btn-success new_client" disabled="">Create new client</a>
+      </div>
+      <div class="form-group" >
+        <a href="#" class="btn btn-success next" style="display:none;">Next form <span class="glyphicon glyphicon-forward"></span></a>
+      </div>
+</form>
+
+<div class="col-sm-12 logging">
+  <div class="panel panel-default ">
+   <div class="panel-heading"><h4>Logging</h4></div>
+    <div class="panel-body">
+          <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
+          <div id="request" class="collapse">
+          <div class="form-group">
+            <label>Request</label>
+            <textarea name="request" rows="7" class="form-control"></textarea>
+          </div>
+          </div>
+          <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
+          <div id="response" class="collapse">
+          <div class="form-group">
+            <label>Response</label>
+            <textarea name="response" rows="7" class="form-control"></textarea>
+          </div>
+          </div>
+          <div class="form-group">
+              <label>Host</label>
+              <div class="input-group">
+                <div class="input-group-addon">URL</div>
+                <input name="host" type="text" class="form-control" value="">
+                
+              </div>
+          </div>
+          <div class="form-group">
+            <label>Token key</label>
+            <textarea name="token" class="form-control" rows="10"></textarea>
+          </div>
+    </div>
+  </div>
+</div>
+    </center>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+      //gettin servername & token key
+      var host = 'http://<?php echo $host;?>/api/v1/';
+      var token = '<?php echo $key;?>';
+      var api_url = 'processes/import';
+      var method = 'POST';
+      var trigger_event_url = '';
+      $('input[name=host]').val(host);
+      $('textarea[name=token]').val(token);
+      var headers = 
+      { 
+        "content-type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer "+token
+      };
+
+      $.ajax({
+        'url':host+'processes/',
+         dataType: 'json',
+        'type':'GET',
+        'cache': false,
+        'headers':headers,
+    }).success(function(response) {
+          console.log(response);
+          var processid = '';
+          //Getting Basic process
+          for (k in response.data) {
+            if (response.data[k].attributes.name == 'Main process') processid = response.data[k].id;
+          }
+          console.log(processid);
+            /* Getting all events of basic */
+                var get_events_url = host+'processes/'+processid+'/events';
+                $.ajax({
+                'url':get_events_url,
+                 dataType: 'json',
+                'type':'GET',
+                'cache': false,
+                'headers':headers,
+            }).success(function(response) {
+                //console.log(response.data);
+                for (key in response.data) {
+                  console.log(response.data[key].attributes.name);
+                  console.log(response.data[key].attributes.type);
+                }
+                /*Getting the start event for trigerring "Manual Request" */
+                for (key in response.data) {
+                  if (response.data[key].attributes.name == "Manual Request") 
+                    var first_start_event = response.data[key].id;
+                }
+                /* Triggering first event*/
+                  trigger_event_url = host+'processes/'+processid+'/events/'+first_start_event+'/trigger';
+                  console.log(trigger_event_url);
+                  $('a.new_client').attr('disabled', false);
+
+              });
+
+
+          });
+
+      $('body').on('click','a.new_client', function(){
+          var temp = $("form").find(':input,textarea');
+          var items = {};
+          console.log(temp);
+          for (key in temp) {
+            items[temp[key].name] = temp[key].value;
+          }
+          var items1 ={};
+          items1['userinfo'] = items;
+
+          items1 = JSON.stringify(items1);
+          console.log(items);
+          
+          var data = {
+          'data': {
+            'type':'data_model',
+            'attributes': {
+                'content':items1
+            }
+          }
+        };
+        data = JSON.stringify(data);
+        /*Logging request*/
+              $('textarea[name=request]').html();
+              $('textarea[name=request]').val('Sending to: \n'+host+api_url+'\nData in JSON: \n'+data); 
+              
+        /*Logging request*/
+        //console.log(data);
+        $.ajax({
+        'url':trigger_event_url,
+         'data': data,
+         dataType: 'json',
+        'type':method,
+        'cache': false,
+        'headers':headers,
+    }).success(function(response) {
+          console.log(response.data);
+          /*Logging response*/
+              $('textarea[name=response]').html();
+              $('textarea[name=response]').val('Response from: \n'+host+api_url+'\nData in JSON: \n'+JSON.stringify(response.data)); 
+              /*Logging response*/
+              $("a.next").fadeIn('500');
+              $("a.next").attr("href", "record_customer.html");
+              alert('Record customer created');
+              
+      });
+
+      });
+
+    });
+
+    </script>
+  </body>
+</html>
