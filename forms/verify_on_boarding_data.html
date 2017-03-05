@@ -381,7 +381,7 @@
         'headers':headers,
     }).success(function(response) {
           console.log(response);
-          var workspace = response.included[0].attributes.content.workspace;
+          var workspace = response.included[0].attributes.content;
           //console.log(items);
           /*Filling in our fields */
           var others = response.included[0].attributes.content;
@@ -391,14 +391,14 @@
             $('input[name='+key+']').val(workspace[key]);
           }
           
-          for (k in others) {
+          /*for (k in others) {
           if (k == 'final_notes') { $('textarea[name=notes]').val(others[k]);}
           if (k == 'dev' || k=='prod' || k=='san') {
               for (k1 in others[k]) {
                 $("input[name="+k+'_'+k1+"]").val(others[k][k1]);
               }
             }
-          }
+          }*/
           
       });
 

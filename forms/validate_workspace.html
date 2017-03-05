@@ -18,19 +18,149 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+          $(document).ready(function() {
+              var host = 'http://<?php echo $host;?>/api/v1/';
+              var token = '<?php echo $key;?>';
+              var headers =
+              {
+                  "content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": "Bearer "+token
+              };
+              $(':input').val('');
+              $('input[name=host]').val(host);
+              $('textarea[name=token]').val(token);
+
+              $(':checkbox').attr('checked', false);
+              var delegated_url = host+"task_instances/delegated?per_page=100&include=task";
+              $.ajax({
+                  'url':delegated_url,
+                  dataType: 'json',
+                  type:'GET',
+                  cache: false,
+                  'headers':headers
+              }).success(function(response) {
+                  $('select#task_instances').html('').append('<option>Select Task Instance</option>');
+                  var count = 0;
+                  for (var t in response.included) {
+
+                      if (response.included[t].attributes.name == "Validate Workspace") {
+                          var task_id = response.included[t].id;
+                          for (var k in response.data) {
+                              if (response.data.hasOwnProperty(k)) {
+                                  if (response.data[k].attributes.task_id == task_id) {
+                                      $('select[name=task_instances]').append('<option class="instance' + count + '" value="' + response.data[k].id + '">' + count + '. ' + response.data[k].id + '</option>');
+                                      count++;
+                                  }
+                              }
+                          }
+
+
+                          if (count > 0)  $('select[name=task_instances] option.instance0').trigger('change').attr('selected', true);
+
+                      }
+                  }
+
+              });
+
+              $('select[name=task_instances]').on('change',function(){
+                  var instance;
+                  if ($(this).val() == null)
+                      instance = $('select[name=task_instances] option.instance0').val();
+                  else instance = $(this).val();
+                  if (instance == 'Select Task Instance')
+                  {
+                      $('a.confirm').fadeOut(500);
+                      $(':input').not('input[name=host],textarea[name=token]').val('');
+                      //$('textarea[name=notes]').val('');
+                      $(':input[type=checkbox]').attr('checked', false);
+                      return;
+                  }
+                  /* Getting DATA from server */
+
+                  var url = host+"task_instances/"+instance;
+
+                  $.ajax({
+                      'url':url,
+                      dataType: 'json',
+                      'type':'GET',
+                      'cache': false,
+                      'headers':headers
+                  }).success(function(response) {
+                      console.log(response);
+                      items = response.included[0].attributes.content;
+                      $(':input[type=checkbox]').prop('checked', false);
+                      /*Filling in our fields */
+                      for (var key in items) {
+                          if (key == 'notes') $('textarea[name=notes]').val(items[key]);
+
+                          if (key == 'development' ||  key == 'production' || key == 'sandbox') {
+                              if (items[key] == 1) $('input[name='+key+']').prop('checked', true);
+                              else $('input[name='+key+']').prop('checked', false);
+                          }
+                          $('input[name='+key+']').val(items[key]);
+                      }
+                      $('a.confirm').fadeToggle(500);
+                  });
+
+              });
+
+              $('body').on('click','a.confirm',function(){
+                  var task_instance = $('body').find('select[name=task_instances]').val();
+                  var instance_update_url = host+"task_instances/"+task_instance;
+                  var items = {};
+                  items['workspace_valid'] = Number($(this).data('confirm'));
+                  items['notes'] = $('textarea[name=notes]').val();
+                  //Making our request body and COMPLETE task_instance
+                  var data = {
+                      'data': {
+                          'type':'task_instance',
+                          'attributes': {
+                              'status':'COMPLETE',
+                              'content':items
+                          }
+                      }
+                  };
+                  data = JSON.stringify(data);
+                  /*Logging request*/
+                  $('textarea[name=request]').html('').val('Sending to: \n'+instance_update_url+'\nData in JSON: \n'+data);
+
+                  /*Logging request*/
+                  $.ajax({
+                      'url':instance_update_url,
+                      'data': data,
+                      dataType: 'json',
+                      'type':'PATCH',
+                      'cache': false,
+                      'headers':headers,
+                  }).success(function(response) {
+                      /*Logging response*/
+                      $('textarea[name=response]').html('').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data));
+                      /*Logging response*/
+                      alert('Workspace validated');
+                  });
+              });
+          });
+
+      </script>
   </head>
   <body>
 
 <?php include "header.php";?>
-    <div class="form-group col-sm-12 text-center">
-            
-            <label>Delegated Task Instances:</label>
-            <select multiple="" name="task_instances">
-              
+<div class="text-center">
+    <div class="form-group col-sm-12">
+            <label for="task_instances">Delegated Task Instances:</label>
+            <select id="task_instances" multiple="" name="task_instances">
             </select>
     </div>
     
-    <form class="col-sm-10 col-sm-offset-1 form-horizontal">
+    <div class="col-sm-10 col-sm-offset-1 form-horizontal">
     <h1 class="text-center">Validate workspace</h1>
     <div class="panel panel-default">
       <div class="panel-heading"><h2 class="text-center"></h2></div>
@@ -94,26 +224,26 @@
       <div class="panel-heading"><h3 class="text-center">Environment requested</h3></div>
     <div class="panel-body">
         <div class="form-group">
-          <label for="checkbox" class="control-label col-sm-3"></label>
-          <div class="col-sm-offset-3 col-sm-10">
-              <div class="checkbox">
-              <label>
-                <input disabled="" id="Sandbox" name="Sandbox" type="checkbox">Sandbox
-              </label>
-              </div>
-          
-              <div class="checkbox">
-                <label>
-                  <input disabled=""  id="Development" name="Development" type="checkbox">Development
-                </label>
-              </div>
+          <label class="control-label col-sm-3"></label>
+            <div class="col-sm-offset-3 col-sm-10 text-left">
+                <div class="checkbox">
+                    <label>
+                        <input disabled name="sandbox" type="checkbox">Sandbox
+                    </label>
+                </div>
 
-        <div class="checkbox">
-          <label>
-            <input disabled=""  id="Production" name="Production" type="checkbox">Production
-          </label>
-        </div>
-       </div>
+                <div class="checkbox">
+                    <label>
+                        <input disabled  name="development" type="checkbox">Development
+                    </label>
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                        <input disabled  name="production" type="checkbox">Production
+                    </label>
+                </div>
+            </div>
         </div>
         
         <div class="form-group alert-info">
@@ -122,7 +252,7 @@
         <div class="form-group">
           <label for="exampleInput3" class="col-sm-3 control-label">User Name</label>
           <div class="col-sm-7">
-          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" placeholder="Username">
+          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
           </div>
         </div>
         
@@ -134,213 +264,54 @@
         <div class="form-group">
         <label for="additionalNotes" class="col-sm-3 control-label">Notes</label>
         <div class="col-sm-7">
-          <textarea name="notes" id="additionalNotes" class="form-control" rows="5" placeholder="Please add additional information and comments" ></textarea>
+          <textarea name="notes" id="additionalNotes" class="form-control" rows="5"  ></textarea>
         </div>
         </div>
-
       </div>
       </div>
       <div class="form-group text-center">
-        <a disabled="" class="btn btn-danger confirm" data-confirm="0">Decline</a>
-        <a disabled="" class="btn btn-success confirm" data-confirm="1">Approve</a>
+        <a  class="btn btn-danger confirm" data-confirm="0" style="display: none;">Decline</a>
+        <a  class="btn btn-success confirm" data-confirm="1" style="display: none;">Approve</a>
       </div>
-      <div class="form-group text-center" >
-        <a href="#" class="btn btn-success next" style="display:none;">Next form <span class="glyphicon glyphicon-forward"></span></a>
-        <a href="#" class="btn btn-success back" style="display:none;"><span class="glyphicon glyphicon-backward"></span>Back to record customer</a>
-      </div>
-</form>
 
-
-    <center>
-    <div class="col-sm-12 logging">
-  <div class="panel panel-default ">
-   <div class="panel-heading"><h4>Logging</h4></div>
-    <div class="panel-body">
-          <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
-          <div id="request" class="collapse">
-          <div class="form-group">
-            <label>Request</label>
-            <textarea name="request" rows="7" class="form-control"></textarea>
-          </div>
-          </div>
-          <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
-          <div id="response" class="collapse">
-          <div class="form-group">
-            <label>Response</label>
-            <textarea name="response" rows="7" class="form-control"></textarea>
-          </div>
-          </div>
-          <div class="form-group">
-              <label>Host</label>
-              <div class="input-group">
-                <div class="input-group-addon">URL</div>
-                <input name="host" type="text" class="form-control" value="">
-                
-              </div>
-          </div>
-          <div class="form-group">
-            <label>Token key</label>
-            <textarea name="token" class="form-control" rows="10"></textarea>
-          </div>
-    </div>
-  </div>
 </div>
-</center>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-      var host = 'http://<?php echo $host;?>/api/v1/';
-      var token = '<?php echo $key;?>';
-      var headers = 
-      { 
-        "content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer "+token
-      };
-      $(':input').val('');
-      $('textarea').val('');
-      $('input[name=host]').val(host);
-      $('textarea[name=token]').val(token);
-      
-      $(':checkbox').attr('checked', false);
-      var delegated_url = host+"task_instances/delegated?per_page=100&include=task";
-      $.ajax({
-        'url':delegated_url,
-         dataType: 'json',
-         type:'GET',
-         cache: false,
-         'headers':headers,
-    }).success(function(response) {
-          //console.log(response);
-          $('select[name=task_instances]').find('option')
-    .remove();
-          $('select[name=task_instances]').append('<option>Select Task Instance</option>');
-          var count = 0;
-          for (k in response.included) {
-            if (response.included[k].attributes.name == "Validate Workspace")
-            {
-              //Getting task_id of Record Customer
-              var task_id = response.included[k].id;
-              //Getting all task instances for that task
-              for (k in response.data) {
-                  console.log(response.data[k]);
-                  if (response.data[k].attributes.task_id == task_id) {
-                    $('select[name=task_instances]').append('<option class="'+count+'" value="'+response.data[k].id+'">'+count+'. '+response.data[k].id+'</option>');
-                    count++;
-                    } 
-              }
-              if (count > 0)  $('select[name=task_instances] option.0').trigger('change').attr('selected', true);
-
-            }
-          }
-      });
-
-    $('select[name=task_instances]').on('change',function(){
-      $('a.confirm').attr('disabled',false);
-      if ($(this).val() == null) 
-        instance = $('select[name=task_instances] option.0').val(); 
-          else instance = $(this).val();
-      //console.log(instance);
-      if (instance == 'Select Task Instance') 
-        {
-        $('a.confirm').attr('disabled',true);
-        $(':input').val('');
-        $('textarea').val();
-        $(':checkbox').attr('checked', false);
-        return;
-        }
-      /* Getting DATA from server */
-
-      var url = host+"task_instances/"+instance;
-  
-      $.ajax({
-        'url':url,
-         dataType: 'json',
-        'type':'GET',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response) {
-          console.log(response);
-          items = response.included[0].attributes.content.workspace;
-          //console.log(items);
-          /*Filling in our fields */
-          for (key in items) {
-            //console.log();
-            if (key == 'notes') $('textarea[name=notes]').val(items[key]);
-            if (key == 'Environment requested') {
-              for (key1 in items[key]) {
-                console.log(items[key][key1]);
-                $("input[name="+items[key][key1]+"]").prop('checked',true);
-              }
-              return;
-            }
-            //if (key != 'Production' || key != 'Sandbox' || key != 'Development')
-              $('input[name='+key+']').val(items[key]);
-          }
-          
-      });
-
-    });
-
-    $('body').on('click','a.confirm',function(){
-      var task_instance = $('body').find('select[name=task_instances]').val();
-      console.log(task_instance);
-      var instance_update_url = host+"task_instances/"+task_instance;
-      var items = {};
-      
-       items['workspace_valid'] = Number($(this).data('confirm'));
-       items['final_notes'] = $('textarea[name=notes]').val();
-       //Making our request body and COMPLETE task_instance
-       var data = {
-          'data': {
-            'type':'task_instance',
-            'attributes': {
-              'status':'COMPLETE',
-                'content':items
-            }
-          }
-        };
-        data = JSON.stringify(data);
-        console.log(data);
-        /*Logging request*/
-              $('textarea[name=request]').html();
-              $('textarea[name=request]').val('Sending to: \n'+instance_update_url+'\nData in JSON: \n'+data); 
-              
-        /*Logging request*/
-        $.ajax({
-        'url':instance_update_url,
-        'data': data,
-         dataType: 'json',
-        'type':'PATCH',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response) {
-          console.log(response);
-          /*Logging response*/
-              $('textarea[name=response]').html();
-              $('textarea[name=response]').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data)); 
-              /*Logging response*/
-          if (items['workspace_valid'] == 1) {
-        $("a.next").fadeIn('500');
-        $("a.next").attr("href", "verify_on_boarding_data.html");
-      } else {
-          $("a.back").fadeIn('500');
-        
-        $("a.back").attr("href", "record_customer.html");
-      }
-      alert('Workspace validated');
-
-      });
-
-  });
 
 
-    });
+<div class="col-sm-12 logging">
+    <div class="panel panel-default ">
+        <div class="panel-heading"><h4>Logging</h4></div>
+        <div class="panel-body">
+            <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
+            <div id="request" class="collapse">
+                <div class="form-group">
+                    <label for="requestText">Request</label>
+                    <textarea id="requestText" name="request" rows="7" class="form-control"></textarea>
+                </div>
+            </div>
+            <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
+            <div id="response" class="collapse">
+                <div class="form-group">
+                    <label for="responseText">Response</label>
+                    <textarea id="responseText" name="response" rows="7" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="host">Host</label>
+                <div class="input-group">
+                    <div class="input-group-addon">URL</div>
+                    <input id="host" name="host" type="text" class="form-control" value="">
 
-    </script>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="token">Token key</label>
+                <textarea id="token" name="token" class="form-control" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
   </body>
 </html>
