@@ -29,9 +29,9 @@
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-          <li><img align="right" height="50" src="<?php echo $avatar;?>"><?php echo $user;?></li>
+          <li><img align="right" height="50" src="<?php echo $avatar;?>"></li>
           <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $user;?> <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="?user=Test">Test</a></li>
             <li><a href="?user=Alice">Alice</a></li>
