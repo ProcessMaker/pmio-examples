@@ -78,6 +78,8 @@
                           /*Logging response*/
                           alert('File has been imported successfully');
 
+                      }).error(function(response){
+                          alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                       }); //end response
                   } // loaded file
               });

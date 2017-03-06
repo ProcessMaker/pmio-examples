@@ -64,6 +64,8 @@
                       }
                   }
                   if (count >0 ) $('select[name=task_instances] option.instance0').trigger('change').attr('selected', true);
+              }).error(function(response){
+                  alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
               });
 
 
@@ -100,6 +102,8 @@
                           $('input[name='+key+']').val(items[key]);
                       }
 
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                   });
 
               });
@@ -153,6 +157,8 @@
                       /*Logging response*/
 
                       alert('Record customer created');
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                   });
               });
 

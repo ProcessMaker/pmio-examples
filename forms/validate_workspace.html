@@ -67,6 +67,8 @@
                       }
                   }
 
+              }).error(function(response){
+                  alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
               });
 
               $('select[name=task_instances]').on('change',function(){
@@ -107,6 +109,8 @@
                           $('input[name='+key+']').val(items[key]);
                       }
                       $('a.confirm').fadeToggle(500);
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                   });
 
               });
@@ -144,6 +148,8 @@
                       $('textarea[name=response]').html('').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data));
                       /*Logging response*/
                       alert('Workspace validated');
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                   });
               });
           });
