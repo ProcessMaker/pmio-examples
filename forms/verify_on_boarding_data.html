@@ -138,7 +138,7 @@
                       /*Logging response*/
                       $('textarea[name=response]').html('').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data));
                       /*Logging response*/
-                      alert('On boarding info sended');
+                      alert('On boarding info sent');
                   }).error(function(response){
                       alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                   });
