@@ -48,7 +48,6 @@
                   cache: false,
                   'headers':headers
               }).success(function(response) {
-                  console.log(response);
                   $('select[name=task_instances]').html('').append('<option>Select Task Instance</option>');
                   var count = 0;
                   for (var t in response.included) {
@@ -56,10 +55,8 @@
                       {
                           //Getting task_id of Record Customer
                           var task_id = response.included[t].id;
-                          console.log(task_id);
                           //Getting all task instances for that task
                           for (var k in response.data) {
-                              console.log(response.data[k]);
                               if (response.data[k].attributes.task_id == task_id) {
                                   $('select[name=task_instances]').append('<option class="instance'+count+'" value="'+response.data[k].id+'">'+count+'. '+response.data[k].id+'</option>');
                                   count++;
@@ -93,15 +90,14 @@
                       'cache': false,
                       'headers':headers
                   }).success(function(response) {
-                      console.log(response);
-                      var workspace = response.included[0].attributes.content;
-                      //console.log(items);
+                      var all_data = response.included[0].attributes.content;
                       /*Filling in our fields */
-                      for (key in workspace) {
-                          if (key == 'notes') $('textarea[name=notes]').val(workspace[key]);
+                      for (var key in all_data) {
+                          if (key == 'notes') $('textarea[name=notes]').val(all_data[key]);
                           if (key == 'development' ||  key == 'production' || key == 'sandbox') {
                               $('div.'+key).fadeIn(500);
                           }
+                          $('input[name='+key+']').val(all_data[key]);
                       }
                       $('a.submit').fadeIn(500);
                   });
@@ -110,10 +106,9 @@
 
               $('body').on('click','a.submit',function(){
                   var task_instance = $('body').find('select[name=task_instances]').val();
-                  console.log(task_instance);
                   var instance_update_url = host+"task_instances/"+task_instance;
                   var items ={};
-                  items['on_board_data_valid'] = Number($('a.submit').data('submit'));
+                  items['submit_onboard_data'] = 1;
                   var data = {
                       'data': {
                           'type':'task_instance',
@@ -136,7 +131,6 @@
                       'cache': false,
                       'headers':headers
                   }).success(function(response) {
-                      console.log(response.data);
                       /*Logging response*/
                       $('textarea[name=response]').html('').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data));
                       /*Logging response*/
@@ -400,7 +394,7 @@
       </div>
       </div>
       <div class="form-group text-center">
-        <a class="btn btn-success submit" data-submit="1">Submit</a>
+        <a class="btn btn-success submit" >Submit</a>
       </div>
       <div class="form-group text-center" >
         <a class="btn btn-success show_logs">Show logs</a>
