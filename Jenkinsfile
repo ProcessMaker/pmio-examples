@@ -46,8 +46,7 @@ try {
             vhost = BRANCH_NAME.toLowerCase().replaceAll(" ", "-");
             deploydomain = vhost + deploydomain;
 
-            def dot_env = readFile '.env';
-            dot_env = dot_env.bytes.encodeBase64().toString();
+            def dot_env = encodeBase64(readFile '.env');
 
             def ret = sh(script: "ssh -v $deployhost /home/jenkins/deploy_examples_branch.sh ${vhost} ${gitCommit} \"${dot_env}\"", returnStdout: true)
 
