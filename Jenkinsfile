@@ -48,7 +48,7 @@ try {
 
             def dot_env = readFile '.env';
 
-            def ret = sh(script: "ssh -v $deployhost /home/jenkins/deploy_examples_branch.sh ${vhost} ${gitCommit} ${dot_env}", returnStdout: true)
+            def ret = sh(script: "ssh -v $deployhost /home/jenkins/deploy_examples_branch.sh ${vhost} ${gitCommit} \"${dot_env}\"", returnStdout: true)
 
             currentBuild.description = "- Host: $deploydomain"
         }
