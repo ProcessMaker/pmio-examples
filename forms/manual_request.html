@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html >
 <html lang="en">
   <head>
   
@@ -18,11 +18,122 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+          $(document).ready(function() {
+              var host = 'http://<?php echo $host;?>/api/v1/';
+              var token = '<?php echo $key;?>';
+              var api_url = 'processes/import';
+              var method = 'POST';
+              var trigger_event_url = '';
+              $('input[name=host]').val(host);
+              $('textarea[name=token]').val(token);
+              var headers =
+              {
+                  "content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": "Bearer "+token
+              };
+
+              $.ajax({
+                  'url':host+'processes/',
+                  dataType: 'json',
+                  'type':'GET',
+                  'cache': false,
+                  'headers':headers
+              }).success(function(response) {
+                  var processid = '';
+                  var k;
+                  if (response.data.length > 0)
+                  {
+                      for (k in response.data) {
+                          if (response.data[k].attributes.name == 'Main process') processid = response.data[k].id;
+                      }
+                  } else {
+                      alert('Processes not found');
+                      return;
+                  }
+                  /* Getting all events of basic */
+                  if (processid.length > 0 ) var get_events_url = host+'processes/'+processid+'/events'; else {
+                      alert('Main process process not found');
+                      return;
+                  }
+                  $.ajax({
+                      'url':get_events_url,
+                      dataType: 'json',
+                      'type':'GET',
+                      'cache': false,
+                      'headers':headers
+                  }).success(function(response) {
+                      var key;
+                      /*Getting the start event for trigerring "Manual Request" */
+                      if (response.data.length > 0) {
+                          for (key in response.data) {
+                              if (response.data[key].attributes.name == "Manual Request")
+                                  var first_start_event = response.data[key].id;
+                          }
+                      }
+                      trigger_event_url = host+'processes/'+processid+'/events/'+first_start_event+'/trigger';
+                      $('a.new_client').fadeToggle(500);
+
+                  });
+
+
+              }).error(function(response){
+                  alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+              });
+
+              $('body').on('click','a.new_client', function(){
+                  var inputs = $('div.form-horizontal').find(':input,textarea');
+                  var datamodel = {};
+                  var key;
+                  for (key in inputs) {
+                      datamodel[inputs[key].name] = inputs[key].value;
+                  }
+                  datamodel = JSON.stringify(datamodel);
+
+                  var data = {
+                      'data': {
+                          'type':'data_model',
+                          'attributes': {
+                              'content':datamodel
+                          }
+                      }
+                  };
+                  data = JSON.stringify(data);
+
+                  /*Logging request*/
+                  $('textarea[name=request]').html('').val('Sending to: \n'+trigger_event_url+'\nData in JSON: \n'+data);
+                  /*Logging request*/
+
+                  $.ajax({
+                      'url':trigger_event_url,
+                      'data': data,
+                      dataType: 'json',
+                      'type':method,
+                      'cache': false,
+                      'headers':headers
+                  }).success(function(response) {
+                      /*Logging response*/
+                      $('textarea[name=response]').html('').val('Response from: \n'+host+api_url+'\nData in JSON: \n'+JSON.stringify(response.data));
+                      /*Logging response*/
+                      alert('Record customer created');
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  });
+              });
+
+          });
+
+      </script>
   </head>
   <body>
 <?php include "header.php";?>
-    <center>
-    <form class="col-xs-6 col-xs-offset-3 form-horizontal">
+    <div class="text-center">
+    <div class="col-xs-6 col-xs-offset-3 form-horizontal">
     
     
     <div class="panel panel-primary">
@@ -88,165 +199,47 @@
       </div>
       </div>
       <div class="form-group">
-        <a class="btn btn-success new_client" disabled="">Create new client</a>
+        <a class="btn btn-success new_client" style="display: none;">Create new client</a>
       </div>
       <div class="form-group" >
         <a href="#" class="btn btn-success next" style="display:none;">Next form <span class="glyphicon glyphicon-forward"></span></a>
       </div>
-</form>
-
-<div class="col-sm-12 logging">
-  <div class="panel panel-default ">
-   <div class="panel-heading"><h4>Logging</h4></div>
-    <div class="panel-body">
-          <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
-          <div id="request" class="collapse">
-          <div class="form-group">
-            <label>Request</label>
-            <textarea name="request" rows="7" class="form-control"></textarea>
-          </div>
-          </div>
-          <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
-          <div id="response" class="collapse">
-          <div class="form-group">
-            <label>Response</label>
-            <textarea name="response" rows="7" class="form-control"></textarea>
-          </div>
-          </div>
-          <div class="form-group">
-              <label>Host</label>
-              <div class="input-group">
-                <div class="input-group-addon">URL</div>
-                <input name="host" type="text" class="form-control" value="">
-                
-              </div>
-          </div>
-          <div class="form-group">
-            <label>Token key</label>
-            <textarea name="token" class="form-control" rows="10"></textarea>
-          </div>
-    </div>
-  </div>
 </div>
-    </center>
 
+        <div class="col-sm-12 logging">
+            <div class="panel panel-default ">
+                <div class="panel-heading"><h4>Logging</h4></div>
+                <div class="panel-body">
+                    <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
+                    <div id="request" class="collapse">
+                        <div class="form-group">
+                            <label for="requestText">Request</label>
+                            <textarea id="requestText" name="request" rows="7" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
+                    <div id="response" class="collapse">
+                        <div class="form-group">
+                            <label for="responseText">Response</label>
+                            <textarea id="responseText" name="response" rows="7" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="host">Host</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">URL</div>
+                            <input id="host" name="host" type="text" class="form-control" value="">
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="token">Token key</label>
+                        <textarea id="token" name="token" class="form-control" rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      //gettin servername & token key
-      var host = 'http://<?php echo $host;?>/api/v1/';
-      var token = '<?php echo $key;?>';
-      var api_url = 'processes/import';
-      var method = 'POST';
-      var trigger_event_url = '';
-      $('input[name=host]').val(host);
-      $('textarea[name=token]').val(token);
-      var headers = 
-      { 
-        "content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer "+token
-      };
-
-      $.ajax({
-        'url':host+'processes/',
-         dataType: 'json',
-        'type':'GET',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response) {
-          console.log(response);
-          var processid = '';
-          //Getting Basic process
-          for (k in response.data) {
-            if (response.data[k].attributes.name == 'Main process') processid = response.data[k].id;
-          }
-          console.log(processid);
-            /* Getting all events of basic */
-                var get_events_url = host+'processes/'+processid+'/events';
-                $.ajax({
-                'url':get_events_url,
-                 dataType: 'json',
-                'type':'GET',
-                'cache': false,
-                'headers':headers,
-            }).success(function(response) {
-                //console.log(response.data);
-                for (key in response.data) {
-                  console.log(response.data[key].attributes.name);
-                  console.log(response.data[key].attributes.type);
-                }
-                /*Getting the start event for trigerring "Manual Request" */
-                for (key in response.data) {
-                  if (response.data[key].attributes.name == "Manual Request") 
-                    var first_start_event = response.data[key].id;
-                }
-                /* Triggering first event*/
-                  trigger_event_url = host+'processes/'+processid+'/events/'+first_start_event+'/trigger';
-                  console.log(trigger_event_url);
-                  $('a.new_client').attr('disabled', false);
-
-              });
-
-
-          });
-
-      $('body').on('click','a.new_client', function(){
-          var temp = $("form").find(':input,textarea');
-          var items = {};
-          console.log(temp);
-          for (key in temp) {
-            items[temp[key].name] = temp[key].value;
-          }
-          var items1 ={};
-          items1['userinfo'] = items;
-
-          items1 = JSON.stringify(items1);
-          console.log(items);
-          
-          var data = {
-          'data': {
-            'type':'data_model',
-            'attributes': {
-                'content':items1
-            }
-          }
-        };
-        data = JSON.stringify(data);
-        /*Logging request*/
-              $('textarea[name=request]').html();
-              $('textarea[name=request]').val('Sending to: \n'+host+api_url+'\nData in JSON: \n'+data); 
-              
-        /*Logging request*/
-        //console.log(data);
-        $.ajax({
-        'url':trigger_event_url,
-         'data': data,
-         dataType: 'json',
-        'type':method,
-        'cache': false,
-        'headers':headers,
-    }).success(function(response) {
-          console.log(response.data);
-          /*Logging response*/
-              $('textarea[name=response]').html();
-              $('textarea[name=response]').val('Response from: \n'+host+api_url+'\nData in JSON: \n'+JSON.stringify(response.data)); 
-              /*Logging response*/
-              $("a.next").fadeIn('500');
-              $("a.next").attr("href", "record_customer.html");
-              alert('Record customer created');
-              
-      });
-
-      });
-
-    });
-
-    </script>
   </body>
 </html>

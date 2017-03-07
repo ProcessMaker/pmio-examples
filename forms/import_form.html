@@ -12,17 +12,85 @@
     <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+          $(document).ready(function() {
+              var host = 'http://<?php echo $host;?>/api/v1/';
+              var token = '<?php echo $key;?>';
+              var api_url = 'processes/import';
+              var method = 'POST';
+              $('input[name=host]').val(host);
+              $('textarea[name=token]').val(token);
+              var headers =
+              {
+                  "content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": "Bearer "+token
+              };
+
+
+              $('body').on('change','input[name=bpmn_file]',function(){
+                  $('a.import').css('display','inline-block');
+              }).on('click', 'a.import', function(){
+                  $('a.import').attr('disabled',true);
+
+                  var file    = document.querySelector('input[type=file]').files[0];
+                  var reader  = new FileReader();
+
+                  reader.readAsText(file);
+                  reader.onloadend = function () {
+                      $('a.import').fadeOut('500');
+                      var bpmn = reader.result;
+
+                      var data = {
+                          'data': {
+                              'type':'process',
+                              'attributes': {
+                                  'bpmn': bpmn
+                              }
+                          }
+                      };
+                      data = JSON.stringify(data);
+                      /*Logging request*/
+                      $('textarea[name=request]').html('').val('Sending to: \n'+host+api_url+'\nData in JSON: \n'+data);
+
+                      /*Logging request*/
+                      $.ajax({
+                          'url':host+api_url,
+                          dataType: 'json',
+                          'type':method,
+                          'cache': false,
+                          'headers':headers,
+                          'data':data
+                      }).success(function(response) {
+                          /*Logging response*/
+                          $('textarea[name=response]').val('Response from: \n'+host+api_url+'\nData in JSON: \n'+JSON.stringify(response.data));
+                          /*Logging response*/
+                          alert('File has been imported successfully');
+
+                      }).error(function(response){
+                          alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                      }); //end response
+                  } // loaded file
+              });
+          });
+
+      </script>
   </head>
   <body>
 <?php include "header.php";?>
-    <center>
-    <form class="col-xs-6 col-xs-offset-3 form-horizontal">
+    <div class="text-center">
+    <div class="col-xs-6 col-xs-offset-3 form-horizontal">
     
     <div class="form-group">
     
@@ -34,23 +102,15 @@
           <div class="form-group">
             <label for="inputName" class="col-sm-3 control-label">Select BPMN file:</label>
             <div class="col-sm-7">
-              <input type="file" name="bpmn_file" >
+              <input id="inputName" type="file" name="bpmn_file" >
             </div>
           </div>
-      <div class="progress" style="display:none;">
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
-            0%
-          </div>
-        </div>
       </div>
     </div>
       <div class="form-group">
-        <a class="btn btn-success import" disabled=""><span class="glyphicon glyphicon-download-alt"></span>Start Import</a>
+        <a class="btn btn-success import" style="display:none;"><span class="glyphicon glyphicon-download-alt"></span>Start Import</a>
       </div>
-      <div class="form-group" >
-        <a href="#" class="btn btn-success next" style="display:none;">Next form <span class="glyphicon glyphicon-forward"></span></a>
-      </div>
-</form>
+</div>
 
 <div class="col-sm-12 logging">
   <div class="panel panel-default ">
@@ -59,160 +119,34 @@
           <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
           <div id="request" class="collapse">
           <div class="form-group">
-            <label>Request</label>
-            <textarea name="request" rows="7" class="form-control"></textarea>
+            <label for="requestText">Request</label>
+            <textarea id="requestText" name="request" rows="7" class="form-control"></textarea>
           </div>
           </div>
           <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
           <div id="response" class="collapse">
           <div class="form-group">
-            <label>Response</label>
-            <textarea name="response" rows="7" class="form-control"></textarea>
+            <label for="responseText">Response</label>
+            <textarea id="responseText" name="response" rows="7" class="form-control"></textarea>
           </div>
           </div>
           <div class="form-group">
-              <label>Host</label>
+              <label for="host">Host</label>
               <div class="input-group">
                 <div class="input-group-addon">URL</div>
-                <input name="host" type="text" class="form-control" value="">
+                <input id="host" name="host" type="text" class="form-control" value="">
                 
               </div>
           </div>
           <div class="form-group">
-            <label>Token key</label>
-            <textarea name="token" class="form-control" rows="10"></textarea>
+            <label for="token">Token key</label>
+            <textarea id="token" name="token" class="form-control" rows="10"></textarea>
           </div>
     </div>
   </div>
 </div>
 
-    </center>
+    </div>
 
-    
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-      //gettin servername & token key
-      var host = 'http://<?php echo $host;?>/api/v1/';
-      var token = '<?php echo $key;?>';
-      var api_url = 'processes/import';
-      var method = 'POST';
-      $('input[name=host]').val(host);
-      $('textarea[name=token]').val(token);
-      var headers = 
-      { 
-        "content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer "+token
-      };
-
-      
-
-    $('body').on('click', 'a.del_process', function(){
-      var itis = $(this);
-      var processId = $(this).data('id');
-      if (processId.length > 0) {
-        $.ajax({
-        'url':host+'processes/'+processId,
-         dataType: 'json',
-        'type':'DELETE',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response){
-        console.log(response);
-        itis.fadeOut(500);
-        $('#myModal div.myResponse').html(JSON.stringify(response));
-        $('#myModal').modal('show');
-        
-      });
-    }
-    });
-
-    $('body').on('change','input[name=bpmn_file]',function(){
-      $('a.import').attr('disabled',false);
-    });
-
-     $('body').on('click', 'a.import', function(){
-        $('a.import').attr('disabled',true);
-        /* Here we parsing response and getting process UID for next form*/
-        var file    = document.querySelector('input[type=file]').files[0];
-        var reader  = new FileReader();
-        
-        //console.log();
-        reader.readAsText(file);
-        reader.onloadend = function () {
-                $('a.import').fadeOut('500');
-              $(".progress").fadeIn('300');
-              $("input[name=bpmn_file]").fadeOut('300');
-              var i = 0;
-
-            var counterBack = setInterval(function () {
-              i++;
-              if (i <= 100) {
-                $('.progress-bar').css('width', i + '%');
-                $('.progress-bar').html(i + '%');
-              } else {
-                
-              }
-
-            }, 10);
-                var bpmn = reader.result;
-                //console.log(reader.result);
-                var data = {
-                'data': {
-                  'type':'process',
-                  'attributes': {
-                      'bpmn': bpmn
-                  }
-                }
-              }
-              data = JSON.stringify(data);
-              console.log(data);
-              /*Logging request*/
-              $('textarea[name=request]').html();
-              $('textarea[name=request]').val('Sending to: \n'+host+api_url+'\nData in JSON: \n'+data); 
-              
-              /*Logging request*/
-              $.ajax({
-                'url':host+api_url,
-                 dataType: 'json',
-                'type':method,
-                'cache': false,
-                'headers':headers,
-                'data':data
-            }).success(function(response) {
-                  console.log(response.data);
-                  /*Logging response*/
-              $('textarea[name=response]').html();
-              $('textarea[name=response]').val('Response from: \n'+host+api_url+'\nData in JSON: \n'+JSON.stringify(response.data)); 
-              /*Logging response*/
-              var processes = '';
-
-              for (key in response.data) {
-                processes = processes + 'process[]='+response.data[key].id
-                if (key < response.data.length-1) processes = processes+'&';
-              }
-              console.log(processes);
-              $('.progress-bar').html('Success!');
-              $("a.next").attr("href", "manual_request.html?"+processes);
-              $("a.next").fadeIn('500');
-              alert('File has been imported successfully');
-
-                  }); //end response
-
-
-
-
-        } // loaded file 
-        
-     });
-     
-    });
-
-    </script>
   </body>
 </html>

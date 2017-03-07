@@ -18,6 +18,88 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+          $(document).ready(function() {
+              //gettin servername & token key
+              var host = 'http://<?php echo $host;?>/api/v1/';
+              var token = '<?php echo $key;?>';
+              var headers =
+              {
+                  "content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": "Bearer "+token
+              };
+
+              /*Getting processes list if they are present */
+              get_processes_url = host+"processes";
+
+              $.ajax({
+                  'url':get_processes_url,
+                  'dataType': 'json',
+                  'type':'GET',
+                  'cache': false,
+                  'headers':headers
+              }).success(function(response) {
+                  console.log(response.data);
+                  if (response.data.length > 0) {
+                      var processes = [];
+                      //alert('Found created '+response.data.length+' processes');
+                      for (key in response.data) {
+                          $('.processes .panel-body').append('<div class="form-group"><a class="btn btn-warning del_process btn-block" data-id="'+response.data[key].id+'">'+response.data[key].attributes.name+' <small>('+response.data[key].id+')</small></a><div>Found instances:</div><div class="'+response.data[key].id+'"></div></div>');
+                          processes[key]= response.data[key].id;
+
+                      }
+                      if (processes.length > 0) {
+                          for (pk in processes) {
+                              $.ajax({
+                                  'url':host+'processes/'+processes[pk]+'/instances?include=process',
+                                  dataType: 'json',
+                                  'type':'GET',
+                                  'cache': false,
+                                  'headers':headers,
+                              }).success(function(response) {
+                                  //console.log(response);
+                                  if (response.data.length > 0)
+                                  {
+                                      for (k in response.data) {
+                                          $('.panel-body .'+response.included[0].id).append('<div class="alert alert-success"><strong>ID:</strong>'+response.data[k].id+' <strong>Name:</strong> '+response.data[k].attributes.name+' <strong>Status:</strong> '+response.data[k].attributes.status+'</div>');
+                                      }
+
+                                  }
+                              });
+                          }
+//		    		alert('Process Instances loaded');
+                      }
+                  } else alert('No processes found');
+
+              }).error(function(response){
+                  alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+              });
+
+              $('body').on('click', 'a.del_process', function(){
+                  var itis = $(this);
+                  var processId = $(this).data('id');
+                  if (processId.length > 0) {
+                      $.ajax({
+                          'url':host+'processes/'+processId,
+                          dataType: 'json',
+                          'type':'DELETE',
+                          'cache': false,
+                          'headers':headers,
+                      }).success(function(response){
+                          console.log(response);
+                          itis.fadeOut(500);
+                          $('#myModal div.myResponse').html(JSON.stringify(response));
+                          $('#myModal').modal('show');
+
+                      });
+                  }
+              });
+          });
+      </script>
   </head>
   <body>
 <?php include "header.php";?>
@@ -48,85 +130,6 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-      //gettin servername & token key
-      var host = 'http://<?php echo $host;?>/api/v1/';
-      var token = '<?php echo $key;?>';
-      var headers = 
-      { 
-        "content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer "+token
-      };
 
-      /*Getting processes list if they are present */
-      get_processes_url = host+"processes";
-
-      $.ajax({
-        'url':get_processes_url,
-         dataType: 'json',
-        'type':'GET',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response) {
-      console.log(response.data);
-      if (response.data.length > 0) {
-      var processes = [];
-      //alert('Found created '+response.data.length+' processes');
-      for (key in response.data) {
-          $('.processes .panel-body').append('<div class="form-group"><a class="btn btn-warning del_process btn-block" data-id="'+response.data[key].id+'">'+response.data[key].attributes.name+' <small>('+response.data[key].id+')</small></a><div>Found instances:</div><div class="'+response.data[key].id+'"></div></div>');
-          processes[key]= response.data[key].id;
-          
-         }
-        	if (processes.length > 0) {
-        		for (pk in processes) {
-        		$.ajax({
-		        'url':host+'processes/'+processes[pk]+'/instances?include=process',
-		         dataType: 'json',
-		        'type':'GET',
-		        'cache': false,
-		        'headers':headers,
-		    		}).success(function(response) {
-		    					//console.log(response);
-		    					if (response.data.length > 0)
-		    					{
-		    						for (k in response.data) {
-			    						$('.panel-body .'+response.included[0].id).append('<div class="alert alert-success"><strong>ID:</strong>'+response.data[k].id+' <strong>Name:</strong> '+response.data[k].attributes.name+' <strong>Status:</strong> '+response.data[k].attributes.status+'</div>');
-			    					}
-			    					
-			    				}
-		    				});
-		    		}
-//		    		alert('Process Instances loaded');
-        	}
-		} else alert('No processes found');
-
-      });
-		
-		$('body').on('click', 'a.del_process', function(){
-      var itis = $(this);
-      var processId = $(this).data('id');
-      if (processId.length > 0) {
-        $.ajax({
-        'url':host+'processes/'+processId,
-         dataType: 'json',
-        'type':'DELETE',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response){
-        console.log(response);
-        itis.fadeOut(500);
-        $('#myModal div.myResponse').html(JSON.stringify(response));
-        $('#myModal').modal('show');
-        
-      });
-    }
-    });
-});
-</script>
 </body>
 </html>

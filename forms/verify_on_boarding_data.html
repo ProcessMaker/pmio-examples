@@ -18,19 +18,163 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+          $(document).ready(function() {
+              $(':input').val('');
+              $('textarea').val();
+              $('a.submit').fadeOut(500);
+              var host = 'http://<?php echo $host;?>/api/v1/';
+              var token = '<?php echo $key;?>';
+              var headers =
+              {
+                  "content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": "Bearer "+token
+              };
+              $('input[name=host]').val(host);
+              $('textarea[name=token]').val(token);
+              $('div.production').fadeOut(500);
+              $('div.sandbox').fadeOut(500);
+              $('div.development').fadeOut(500);
+              var delegated_url = host+"task_instances/delegated?per_page=100&include=task";
+              $.ajax({
+                  'url':delegated_url,
+                  dataType: 'json',
+                  type:'GET',
+                  cache: false,
+                  'headers':headers
+              }).success(function(response) {
+                  $('select[name=task_instances]').html('').append('<option>Select Task Instance</option>');
+                  var count = 0;
+                  for (var t in response.included) {
+                      if (response.included[t].attributes.name == "Verify Onboarding Data")
+                      {
+                          //Getting task_id of Record Customer
+                          var task_id = response.included[t].id;
+                          //Getting all task instances for that task
+                          for (var k in response.data) {
+                              if (response.data[k].attributes.task_id == task_id) {
+                                  $('select[name=task_instances]').append('<option class="instance'+count+'" value="'+response.data[k].id+'">'+count+'. '+response.data[k].id+'</option>');
+                                  count++;
+                              }
+                          }
+                      }
+                  }
+                  if (count >0 ) $('select[name=task_instances] option.instance0').trigger('change').attr('selected', true);
 
+              }).error(function(response){
+                  alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+              });
+
+              $('select[name=task_instances]').on('change',function(){
+                  var instance;
+                  if ($(this).val() == null)
+                      instance = $('select[name=task_instances] option.instance0').val();
+                  else instance = $(this).val();
+                  if (instance == 'Select Task Instance')
+                  {
+                      $('a.submit').fadeOut(500);
+                      $(':input').not('input[name=host],textarea[name=token]').val('');
+                      return;
+                  }
+                  /* Getting DATA from server */
+
+                  var url = host+"task_instances/"+instance;
+
+                  $.ajax({
+                      'url':url,
+                      dataType: 'json',
+                      'type':'GET',
+                      'cache': false,
+                      'headers':headers
+                  }).success(function(response) {
+                      var all_data = response.included[0].attributes.content;
+                      /*Filling in our fields */
+                      for (var key in all_data) {
+                          if (key == 'notes') $('textarea[name=notes]').val(all_data[key]);
+                          if (key == 'development' ||  key == 'production' || key == 'sandbox') {
+                              $('div.'+key).fadeIn(500);
+                          }
+                          $('input[name='+key+']').val(all_data[key]);
+                      }
+                      $('a.submit').fadeIn(500);
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  });
+
+              });
+
+              $('body').on('click','a.submit',function(){
+                  var task_instance = $('body').find('select[name=task_instances]').val();
+                  var instance_update_url = host+"task_instances/"+task_instance;
+                  var items ={};
+                  items['submit_onboard_data'] = 1;
+                  var data = {
+                      'data': {
+                          'type':'task_instance',
+                          'attributes': {
+                              'status':'COMPLETE',
+                              'content':items
+                          }
+                      }
+                  };
+                  data = JSON.stringify(data);
+                  /*Logging request*/
+                  $('textarea[name=request]').html('').val('Sending to: \n'+instance_update_url+'\nData in JSON: \n'+data);
+
+                  /*Logging request*/
+                  $.ajax({
+                      'url':instance_update_url,
+                      'data': data,
+                      dataType: 'json',
+                      'type':'PATCH',
+                      'cache': false,
+                      'headers':headers
+                  }).success(function(response) {
+                      /*Logging response*/
+                      $('textarea[name=response]').html('').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data));
+                      /*Logging response*/
+                      alert('On boarding info sent');
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  });
+              });
+
+
+              $('a.show_logs').on('click',function(){
+                  var log_url = host+'logs';
+                  $.ajax({
+                      'url':log_url,
+                      dataType: 'json',
+                      type:'GET',
+                      cache: false,
+                      'headers':headers
+                  }).success(function(response) {
+                      /*Logging response*/
+                      $('textarea[name=response]').html('').val('Response from: \n'+log_url+'\nData in Plain text: \n'+response.content);
+                      /*Logging response*/
+                  }).error(function(response){
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  });
+              });
+          });
+      </script>
+  </head>
+<body>
 <?php include "header.php";?>
-    <div class="form-group col-sm-12 text-center">
+    <div class="text-center">
+      <div class="form-group col-sm-12">
             
-            <label>Delegated Task Instances:</label>
-            <select multiple="" name="task_instances">
-              
+            <label for="task_instances">Delegated Task Instances:</label>
+            <select id="task_instances" multiple="" name="task_instances">
             </select>
     </div>
     
-    <form class="col-sm-10 col-sm-offset-1 form-horizontal">
+    <div class="col-sm-10 col-sm-offset-1 form-horizontal">
     <h1 class="text-center">Verify on boarding information</h1>
     <div class="panel panel-default">
       <div class="panel-heading"><h2 class="text-center"></h2></div>
@@ -57,108 +201,108 @@
     <div class="form-group">
       <h3 class="text-center">Workspace information</h3>
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default development">
       <div class="panel-heading"><h4 class="text-center">Development environment</h4></div>
     <div class="panel-body">
 
         <div class="form-group">
-        <label for="inputWorkspaceID" class="col-sm-3 control-label">WorkspaceID</label>
+        <label for="developmentWorkspaceID" class="col-sm-3 control-label">WorkspaceID</label>
         <div class="col-sm-7">
-          <input name="workspace_id" type="text" class="form-control" id="inputWorkspaceID"  disabled="">
+          <input name="workspace_id" type="text" class="form-control" id="developmentWorkspaceID"  disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="inputworkspaceName" class="col-sm-3 control-label">Workspace Name</label>
+        <label for="developmentSpaceName" class="col-sm-3 control-label">Workspace Name</label>
         <div class="col-sm-7">
-          <input name="workspace_name" type="text" class="form-control" id="inputworkspaceName" disabled="">
+          <input name="workspace_name" type="text" class="form-control" id="developmentSpaceName" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="inputworkspaceurl" class="col-sm-3 control-label">Workspace url</label>
+        <label for="developmentWorkspaceUrl" class="col-sm-3 control-label">Workspace url</label>
         <div class="col-sm-7">
-          <input name="dev_workspace_url" type="text" class="form-control" id="inputworkspaceurl" disabled="">
+          <input name="development_workspace_url" type="text" class="form-control" id="developmentWorkspaceUrl" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="license_file" class="col-sm-3 control-label">License file name</label>
+        <label for="developmentLicenseFile" class="col-sm-3 control-label">License file name</label>
         <div class="col-sm-7">
-          <input name="dev_license_filename" type="text" class="form-control" id="license_file" disabled="">
+          <input name="development_license_filename" type="text" class="form-control" id="developmentLicenseFile" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">User Name</label>
+          <label for="developmentUsername" class="col-sm-3 control-label">User Name</label>
           <div class="col-sm-7">
-          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="developmentUsername" >
           </div>
         </div>
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">Password</label>
+          <label for="developmentPassword" class="col-sm-3 control-label">Password</label>
           <div class="col-sm-7">
-          <input name="userpass" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="userpass" disabled="" type="text" class="form-control col-sm-7" id="developmentPassword" >
           </div>
         </div>
           <div class="form-group">
-        <label for="additionalNotes" class="col-sm-3 control-label">Notes</label>
+        <label for="developmentNotes" class="col-sm-3 control-label">Notes</label>
         <div class="col-sm-7">
-          <textarea name="notes" disabled="" id="additionalNotes" class="form-control" rows="5"  ></textarea>
+          <textarea name="notes" disabled="" id="developmentNotes" class="form-control" rows="5"  ></textarea>
         </div>
         </div>
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">Created by</label>
+          <label for="developmentCreatedBy" class="col-sm-3 control-label">Created by</label>
           <div class="col-sm-7">
-          <input name="dev_created_by" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="development_created_by" disabled="" type="text" class="form-control col-sm-7" id="developmentCreatedBy" >
           </div>
         </div>
 
     </div>
     </div>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default sandbox">
       <div class="panel-heading"><h4 class="text-center">Sandbox environment</h4></div>
     <div class="panel-body">
 
         <div class="form-group">
-        <label for="inputWorkspaceID" class="col-sm-3 control-label">WorkspaceID</label>
+        <label for="sandboxWorkspaceID" class="col-sm-3 control-label">WorkspaceID</label>
         <div class="col-sm-7">
-          <input name="workspace_id" type="text" class="form-control" id="inputWorkspaceID"  disabled="">
+          <input name="workspace_id" type="text" class="form-control" id="sandboxWorkspaceID"  disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="inputworkspaceName" class="col-sm-3 control-label">Workspace Name</label>
+        <label for="sandboxWorkspaceName" class="col-sm-3 control-label">Workspace Name</label>
         <div class="col-sm-7">
-          <input name="workspace_name" type="text" class="form-control" id="inputworkspaceName" disabled="">
+          <input name="workspace_name" type="text" class="form-control" id="sandboxWorkspaceName" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="inputworkspaceurl" class="col-sm-3 control-label">Workspace url</label>
+        <label for="sandboxWorkspaceUrl" class="col-sm-3 control-label">Workspace url</label>
         <div class="col-sm-7">
-          <input name="san_workspace_url" type="text" class="form-control" id="inputworkspaceurl" disabled="">
+          <input name="sandbox_workspace_url" type="text" class="form-control" id="sandboxWorkspaceUrl" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="license_file" class="col-sm-3 control-label">License file name</label>
+        <label for="sandboxLicenseFile" class="col-sm-3 control-label">License file name</label>
         <div class="col-sm-7">
-          <input name="san_license_filename" type="text" class="form-control" id="license_file" disabled="">
+          <input name="sandbox_license_filename" type="text" class="form-control" id="sandboxLicenseFile" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">User Name</label>
+          <label for="sandboxUsername" class="col-sm-3 control-label">User Name</label>
           <div class="col-sm-7">
-          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="sandboxUsername" >
           </div>
         </div>
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">Password</label>
+          <label for="sandboxPassword" class="col-sm-3 control-label">Password</label>
           <div class="col-sm-7">
-          <input name="userpass" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="userpass" disabled="" type="text" class="form-control col-sm-7" id="sandboxPassword" >
           </div>
         </div>
           <div class="form-group">
@@ -168,69 +312,69 @@
         </div>
         </div>
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">Created by</label>
+          <label for="sandboxCreatedBy" class="col-sm-3 control-label">Created by</label>
           <div class="col-sm-7">
-          <input name="san_created_by" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="sandbox_created_by" disabled="" type="text" class="form-control col-sm-7" id="sandboxCreatedBy" >
           </div>
         </div>
 
     </div>
     </div>
       
-    <div class="panel panel-default">
+    <div class="panel panel-default production">
       <div class="panel-heading"><h4 class="text-center">Production environment</h4></div>
     <div class="panel-body">
 
         <div class="form-group">
-        <label for="inputWorkspaceID" class="col-sm-3 control-label">WorkspaceID</label>
+        <label for="productionWorkspaceID" class="col-sm-3 control-label">WorkspaceID</label>
         <div class="col-sm-7">
-          <input name="workspace_id" type="text" class="form-control" id="inputWorkspaceID"  disabled="">
+          <input name="workspace_id" type="text" class="form-control" id="productionWorkspaceID"  disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="inputworkspaceName" class="col-sm-3 control-label">Workspace Name</label>
+        <label for="productionWorkspaceName" class="col-sm-3 control-label">Workspace Name</label>
         <div class="col-sm-7">
-          <input name="workspace_name" type="text" class="form-control" id="inputworkspaceName" disabled="">
+          <input name="workspace_name" type="text" class="form-control" id="productionWorkspaceName" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="inputworkspaceurl" class="col-sm-3 control-label">Workspace url</label>
+        <label for="productionWorkspaceUrl" class="col-sm-3 control-label">Workspace url</label>
         <div class="col-sm-7">
-          <input name="prod_workspace_url" type="text" class="form-control" id="inputworkspaceurl" disabled="">
+          <input name="production_workspace_url" type="text" class="form-control" id="productionWorkspaceUrl" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-        <label for="license_file" class="col-sm-3 control-label">License file name</label>
+        <label for="productionLicenseFile" class="col-sm-3 control-label">License file name</label>
         <div class="col-sm-7">
-          <input name="prod_license_filename" type="text" class="form-control" id="license_file" disabled="">
+          <input name="production_license_filename" type="text" class="form-control" id="productionLicenseFile" disabled="">
         </div>
         </div>
 
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">User Name</label>
+          <label for="productionUsername" class="col-sm-3 control-label">User Name</label>
           <div class="col-sm-7">
-          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="username" disabled="" type="text" class="form-control col-sm-7" id="productionUsername" >
           </div>
         </div>
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">Password</label>
+          <label for="productionPassword" class="col-sm-3 control-label">Password</label>
           <div class="col-sm-7">
-          <input name="userpass" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="userpass" disabled="" type="text" class="form-control col-sm-7" id="productionPassword" >
           </div>
         </div>
           <div class="form-group">
-        <label for="additionalNotes" class="col-sm-3 control-label">Notes</label>
+        <label for="productionNotes" class="col-sm-3 control-label">Notes</label>
         <div class="col-sm-7">
-          <textarea name="notes" disabled="" id="additionalNotes" class="form-control" rows="5"  ></textarea>
+          <textarea id="productionNotes" name="notes" disabled="" class="form-control" rows="5"  ></textarea>
         </div>
         </div>
         <div class="form-group">
-          <label for="exampleInput3" class="col-sm-3 control-label">Created by</label>
+          <label for="productionCreatedBy" class="col-sm-3 control-label">Created by</label>
           <div class="col-sm-7">
-          <input name="prod_created_by" disabled="" type="text" class="form-control col-sm-7" id="exampleInput3" >
+          <input name="production_created_by" disabled="" type="text" class="form-control col-sm-7" id="productionCreatedBy" >
           </div>
         </div>
 
@@ -258,216 +402,48 @@
       </div>
       </div>
       <div class="form-group text-center">
-        <a class="btn btn-success confirm" data-confirm="1">Submit</a>
+        <a class="btn btn-success submit" >Submit</a>
       </div>
       <div class="form-group text-center" >
-        <a class="btn btn-success see_logs" style="">Show logs<span class="glyphicon glyphicon-forward"></span></a>
+        <a class="btn btn-success show_logs">Show logs</a>
       </div>
-</form>
-
-
-    <center>
-    <div class="col-sm-12 logging">
-  <div class="panel panel-default ">
-   <div class="panel-heading"><h4>Logging</h4></div>
-    <div class="panel-body">
-          <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
-          <div id="request" class="collapse">
-          <div class="form-group">
-            <label>Request</label>
-            <textarea name="request" rows="7" class="form-control"></textarea>
-          </div>
-          </div>
-          <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
-          <div id="response" class="collapse">
-          <div class="form-group">
-            <label>Response</label>
-            <textarea name="response" rows="7" class="form-control"></textarea>
-          </div>
-          </div>
-          <div class="form-group">
-              <label>Host</label>
-              <div class="input-group">
-                <div class="input-group-addon">URL</div>
-                <input name="host" type="text" class="form-control" value="">
-                
-              </div>
-          </div>
-          <div class="form-group">
-            <label>Token key</label>
-            <textarea name="token" class="form-control" rows="10"></textarea>
-          </div>
-    </div>
-  </div>
 </div>
-</center>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-      $(':input').val('');
-      $('textarea').val();
-      var host = 'http://<?php echo $host;?>/api/v1/';
-      var token = '<?php echo $key;?>';
-      var headers = 
-      { 
-        "content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer "+token
-      };
-      $('input[name=host]').val(host);
-      $('textarea[name=token]').val(token);
-      var delegated_url = host+"task_instances/delegated?per_page=100&include=task";
-      $.ajax({
-        'url':delegated_url,
-         dataType: 'json',
-         type:'GET',
-         cache: false,
-         'headers':headers,
-    }).success(function(response) {
-          console.log(response);
-          $('select[name=task_instances]').find('option')
-    .remove();
-          $('select[name=task_instances]').append('<option>Select Task Instance</option>');
-          var count = 0;
-          for (k in response.included) {
-            if (response.included[k].attributes.name == "Verify Onboarding Data")
-            {
-              //Getting task_id of Record Customer
-              var task_id = response.included[k].id;
-              console.log(task_id);
-              //Getting all task instances for that task
-              for (k in response.data) {
-                  console.log(response.data[k]);
-                  if (response.data[k].attributes.task_id == task_id) {
-                    $('select[name=task_instances]').append('<option class="'+count+'" value="'+response.data[k].id+'">'+count+'. '+response.data[k].id+'</option>');
-                    count++;
-                  }
-              }
-             
+<div class="col-sm-12 logging">
+    <div class="panel panel-default ">
+        <div class="panel-heading"><h4>Logging</h4></div>
+        <div class="panel-body">
+            <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
+            <div id="request" class="collapse">
+                <div class="form-group">
+                    <label for="requestText">Request</label>
+                    <textarea id="requestText" name="request" rows="7" class="form-control"></textarea>
+                </div>
+            </div>
+            <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
+            <div id="response" class="collapse">
+                <div class="form-group">
+                    <label for="responseText">Response</label>
+                    <textarea id="responseText" name="response" rows="7" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="host">Host</label>
+                <div class="input-group">
+                    <div class="input-group-addon">URL</div>
+                    <input id="host" name="host" type="text" class="form-control" value="">
 
-            }
-          }
-          if (count >0 ) $('select[name=task_instances] option.0').trigger('change').attr('selected', true);
-          
-      });
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="token">Token key</label>
+                <textarea id="token" name="token" class="form-control" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
 
-    $('select[name=task_instances]').on('change',function(){
-      $('a.confirm').attr('disabled',false);
-      var instance;
-      if ($(this).val() == null) 
-        instance = $('select[name=task_instances] option.0').val(); 
-          else instance = $(this).val();
-      if (instance == 'Select Task Instance') 
-        {
-        $('a.confirm').attr('disabled',true);
-        $(':input').val('');
-        $('textarea').val();
-        $(':checkbox').attr('checked', false);
-        return;
-        }
-      /* Getting DATA from server */
+</div>
 
-      var url = host+"task_instances/"+instance;
-  
-      $.ajax({
-        'url':url,
-         dataType: 'json',
-        'type':'GET',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response) {
-          console.log(response);
-          var workspace = response.included[0].attributes.content.workspace;
-          //console.log(items);
-          /*Filling in our fields */
-          var others = response.included[0].attributes.content;
-          for (key in workspace) {
-            if (key == 'notes') $('textarea[name=notes]').val(workspace[key]);
-            if (key == 'Environment requested') continue;
-            $('input[name='+key+']').val(workspace[key]);
-          }
-          
-          for (k in others) {
-          if (k == 'final_notes') { $('textarea[name=notes]').val(others[k]);}
-          if (k == 'dev' || k=='prod' || k=='san') {
-              for (k1 in others[k]) {
-                $("input[name="+k+'_'+k1+"]").val(others[k][k1]);
-              }
-            }
-          }
-          
-      });
-
-    });
-
-    $('body').on('click','a.confirm',function(){
-      var task_instance = $('body').find('select[name=task_instances]').val();
-      console.log(task_instance);
-      var instance_update_url = host+"task_instances/"+task_instance;
-      var items ={};
-      items['on_board_data_valid'] = Number($('a.confirm').data('confirm'));
-      items['customer_name'] = $('input[name=client_name]').val();
-      items['customer_email'] = $('input[name=client_email]').val();
-      var data = {
-          'data': {
-            'type':'task_instance',
-            'attributes': {
-              'status':'COMPLETE',
-                'content':items
-            }
-          }
-        };
-        data = JSON.stringify(data);
-        //console.log(data);
-        /*Logging request*/
-              $('textarea[name=request]').html();
-              $('textarea[name=request]').val('Sending to: \n'+instance_update_url+'\nData in JSON: \n'+data); 
-              
-         /*Logging request*/
-        $.ajax({
-        'url':instance_update_url,
-         'data': data,
-         dataType: 'json',
-        'type':'PATCH',
-        'cache': false,
-        'headers':headers,
-    }).success(function(response) {
-          console.log(response.data);
-          /*Logging response*/
-              $('textarea[name=response]').html();
-              $('textarea[name=response]').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data)); 
-              /*Logging response*/
-              alert('On boarding info sended');
-              $('a.see_logs').fadeIn(500);
-      });
-  });
-
-    
-    $('body').on('click','a.see_logs',function(){
-      var log_url = host+'logs'
-      $.ajax({
-        'url':log_url,
-         dataType: 'json',
-         type:'GET',
-         cache: false,
-         'headers':headers,
-    }).success(function(response) {
-        //console.log(response);
-        /*Logging response*/
-              $('textarea[name=response]').html();
-              $('textarea[name=response]').val('Response from: \n'+log_url+'\nData in Plain text: \n'+response.content); 
-        /*Logging response*/
-    });
-
-    });
-
-
-    });
-
-    </script>
-  </body>
+</body>
 </html>
