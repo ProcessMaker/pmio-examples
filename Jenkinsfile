@@ -24,10 +24,10 @@ try {
 
             sh """
 
-            echo '$host = \'4.0.0.qacore.processmaker.net\';' >.env
-            echo '$key[\'Test\'] = \'Default user key\';' >>.env
-            echo '$key[\'Bob\'] = \'Bob key\';' >>.env
-            echo '$key[\'Alice\'] = \'Alice key\';' >>.env
+            echo '\$host = \'4.0.0.qacore.processmaker.net\';' >.env
+            echo '\$key[\'Test\'] = \'Default user key\';' >>.env
+            echo '\$key[\'Bob\'] = \'Bob key\';' >>.env
+            echo '\$key[\'Alice\'] = \'Alice key\';' >>.env
 
             cat .env
             """
