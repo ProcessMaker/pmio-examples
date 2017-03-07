@@ -9,7 +9,7 @@ node {
 
     def deployhost = 'build-qacore.processmaker.net'
 
-    def deploydomain = 'examples.qacore.processmaker.net'
+    def deploydomain = '.examples.qacore.processmaker.net'
 
     // be positive =)
     currentBuild.result = 'SUCCESS'
