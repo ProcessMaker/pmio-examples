@@ -32,7 +32,7 @@ try {
             sh """
             echo '<?php' >.env
             echo '\$host = "4.0.0.qacore.processmaker.net";' >>.env
-            echo '\$key["Test"] = "Default user key";' >>.env
+            echo '\$key["Test"] = "${KEY_TEST}";' >>.env
             echo '\$key["Bob"] = "Bob key";' >>.env
             echo '\$key["Alice"] = "Alice key";' >>.env
 
