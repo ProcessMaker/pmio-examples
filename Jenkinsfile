@@ -1,6 +1,13 @@
 #!/groovy
 node {
 
+    properties([[$class: 'ParametersDefinitionProperty',
+        parameterDefinitions: [
+            [$class: 'StringParameterDefinition', defaultValue: 'Default user key', description: 'Some Description', name : 'KEY_TEST'],
+            [$class: 'StringParameterDefinition', defaultValue: 'Bob key', description: 'Some Description', name: 'KEY_BOB']
+        ]
+    ]]);
+
     def clientid = ''
     def clientsecret = ''
     def username = ''
@@ -23,6 +30,7 @@ try {
       lock(resource: "lock_${env.NODE_NAME}_${env.BRANCH_NAME}", inversePrecedence: true) {
 
             sh """
+            cat ${KEY_MAIN}
             echo '<?php' >.env
             echo '\$host = "4.0.0.qacore.processmaker.net";' >>.env
             echo '\$key["Test"] = "Default user key";' >>.env
