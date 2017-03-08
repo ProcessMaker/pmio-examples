@@ -3,8 +3,9 @@ node {
 
     properties([[$class: 'ParametersDefinitionProperty',
         parameterDefinitions: [
-            [$class: 'StringParameterDefinition', defaultValue: 'Default user key', description: 'Some Description', name : 'KEY_TEST'],
-            [$class: 'StringParameterDefinition', defaultValue: 'Bob key', description: 'Some Description', name: 'KEY_BOB']
+            [$class: 'StringParameterDefinition', defaultValue: 'Default user key', description: 'Auth key for user Test', name : 'KEY_TEST'],
+            [$class: 'StringParameterDefinition', defaultValue: 'Bob key', description: 'Auth key for user Bob', name: 'KEY_BOB'],
+            [$class: 'StringParameterDefinition', defaultValue: 'Alice key', description: 'Auth key for user Alice', name: 'KEY_ALICE']
         ]
     ]]);
 
@@ -27,14 +28,14 @@ node {
 
 try {
     stage('Build') {
-      lock(resource: "lock_${env.NODE_NAME}_${env.BRANCH_NAME}", inversePrecedence: true) {
 
+        if (!fileExists ('.env')) {
             sh """
             echo '<?php' >.env
             echo '\$host = "4.0.0.qacore.processmaker.net";' >>.env
             echo '\$key["Test"] = "${KEY_TEST}";' >>.env
-            echo '\$key["Bob"] = "Bob key";' >>.env
-            echo '\$key["Alice"] = "Alice key";' >>.env
+            echo '\$key["Bob"] = "${KEY_BOB}";' >>.env
+            echo '\$key["Alice"] = "${KEY_ALICE}";' >>.env
 
             cat .env
             """
