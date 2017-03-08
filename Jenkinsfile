@@ -30,7 +30,6 @@ try {
       lock(resource: "lock_${env.NODE_NAME}_${env.BRANCH_NAME}", inversePrecedence: true) {
 
             sh """
-            cat ${KEY_MAIN}
             echo '<?php' >.env
             echo '\$host = "4.0.0.qacore.processmaker.net";' >>.env
             echo '\$key["Test"] = "Default user key";' >>.env
