@@ -58,7 +58,7 @@ try {
         stage('Acceptance Test') {
         wrap([$class: 'AnsiColorBuildWrapper']) {
 
-            def result = sh(script: "curl -v ${vhost}${deploy_domain}/index.php |grep ${KEY_TEST}", returnStdout: true).trim();
+            def result = sh(script: "curl -v ${vhost}${deploydomain}/index.php |grep ${KEY_TEST}", returnStdout: true).trim();
             echo 'Key found: ' + result
             echo 'Status: ' + currentBuild.result
 
