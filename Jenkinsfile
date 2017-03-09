@@ -28,8 +28,8 @@ node {
 
 try {
     stage('Build') {
-        //!fileExists ('.env') ||
-        if ( KEY_TEST != 'Default user key') {
+
+        if ( !fileExists ('.env') || KEY_TEST != 'Default user key') {
             sh """
             echo '<?php' >.env
             echo '\$host = "4.0.0.qacore.processmaker.net";' >>.env
