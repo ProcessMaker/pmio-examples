@@ -1,14 +1,15 @@
 #!/groovy
-node {
 
-    properties([[$class: 'ParametersDefinitionProperty',
-        parameterDefinitions: [
-            [$class: 'StringParameterDefinition', defaultValue: '4.0.0.qacore.processmaker.net', description: 'Domain for PMCore installation', name : 'PMCOREHOST'],
-            [$class: 'StringParameterDefinition', defaultValue: 'Default user key', description: 'Auth key for user Test', name : 'KEY_TEST'],
-            [$class: 'StringParameterDefinition', defaultValue: 'Bob key', description: 'Auth key for user Bob', name: 'KEY_BOB'],
-            [$class: 'StringParameterDefinition', defaultValue: 'Alice key', description: 'Auth key for user Alice', name: 'KEY_ALICE']
-        ]
-    ]]);
+        properties([[$class: 'ParametersDefinitionProperty',
+            parameterDefinitions: [
+                [$class: 'StringParameterDefinition', defaultValue: '4.0.0.qacore.processmaker.net', description: 'Domain for PMCore installation', name : 'PMCOREHOST'],
+                [$class: 'StringParameterDefinition', defaultValue: 'Default user key', description: 'Auth key for user Test', name : 'KEY_TEST'],
+                [$class: 'StringParameterDefinition', defaultValue: 'Bob key', description: 'Auth key for user Bob', name: 'KEY_BOB'],
+                [$class: 'StringParameterDefinition', defaultValue: 'Alice key', description: 'Auth key for user Alice', name: 'KEY_ALICE']
+            ]
+        ]]);
+
+node {
 
     def actual_key = ''
 
