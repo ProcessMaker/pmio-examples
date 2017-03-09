@@ -45,7 +45,7 @@ try {
             deploydomain = vhost + deploydomain;
 
             def dot_env = sh(script: "cat .env |base64 -w0", returnStdout: true).trim();
-            actual_key = sh(script: "cat .env |grep \"'Test'\" | grep -Eo '[\\047].*[\\047]'", returnStdout: true).trim();
+            actual_key = sh(script: "cat .env |grep "'Test'" | grep -Eo '[\\047].*[\\047]'", returnStdout: true).trim();
             echo "actual key: " + actual_key
             def ret = sh(script: "ssh -v $deployhost /home/jenkins/deploy_examples_branch.sh ${vhost} ${gitCommit} \"${dot_env}\"", returnStdout: true)
 
