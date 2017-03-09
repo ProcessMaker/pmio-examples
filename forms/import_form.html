@@ -65,13 +65,18 @@
                       $('textarea[name=request]').html('').val('Sending to: \n'+host+api_url+'\nData in JSON: \n'+data);
 
                       /*Logging request*/
-                      $.ajax({
+                      var xhr = $.ajax({
                           'url':host+api_url,
                           dataType: 'json',
                           'type':method,
                           'cache': false,
                           'headers':headers,
-                          'data':data
+                          'data':data,
+                          statusCode: {
+                              500: function() {
+                                  alert( "500:Unknown error, check logs for more information");
+                              }
+                          }
                       }).success(function(response) {
                           /*Logging response*/
                           $('textarea[name=response]').val('Response from: \n'+host+api_url+'\nData in JSON: \n'+JSON.stringify(response.data));
@@ -79,7 +84,9 @@
                           alert('File has been imported successfully');
 
                       }).error(function(response){
+                          if (typeof response.responseJSON == 'undefined') {
                           alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                          } else  alert('500:Unknown error, please check logs for more information');
                       }); //end response
                   } // loaded file
               });
