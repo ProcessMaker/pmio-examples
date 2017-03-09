@@ -65,7 +65,9 @@
                   }
                   if (count >0 ) $('select[name=task_instances] option.instance0').trigger('change').attr('selected', true);
               }).error(function(response){
-                  alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  if (typeof response.responseJSON == 'undefined') {
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  } else  alert('500:Unknown error, please check logs for more information');
               });
 
 
@@ -103,7 +105,9 @@
                       }
 
                   }).error(function(response){
-                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                      if (typeof response.responseJSON == 'undefined') {
+                          alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                      } else  alert('500:Unknown error, please check logs for more information');
                   });
 
               });
