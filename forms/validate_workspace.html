@@ -112,7 +112,7 @@
                       }
                       $('a.confirm').fadeToggle(500);
                   }).error(function(response){
-                      if (typeof response.responseJSON == 'undefined') {
+                      if (typeof response.responseJSON != 'undefined') {
                           alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                       } else  alert('500:Unknown error, please check logs for more information');
                   });
@@ -153,7 +153,7 @@
                       /*Logging response*/
                       alert('Workspace validated');
                   }).error(function(response){
-                      if (typeof response.responseJSON == 'undefined') {
+                      if (typeof response.responseJSON != 'undefined') {
                           alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
                       } else  alert('500:Unknown error, please check logs for more information');
                   });
