@@ -58,6 +58,9 @@ try {
 
             def result = sh(script: "curl -v ${deploydomain}/index.php |grep '${actual_key}'", returnStdout: true).trim();
             echo 'Key found: ' + result
+            if (result == '') {
+                currentBuild.result = "FAILED"
+            }
             echo 'Status: ' + currentBuild.result
 
         }
