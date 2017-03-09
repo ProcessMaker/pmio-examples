@@ -68,7 +68,9 @@
                   }
 
               }).error(function(response){
-                  alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  if (typeof response.responseJSON == 'undefined') {
+                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                  } else  alert('500:Unknown error, please check logs for more information');
               });
 
               $('select[name=task_instances]').on('change',function(){
@@ -110,7 +112,9 @@
                       }
                       $('a.confirm').fadeToggle(500);
                   }).error(function(response){
-                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                      if (typeof response.responseJSON != 'undefined') {
+                          alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                      } else  alert('500:Unknown error, please check logs for more information');
                   });
 
               });
@@ -149,7 +153,9 @@
                       /*Logging response*/
                       alert('Workspace validated');
                   }).error(function(response){
-                      alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                      if (typeof response.responseJSON != 'undefined') {
+                          alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
+                      } else  alert('500:Unknown error, please check logs for more information');
                   });
               });
           });
