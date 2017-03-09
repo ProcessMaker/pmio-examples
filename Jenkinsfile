@@ -57,7 +57,7 @@ try {
         wrap([$class: 'AnsiColorBuildWrapper']) {
 
             def result = sh(script: "curl -v ${deploydomain}/index.php |grep '${actual_key}'", returnStdout: true).trim();
-            //echo 'Key found: ' + result
+            echo 'Key found: ' + result
             echo 'Status: ' + currentBuild.result
 
         }
