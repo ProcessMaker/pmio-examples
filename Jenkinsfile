@@ -9,11 +9,7 @@ node {
         ]
     ]]);
 
-    def clientid = ''
-    def clientsecret = ''
-    def username = ''
-    def password = ''
-    def token = ''
+    def actual_key = ''
 
     def deployhost = 'build-qacore.processmaker.net'
 
@@ -49,6 +45,7 @@ try {
             deploydomain = vhost + deploydomain;
 
             def dot_env = sh(script: "cat .env |base64 -w0", returnStdout: true).trim();
+            actual_key = sh(script: "cat .env |grep \"'Test'\" | grep -Eo '[\047].*[\047]'", returnStdout: true).trim();
 
             def ret = sh(script: "ssh -v $deployhost /home/jenkins/deploy_examples_branch.sh ${vhost} ${gitCommit} \"${dot_env}\"", returnStdout: true)
 
@@ -58,7 +55,7 @@ try {
         stage('Acceptance Test') {
         wrap([$class: 'AnsiColorBuildWrapper']) {
 
-            def result = sh(script: "curl -v ${deploydomain}/index.php |grep '${KEY_TEST}'", returnStdout: true).trim();
+            def result = sh(script: "curl -v ${deploydomain}/index.php |grep '${actual_key}'", returnStdout: true).trim();
             echo 'Key found: ' + result
             echo 'Status: ' + currentBuild.result
 
