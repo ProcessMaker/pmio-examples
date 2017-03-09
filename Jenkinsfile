@@ -41,12 +41,6 @@ try {
             """
         }
     }
-    stage('Test') {
-        wrap([$class: 'AnsiColorBuildWrapper']) {
-
-           echo 'Status: ' + currentBuild.result
-        }
-    }
 
     if (currentBuild.result == 'SUCCESS') {
         stage('Deploy') {
@@ -60,6 +54,17 @@ try {
 
             currentBuild.description = "- Host: $deploydomain"
         }
+
+        stage('Acceptance Test') {
+        wrap([$class: 'AnsiColorBuildWrapper']) {
+
+            def result = sh(script: "curl -v ${vhost}${deploy_domain}/index.php |grep ${KEY_TEST}", returnStdout: true).trim();
+            echo 'Key found: ' + result
+            echo 'Status: ' + currentBuild.result
+
+        }
+        }
+
     } else {
             //hipchatSend (color: 'YELLOW', notify: true, room: 'ProcessMaker Core', textFormat: false, failOnError: false,
             //      message: "$env.JOB_NAME [#${env.BUILD_NUMBER}] - ${currentBuild.result} (<a href='${env.BUILD_URL}'>Open</a>)"
