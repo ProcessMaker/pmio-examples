@@ -43,9 +43,10 @@ use Swagger\Client\Model\DataModelItem;
 $apiInstance = new ProcessmakerApi;
 
 /** Setting up host with base path and access token for API core */
+include "../.env";
 
-$apiInstance->getApiClient()->getConfig()->setHost('http://localhost/api/v1');
-$apiInstance->getApiClient()->getConfig()->setAccessToken('eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjM1ZjU1MGQyOTUzNTUzZDBhNWM2MTBhYTU4OWI0NjkzY2Q1YWU0MWZmYTJkY2QxMzk1ODRjZTM2MTVkZjZmNzAxZTQwMjMzOGMwYjhiOWE2In0.eyJhdWQiOiIxIiwianRpIjoiMzVmNTUwZDI5NTM1NTNkMGE1YzYxMGFhNTg5YjQ2OTNjZDVhZTQxZmZhMmRjZDEzOTU4NGNlMzYxNWRmNmY3MDFlNDAyMzM4YzBiOGI5YTYiLCJpYXQiOjE0ODk1MDIzNzQsIm5iZiI6MTQ4OTUwMjM3NCwiZXhwIjoxNTIxMDM4Mzc0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.HDLjIQO_9ydwi5BWdN-CvSmGHY4-Gg4NWcF15VVX_MygQjYQN6sk9Rg7tJOWDOiDVi8ChjaF1A_SFlB8zx_A_Di1QZfvnfg7C8Ab6aTYChmamMozINhtyDlYQf_uVleqZ6arUmfakLp7sqGczHpVUeq7-gsOcDKhsRdWWzTt1vIo5wEpSCGbv5psgGd0DX6RLzgHgvmDKLZWKHnd9-5ft0gbP0Yc7LLZ2KCIAjpVyHBMgOJJpB574azxehakGWS0hKVb85TGP6tkZhq9YT6hfcej_WfPfIctl-YEm_w4e8nF1_aEvxNvMVxmHmXFgUQHrS25JBQ5vCsOyFxomFmEIOjlHkJRHnNuaMO1s9FF0WhXXI6CrBv_iGaM0SbTjvN5FPjczG0_LZv-rGyOwcrHR6xfBiqYqg3rs8lpx5ssOlE0aRk9ePeulRhM_i3qVmr4Z5TlgfpLUtXbTDm7-XhMXCbjJvTRH6iNA7Q0tnPNxmDw6ZI03tBBKO9hQxBx-To0hXxGv_uQqBzVzoCT4AXWZ7ZYjfEURqw5q3Qh3AIZUF46xLDdddlkLETqpPkwIHAxtImfrUC7LYVLbltWntxUzn8ryy2j_7rQfp54sEHatD6wdW3uXiNhXBp5NXUFyA46YCaqXLLeiWXN9bJRNrOqJK8vObZLJhIP0CjOm72A1-M');
+$apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
+$apiInstance->getApiClient()->getConfig()->setAccessToken($key['Test']);
 
 /** Comment if don't need logs */
 
