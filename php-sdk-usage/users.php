@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/SwaggerClient-php/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Swagger\Client\Api\ProcessmakerApi;
 use Swagger\Client\Model\UserAttributes;
