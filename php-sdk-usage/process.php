@@ -41,10 +41,11 @@ use Swagger\Client\Model\FlowCreateItem;
 use Swagger\Client\Model\DataModel;
 use Swagger\Client\Model\DataModelAttributes;
 use Swagger\Client\Model\DataModelItem;
+
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
 
-//** Setting up host with base path and access token for API core */
+/** Setting up host with base path and access token for API core */
 include "../.env";
 
 $apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
@@ -115,7 +116,7 @@ try {
     dumpError($e, 'Exception when calling ProcessmakerApi->addUsersToGroup: '.$e->getMessage().PHP_EOL);
 }
 
-/** Create Start Event */
+/** Create start and end events */
 
 try {
     /** @var EventCreateItem $eventAttr */
@@ -294,6 +295,8 @@ try {
 } catch (Exception $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->findInstances: '.$e->getMessage().PHP_EOL);
 }
+
+
 /** Handler of errors */
 
 function dumpError(ApiException $e, $message="")
