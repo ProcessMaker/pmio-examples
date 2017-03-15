@@ -3,7 +3,9 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Swagger\Client\Api\ProcessmakerApi;
-use \Swagger\Client\ApiException;
+
+use Swagger\Client\ApiException;
+
 use Swagger\Client\Model\UserAttributes;
 use Swagger\Client\Model\User;
 use Swagger\Client\Model\UserItem;

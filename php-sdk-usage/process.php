@@ -5,6 +5,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Swagger\Client\Api\ProcessmakerApi;
 
+use Swagger\Client\ApiException;
+
 use Swagger\Client\Model\Process;
 use Swagger\Client\Model\ProcessCreateItem;
 use Swagger\Client\Model\ProcessAttributes;
@@ -42,7 +44,7 @@ use Swagger\Client\Model\DataModelItem;
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
 
-/** Setting up host with base path and access token for API core */
+//** Setting up host with base path and access token for API core */
 include "../.env";
 
 $apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
@@ -74,7 +76,7 @@ try {
     print_r($process);
 
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addProcess: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->addProcess: '.$e->getMessage().PHP_EOL);
 }
 
 /** Creating group */
@@ -91,7 +93,7 @@ try {
     print_r($group);
 
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addGroup: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->addGroup: '.$e->getMessage().PHP_EOL);
 }
 
 /** Attach User to group */
@@ -107,7 +109,7 @@ try {
     $result = $apiInstance->addUsersToGroup($group->getData()->getId(), $groupAddUserItem);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addUsersToGroup: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->addUsersToGroup: '.$e->getMessage().PHP_EOL);
 }
 
 /** Create Start Event */
@@ -128,6 +130,7 @@ try {
             ]
         )
     );
+    print_r($startEvent);
 
     /** @var EventCreateItem $eventAttr */
     $eventAttr = new EventAttributes();
@@ -144,25 +147,10 @@ try {
             ]
         )
     );
-
-    /** @var EventCreateItem $eventAttr */
-    $eventAttr = new EventAttributes();
-    $eventAttr->setName('End event2');
-    $eventAttr->setType('END');
-    $eventAttr->setProcessId($process->getData()->getId());
-    $eventAttr->setDefinition('MESSAGE');
-    /** @var EventItem $endEvent2 */
-    $endEvent2 = $apiInstance->addEvent(
-        $process->getData()->getId(),
-        new EventCreateItem(
-            [
-                'data' => new Event(['attributes' => $eventAttr])
-            ]
-        )
-    );
+    print_r($endEvent);
 
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addEvent: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->addEvent: '.$e->getMessage().PHP_EOL);
 }
 
 /** Crate User Task */
@@ -183,7 +171,7 @@ try {
     $taskAttr->setSelfserviceTimeout(10);
 
     /** @var TaskItem $result */
-    $task = $apiInstance->addTask(
+    $userTask = $apiInstance->addTask(
         $process->getData()->getId(),
         new TaskCreateItem(
             [
@@ -191,9 +179,10 @@ try {
             ]
         )
     );
+    print_r($userTask);
 
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addTask: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->addTask: '.$e->getMessage().PHP_EOL);
 }
 
 /** Assign group to task */
@@ -205,69 +194,73 @@ try {
         ])
     ]);
 
-    $apiInstance->addGroupsToTask(
-        $process->getData()->getId(),
-        $task->getData()->getId(),
-        $taskAddGroupsItem
-    );
+    print_r(
+        $apiInstance->addGroupsToTask(
+            $process->getData()->getId(),
+            $userTask->getData()->getId(),
+            $taskAddGroupsItem
+            )
+        );
 
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addGroupToTask: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->addGroupToTask: '.$e->getMessage().PHP_EOL);
 }
 
 /**  Add flows */
 
 try {
+    /** @var FlowAttributes $flowAttr */
     $flowAttr= new FlowAttributes();
     $flowAttr->setName('Flow StartEvent with Task');
     $flowAttr->setType('SEQUENTIAL');
     $flowAttr->setProcessId($process->getData()->getId());
     $flowAttr->setFromObjectId($startEvent->getData()->getId());
     $flowAttr->setFromObjectType('event');
-    $flowAttr->setToObjectId($task->getData()->getId());
+    $flowAttr->setToObjectId($userTask->getData()->getId());
     $flowAttr->setToObjectType('task');
     $flowAttr->setDefault(false);
     $flowAttr->setOptional(false);
-    $apiInstance->addFlow(
-        $process->getData()->getId(),
-        new FlowCreateItem(
-            [
-                'data' => new Flow(['attributes' => $flowAttr])
-            ]
+    print_r($apiInstance->addFlow(
+            $process->getData()->getId(),
+            new FlowCreateItem([
+                    'data' => new Flow(['attributes' => $flowAttr])
+                ])
         )
     );
 
+    /** @var FlowAttributes $flowAttr */
     $flowAttr= new FlowAttributes();
     $flowAttr->setName('Flow Task with endEvent');
     $flowAttr->setType('SEQUENTIAL');
     $flowAttr->setProcessId($process->getData()->getId());
-    $flowAttr->setFromObjectId($task->getData()->getId());
+    $flowAttr->setFromObjectId($userTask->getData()->getId());
     $flowAttr->setFromObjectType('task');
     $flowAttr->setToObjectId($startEvent->getData()->getId());
     $flowAttr->setToObjectType('event');
     $flowAttr->setDefault(false);
     $flowAttr->setOptional(false);
-    $apiInstance->addFlow(
+    print_r($apiInstance->addFlow(
         $process->getData()->getId(),
-        new FlowCreateItem(
-            [
+        new FlowCreateItem([
                 'data' => new Flow(['attributes' => $flowAttr])
-            ]
+            ])
         )
     );
 
 
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addFlow: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->addFlow: '.$e->getMessage().PHP_EOL);
 }
 
 /** Triggering start event to run process */
 
 try {
+    /** @var array $arrayContent */
     $arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];
     /** @var DataModelAttributes $dataModelAttr */
     $dataModelAttr = new DataModelAttributes();
     $dataModelAttr->setContent(json_encode($arrayContent));
+    /** @var DataModelItem $result */
     $result = $apiInstance->eventTrigger(
         $process->getData()->getId(),
         $startEvent->getData()->getId(),
@@ -278,7 +271,37 @@ try {
         )
     );
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->eventTrigger: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->eventTrigger: '.$e->getMessage().PHP_EOL);
+}
+
+/** After trigger start event check if user task delegated to user */
+
+try {
+    print_r($apiInstance->findTaskInstances());
+
+
+} catch (Exception $e) {
+    dumpError($e, 'Exception when calling ProcessmakerApi->findTaskInstances: '.$e->getMessage().PHP_EOL);
+}
+
+/** Check if the instance of process exists in database and in status RUNNING */
+
+try {
+    print_r($apiInstance->findInstances($process->getData()->getId()));
+} catch (Exception $e) {
+    dumpError($e, 'Exception when calling ProcessmakerApi->findInstances: '.$e->getMessage().PHP_EOL);
+}
+/** Handler of errors */
+
+function dumpError(ApiException $e, $message="")
+{
+    if ($e->getResponseObject()) {
+        /** @var Error[] $errorArray */
+        $errorArray = $e->getResponseObject()->getErrors();
+        print_r($errorArray);
+    }
+    echo $message;
+    exit;
 }
 
 
