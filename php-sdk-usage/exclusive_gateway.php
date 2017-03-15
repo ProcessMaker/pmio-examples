@@ -339,7 +339,7 @@ try {
 
 try {
     /** @var array $arrayContent */
-    $arrayContent = ['direction' => 1/*rand(1,2)*/];
+    $arrayContent = ['direction' => rand(1,2)];
     /** @var DataModelAttributes $dataModelAttr */
     $dataModelAttr = new DataModelAttributes();
     $dataModelAttr->setContent(json_encode($arrayContent));
