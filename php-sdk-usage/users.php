@@ -3,6 +3,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Swagger\Client\Api\ProcessmakerApi;
+use \Swagger\Client\ApiException;
 use Swagger\Client\Model\UserAttributes;
 use Swagger\Client\Model\User;
 use Swagger\Client\Model\UserItem;
@@ -27,14 +28,11 @@ $apiInstance->getApiClient()->getConfig()->setDebug(true);
 
 /** Getting info about existing user that relative to token*/
 try {
-
     /** @var User $result */
     $result = $apiInstance->myselfUser();
-    echo "<pre>";
     print_r($result);
-    echo "</pre>";
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->myselfUser: ', $e->getMessage(), PHP_EOL;
+    dumpError($e, 'Exception when calling ProcessmakerApi->myselfUser: '.$e->getMessage().PHP_EOL);
 }
 
 /** Setting required attributes for user Bob*/
@@ -61,47 +59,38 @@ try {
     $bob = $apiInstance->addUser(new UserCreateItem([
         'data' => new User(['attributes' => $bobAttr])
     ]));
+    print_r($bob);
     /** @var UserItem $alice */
     $alice = $apiInstance->addUser(new UserCreateItem([
         'data' => new User(['attributes' => $aliceAttr])
     ]));
+    print_r($alice);
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->addUsers: ', $e->getMessage(), PHP_EOL;
-    dumpError($e);
+    dumpError($e, 'Exception when calling ProcessmakerApi->addUsers: '.$e->getMessage().PHP_EOL);
 }
 
-/** Checking that we could get previously created users by their ID */
+/** Checking that we could get previously created users by their IDs */
 /** prints UserItem object */
 try {
-    echo "<strong>Getting created users by their IDs</strong>";
-    echo "<pre>";
     print_r($apiInstance->findUserById($bob->getData()->getId()));
     print_r($apiInstance->findUserById($alice->getData()->getId()));
-    echo "</pre>";
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->FindUserBy: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ProcessmakerApi->FindUserBy: '.$e->getMessage().PHP_EOL;
     dumpError($e);
 }
 
 /** Getting additional credentials to get access token for created users */
 /** Printing ClientItem objects */
 try {
-    echo "<strong>ID and secret for Bob</strong>";
-    echo "<pre>";
     /** @var ClientItem $bobCredentials */
     $bobCredentials = $apiInstance->findClientById($bob->getData()->getId(), $bob->getData()->getAttributes()->getClients()[0]);
     print_r($bobCredentials);
-    echo "</pre>";
 
-    echo "<strong>ID and secret for Alice</strong>";
-    echo "<pre>";
     /** @var ClientItem $aliceCredentials */
     $aliceCredentials = $apiInstance->findClientById($alice->getData()->getId(), $alice->getData()->getAttributes()->getClients()[0]);
     print_r($aliceCredentials);
-    echo "</pre>";
 } catch (Exception $e) {
-    echo 'Exception when calling ProcessmakerApi->findClientById: ', $e->getMessage(), PHP_EOL;
-    dumpError($e);
+    dumpError($e, 'Exception when calling ProcessmakerApi->findClientById: '.$e->getMessage().PHP_EOL);
 }
 /** Getting access token for created user Bob */
 
@@ -121,20 +110,20 @@ try {
     /** @var string $serverResponse */
     $serverResponse = curl_exec($ch);
     curl_close($ch);
-    echo "<strong>All credentials to get access to API for Bob</strong>";
     echo $serverResponse;
 
 } catch (Exception $e) {
-    echo "Exception when calling http://$host/oauth/access_token: ", $e->getMessage(), PHP_EOL;
-    dumpError($e);
+    dumpError($e, "Exception when calling http://$host/oauth/access_token: ".$e->getMessage().PHP_EOL);
 }
 
-function dumpError(\Swagger\Client\ApiException $e)
+function dumpError(ApiException $e, $message="")
 {
     if ($e->getResponseObject()) {
         /** @var Error[] $errorArray */
         $errorArray = $e->getResponseObject()->getErrors();
         print_r($errorArray);
     }
+    echo $message;
+    exit;
 }
 ?>
