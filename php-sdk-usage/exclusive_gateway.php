@@ -128,14 +128,14 @@ try {
 try {
     /** @var TaskAttributes $taskAttr */
     $taskAttr = new TaskAttributes();
-    $taskAttr->setName('One direction');
+    $taskAttr->setName('First direction');
     $taskAttr->setType('SCRIPT-TASK');
     $taskAttr->setProcessId($process->getData()->getId());
     $taskAttr->setAssignType('CYCLIC');
-    $taskAttr->setScript('$aData[\'One_Direction\'] = 1;');
+    $taskAttr->setScript('$aData[\'First_Direction\'] = 1;');
 
     /** @var TaskItem $result */
-    $oneDirectTask = $apiInstance->addTask(
+    $firstDirectTask = $apiInstance->addTask(
         $process->getData()->getId(),
         new TaskCreateItem(
             [
@@ -143,7 +143,7 @@ try {
             ]
         )
     );
-    print_r($oneDirectTask);
+    print_r($firstDirectTask);
 
     /** @var TaskAttributes $taskAttr */
     $taskAttr = new TaskAttributes();
@@ -238,17 +238,17 @@ try {
 
 
 
-    /** Conditional flow between exclusive gateway and  script task One direction*/
+    /** Conditional flow between exclusive gateway and  script task First direction*/
 
     /** @var FlowAttributes $flowAttr */
     $flowAttr= new FlowAttributes();
-    $flowAttr->setName('Flow Exclusive Gateway with One direction');
+    $flowAttr->setName('Flow Exclusive Gateway with First direction');
     $flowAttr->setType('SEQUENTIAL');
     $flowAttr->setProcessId($process->getData()->getId());
     $flowAttr->setFromObjectId($exclusiveGateway->getData()->getId());
     $flowAttr->setFromObjectType($exclusiveGateway->getData()->getType());
-    $flowAttr->setToObjectId($oneDirectTask->getData()->getId());
-    $flowAttr->setToObjectType($oneDirectTask->getData()->getType());
+    $flowAttr->setToObjectId($firstDirectTask->getData()->getId());
+    $flowAttr->setToObjectType($firstDirectTask->getData()->getType());
     $flowAttr->setCondition('direction=1');
     print_r($apiInstance->addFlow(
         $process->getData()->getId(),
@@ -260,11 +260,11 @@ try {
 
     /** @var FlowAttributes $flowAttr */
     $flowAttr= new FlowAttributes();
-    $flowAttr->setName('Flow OneDirection with Inclusive Gateway');
+    $flowAttr->setName('Flow FirstDirection with Inclusive Gateway');
     $flowAttr->setType('SEQUENTIAL');
     $flowAttr->setProcessId($process->getData()->getId());
-    $flowAttr->setFromObjectId($oneDirectTask->getData()->getId());
-    $flowAttr->setFromObjectType($oneDirectTask->getData()->getType());
+    $flowAttr->setFromObjectId($firstDirectTask->getData()->getId());
+    $flowAttr->setFromObjectType($firstDirectTask->getData()->getType());
     $flowAttr->setToObjectId($inclusiveGateway->getData()->getId());
     $flowAttr->setToObjectType($inclusiveGateway->getData()->getType());
     print_r($apiInstance->addFlow(
