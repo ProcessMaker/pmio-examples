@@ -101,25 +101,38 @@ try {
 /** Getting access token for created user Bob */
 
 try {
-    $args = [
+    $args_for_bob = [
         'grant_type' => 'password',
         'client_id' => $bobCredentials->getData()->getId(),
         'client_secret' => $bobCredentials->getData()->getAttributes()->getSecret(),
         'username' => $bobAttr->getUsername(),
         'password' => $bobAttr->getPassword()
     ];
+    $args_for_alice = [
+        'grant_type' => 'password',
+        'client_id' => $aliceCredentials->getData()->getId(),
+        'client_secret' => $aliceCredentials->getData()->getAttributes()->getSecret(),
+        'username' => $bobAttr->getUsername(),
+        'password' => $bobAttr->getPassword()
+    ];
+    getCredentials($args_for_bob, $host);
+    getCredentials($args_for_alice, $host);
+
+} catch (Exception $e) {
+    dumpError($e, "Exception when calling http://$host/oauth/access_token: ".$e->getMessage().PHP_EOL);
+}
+
+
+function getCredentials($args,$host)
+{
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "http://$host/oauth/access_token");
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($args));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     /** @var string $serverResponse */
-    $serverResponse = curl_exec($ch);
+    print_r(curl_exec($ch).PHP_EOL);
     curl_close($ch);
-    echo $serverResponse;
-
-} catch (Exception $e) {
-    dumpError($e, "Exception when calling http://$host/oauth/access_token: ".$e->getMessage().PHP_EOL);
 }
 
 function dumpError(ApiException $e, $message="")
