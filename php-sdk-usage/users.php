@@ -17,6 +17,10 @@ use Swagger\Client\Model\ClientCollection;
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
 
+/** @var integer $random */
+$random = rand(1,1000);
+
+
 /** Setting up host with base path and access token for API core */
 include "../.env";
 
@@ -43,7 +47,7 @@ try {
 $bobAttr = new UserAttributes();
 $bobAttr->setLastname('Doe');
 $bobAttr->setFirstname('Bob');
-$bobAttr->setUsername('Bob');
+$bobAttr->setUsername('Bob'.$random);
 $bobAttr->setPassword('Bobpassword');
 $bobAttr->setEmail('bob@processmaker.com');
 
@@ -51,7 +55,7 @@ $bobAttr->setEmail('bob@processmaker.com');
 $aliceAttr = new UserAttributes();
 $aliceAttr->setLastname('Doe');
 $aliceAttr->setFirstname('Alice');
-$aliceAttr->setUsername('Alice');
+$aliceAttr->setUsername('Alice'.$random);
 $aliceAttr->setPassword('Alicepassword');
 $aliceAttr->setEmail('alice@processmaker.com');
 try {

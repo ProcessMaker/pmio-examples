@@ -55,6 +55,9 @@ $apiInstance->getApiClient()->getConfig()->setAccessToken($key['Test']);
 $apiInstance->getApiClient()->getConfig()->setDebugFile('my_debug.log');
 $apiInstance->getApiClient()->getConfig()->setDebug(true);
 
+/** @var integer $random */
+$random = rand(1,1000);
+
 /** Creating process */
 
 try {
@@ -62,7 +65,7 @@ try {
     $processAttr = new ProcessAttributes();
 
     $processAttr->setStatus('ACTIVE');
-    $processAttr->setName('Example process');
+    $processAttr->setName('Example process '.$random);
     $processAttr->setDurationBy('WORKING_DAYS');
     $processAttr->setType('NORMAL');
     $processAttr->setDesignAccess('PUBLIC');
@@ -84,8 +87,8 @@ try {
 try {
 
     $groupAtt = new GroupAttributes();
-    $groupAtt->setCode('SomeCode');
-    $groupAtt->setTitle('Group');
+    $groupAtt->setCode('SomeCode'.$random);
+    $groupAtt->setTitle('Group'.$random);
     /** @var GroupItem $group */
     $group = $apiInstance->addGroup(new GroupCreateItem([
         'data' => new Group(['attributes' => $groupAtt])
