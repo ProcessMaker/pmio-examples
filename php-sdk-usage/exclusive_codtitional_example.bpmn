@@ -10,10 +10,10 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_11jdytf" sourceRef="Task_03ctuai" targetRef="ExclusiveGateway_08g09js" />
     <bpmn:sequenceFlow id="SequenceFlow_0j2i1zj" sourceRef="Task_0u7ifhj" targetRef="ExclusiveGateway_08g09js" />
-    <bpmn:scriptTask id="Task_03ctuai" name="One direction">
+    <bpmn:scriptTask id="Task_03ctuai" name="First direction">
       <bpmn:incoming>SequenceFlow_0edulhs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_11jdytf</bpmn:outgoing>
-      <bpmn:script><![CDATA[$aData['One_Direction'] = 1]]></bpmn:script>
+      <bpmn:script><![CDATA[$aData['First_Direction'] = 1]]></bpmn:script>
     </bpmn:scriptTask>
     <bpmn:scriptTask id="Task_0u7ifhj" name="Second direction">
       <bpmn:incoming>SequenceFlow_0nu1c14</bpmn:incoming>
