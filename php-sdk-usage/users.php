@@ -10,9 +10,7 @@ use Swagger\Client\Model\UserAttributes;
 use Swagger\Client\Model\User;
 use Swagger\Client\Model\UserItem;
 use Swagger\Client\Model\UserCreateItem;
-use Swagger\Client\Model\Client;
 use Swagger\Client\Model\ClientItem;
-use Swagger\Client\Model\ClientCollection;
 
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
@@ -27,7 +25,7 @@ include "../.env";
 $apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
 $apiInstance->getApiClient()->getConfig()->setAccessToken($key['Test']);
 
-/** Comment if don't need logs and specify filename */
+/** Optionally you may enable logging */
 
 $apiInstance->getApiClient()->getConfig()->setDebugFile('my_debug.log');
 $apiInstance->getApiClient()->getConfig()->setDebug(true);
@@ -115,24 +113,29 @@ try {
         'username' => $bobAttr->getUsername(),
         'password' => $bobAttr->getPassword()
     ];
-    getCredentials($args_for_bob, $host);
-    getCredentials($args_for_alice, $host);
+    print_r(getCredentials($args_for_bob, $host));
+    print_r(getCredentials($args_for_alice, $host));
 
 } catch (Exception $e) {
     dumpError($e, "Exception when calling http://$host/oauth/access_token: ".$e->getMessage().PHP_EOL);
 }
 
 
-function getCredentials($args,$host)
+/**
+ * @param array $args Oauth request data
+ * @param string $host API HOST
+ * @return mixed
+ */
+function getCredentials($args, $host)
 {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "http://$host/oauth/access_token");
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($args));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    /** @var string $serverResponse */
-    print_r(curl_exec($ch).PHP_EOL);
+    $serverResponse = json_decode(curl_exec($ch));
     curl_close($ch);
+    return $serverResponse;
 }
 
 function dumpError(ApiException $e, $message="")
