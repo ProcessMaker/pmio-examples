@@ -28,13 +28,13 @@ To use PHP SDK in your code create or add into your composer.json file the follo
 and run `composer install`.
 
 Don't forget to use composer auto-loader by including the following at the top of your script:
-```
+```php
 require_once __DIR__ . '/vendor/autoload.php';
 ```
 
 ## SDK Initialization
 
-```
+```php
 use Swagger\Client\Api\ProcessmakerApi;
 
 /** @var ProcessmakerApi $apiInstance */
@@ -56,7 +56,7 @@ $apiInstance->getApiClient()->getConfig()->setDebug(true);
 
 ### Adding Users
 
-```
+```php
 /** Setting required attributes for user Bob*/
 
 /** @var UserAttributes $bobAttr */
@@ -83,7 +83,7 @@ This `client_id` required to obtain `client_secret` and then you will be able to
 
 #### Retrieving client_secret
 
-```
+```php
 /** Getting additional credentials to get access token for created users */
 /** Printing ClientItem objects */
 try {
@@ -99,7 +99,7 @@ Here you may retrieve `client_secret`.
 Having both `client_id` and `client_secret` you may retrieve `access_token` using *password grant*.
 Additionally `username` and `password` are required to perform the operation.
 
-```
+```php
 $args_for_bob = [
     'grant_type' => 'password',
     'client_id' => $bobCredentials->getData()->getId(),
