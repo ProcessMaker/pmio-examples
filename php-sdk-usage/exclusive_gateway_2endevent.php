@@ -118,6 +118,23 @@ try {
     );
     print_r($endEvent);
 
+    /** @var EventCreateItem $eventAttr */
+    $eventAttr = new EventAttributes();
+    $eventAttr->setName('End event2');
+    $eventAttr->setType('END');
+    $eventAttr->setProcessId($process->getData()->getId());
+    $eventAttr->setDefinition('MESSAGE');
+    /** @var EventItem $endEvent2 */
+    $endEvent2 = $apiInstance->addEvent(
+        $process->getData()->getId(),
+        new EventCreateItem(
+            [
+                'data' => new Event(['attributes' => $eventAttr])
+            ]
+        )
+    );
+    print_r($endEvent2);
+
 
 } catch (Exception $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addEvent: '.$e->getMessage().PHP_EOL);
@@ -191,24 +208,6 @@ try {
 
     print_r($exclusiveGateway);
 
-    /** @var GatewayAttributes $gatewayAttr */
-    $gatewayAttr = new GatewayAttributes();
-    $gatewayAttr->setName('Inclusive gateway');
-    $gatewayAttr->setType('INCLUSIVE');
-    $gatewayAttr->setDirection('CONVERGENT');
-    $gatewayAttr->setProcessId($process->getData()->getId());
-
-    /** @var GatewayItem $inclusiveGateway */
-    $inclusiveGateway = $apiInstance->addGateway(
-        $process->getData()->getId(),
-        new GatewayCreateItem(
-            [
-                'data' => new Gateway(['attributes' => $gatewayAttr])
-            ]
-        )
-    );
-
-    print_r($inclusiveGateway);
 
 } catch (Exception $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addGateway: '.$e->getMessage().PHP_EOL);
@@ -260,13 +259,13 @@ try {
 
     /** @var FlowAttributes $flowAttr */
     $flowAttr= new FlowAttributes();
-    $flowAttr->setName('Flow FirstDirection with Inclusive Gateway');
+    $flowAttr->setName('Flow FirstDirection with End event');
     $flowAttr->setType('SEQUENTIAL');
     $flowAttr->setProcessId($process->getData()->getId());
     $flowAttr->setFromObjectId($firstDirectTask->getData()->getId());
     $flowAttr->setFromObjectType($firstDirectTask->getData()->getType());
-    $flowAttr->setToObjectId($inclusiveGateway->getData()->getId());
-    $flowAttr->setToObjectType($inclusiveGateway->getData()->getType());
+    $flowAttr->setToObjectId($endEvent->getData()->getId());
+    $flowAttr->setToObjectType($endEvent->getData()->getType());
     print_r($apiInstance->addFlow(
         $process->getData()->getId(),
         new FlowCreateItem([
@@ -298,30 +297,13 @@ try {
 
     /** @var FlowAttributes $flowAttr */
     $flowAttr= new FlowAttributes();
-    $flowAttr->setName('Flow SecondDirection with Inclusive Gateway');
+    $flowAttr->setName('Flow SecondDirection to Endevent2');
     $flowAttr->setType('SEQUENTIAL');
     $flowAttr->setProcessId($process->getData()->getId());
     $flowAttr->setFromObjectId($secondDirectTask->getData()->getId());
     $flowAttr->setFromObjectType($secondDirectTask->getData()->getType());
-    $flowAttr->setToObjectId($inclusiveGateway->getData()->getId());
-    $flowAttr->setToObjectType($inclusiveGateway->getData()->getType());
-    print_r($apiInstance->addFlow(
-        $process->getData()->getId(),
-        new FlowCreateItem([
-            'data' => new Flow(['attributes' => $flowAttr])
-        ])
-    )
-    );
-
-    /** @var FlowAttributes $flowAttr */
-    $flowAttr= new FlowAttributes();
-    $flowAttr->setName('Flow Inclusive Gateway with end Event');
-    $flowAttr->setType('SEQUENTIAL');
-    $flowAttr->setProcessId($process->getData()->getId());
-    $flowAttr->setFromObjectId($inclusiveGateway->getData()->getId());
-    $flowAttr->setFromObjectType($inclusiveGateway->getData()->getType());
-    $flowAttr->setToObjectId($endEvent->getData()->getId());
-    $flowAttr->setToObjectType($endEvent->getData()->getType());
+    $flowAttr->setToObjectId($endEvent2->getData()->getId());
+    $flowAttr->setToObjectType($endEvent2->getData()->getType());
     print_r($apiInstance->addFlow(
         $process->getData()->getId(),
         new FlowCreateItem([

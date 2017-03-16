@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.6.0">
   <bpmn:process id="Process_1sdalt9" name="&#10;" isExecutable="false">
-    <bpmn:startEvent id="StartEvent_1dryxje">
+    <bpmn:startEvent id="StartEvent_1dryxje" name="Start event">
       <bpmn:outgoing>SequenceFlow_1jx02el</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1jx02el" sourceRef="StartEvent_1dryxje" targetRef="ExclusiveGateway_0zl1u4x" />
-    <bpmn:endEvent id="EndEvent_1ruws5s">
+    <bpmn:endEvent id="EndEvent_1ruws5s" name="End event">
       <bpmn:incoming>SequenceFlow_04vwe3u</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_11jdytf" sourceRef="Task_03ctuai" targetRef="ExclusiveGateway_08g09js" />
@@ -25,10 +25,10 @@
       <bpmn:outgoing>SequenceFlow_0nu1c14</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0edulhs</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0nu1c14" sourceRef="ExclusiveGateway_0zl1u4x" targetRef="Task_0u7ifhj">
+    <bpmn:sequenceFlow id="SequenceFlow_0nu1c14" name="direction=2" sourceRef="ExclusiveGateway_0zl1u4x" targetRef="Task_0u7ifhj">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">direction=2</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0edulhs" sourceRef="ExclusiveGateway_0zl1u4x" targetRef="Task_03ctuai">
+    <bpmn:sequenceFlow id="SequenceFlow_0edulhs" name="direction=1" sourceRef="ExclusiveGateway_0zl1u4x" targetRef="Task_03ctuai">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">direction=1</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:inclusiveGateway id="ExclusiveGateway_08g09js">
@@ -43,7 +43,7 @@
       <bpmndi:BPMNShape id="StartEvent_1dryxje_di" bpmnElement="StartEvent_1dryxje">
         <dc:Bounds x="195" y="187" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="213" y="223" width="0" height="0" />
+          <dc:Bounds x="186" y="223" width="53" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1jx02el_di" bpmnElement="SequenceFlow_1jx02el">
@@ -56,7 +56,7 @@
       <bpmndi:BPMNShape id="EndEvent_1ruws5s_di" bpmnElement="EndEvent_1ruws5s">
         <dc:Bounds x="883" y="187" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="901" y="223" width="0" height="0" />
+          <dc:Bounds x="876" y="223" width="49" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_11jdytf_di" bpmnElement="SequenceFlow_11jdytf">
@@ -92,7 +92,7 @@
         <di:waypoint xsi:type="dc:Point" x="453" y="285" />
         <di:waypoint xsi:type="dc:Point" x="570" y="285" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="468" y="257.5" width="0" height="0" />
+          <dc:Bounds x="441" y="258" width="53" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0edulhs_di" bpmnElement="SequenceFlow_0edulhs">
@@ -100,7 +100,7 @@
         <di:waypoint xsi:type="dc:Point" x="453" y="133" />
         <di:waypoint xsi:type="dc:Point" x="570" y="133" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="468" y="156.5" width="0" height="0" />
+          <dc:Bounds x="441" y="157" width="53" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="InclusiveGateway_003vg4f_di" bpmnElement="ExclusiveGateway_08g09js">
