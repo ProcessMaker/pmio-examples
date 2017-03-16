@@ -54,7 +54,7 @@ $apiInstance->getApiClient()->getConfig()->setDebug(true);
 
 ## Code Example
 
-### Adding Users
+### How to create a new user
 
 ```php
 /** Setting required attributes for user Bob*/
@@ -85,8 +85,6 @@ This `client_id` required to obtain `client_secret` and then you will be able to
 
 ```php
 /** Getting additional credentials to get access token for created users */
-/** Printing ClientItem objects */
-try {
     /** @var ClientItem $bobCredentials */
     $bobCredentials = $apiInstance->findClientById($bob->getData()->getId(), $bob->getData()->getAttributes()->getClients()[0]);
     print_r($bobCredentials);
@@ -127,6 +125,30 @@ function getCredentials($args, $host)
     return $serverResponse;
 }
 
+```
+
+Here you will get `access_token` and `refresh_token` to perform Oauth authorization for specific user.
+
+## How to create and launch a new process
+
+Executing this code snippet will create a new Process
+
+```php
+    /** @var ProcessAttributes $processAttr */
+    $processAttr = new ProcessAttributes();
+
+    $processAttr->setStatus('ACTIVE');
+    $processAttr->setName('Example process '.$random);
+    $processAttr->setDurationBy('WORKING_DAYS');
+    $processAttr->setType('NORMAL');
+    $processAttr->setDesignAccess('PUBLIC');
+    /** @var ProcessItem $result */
+    $process = $apiInstance->addProcess(new ProcessCreateItem(
+            [
+                'data' => new Process(['attributes' => $processAttr])
+            ]
+        )
+    );
 ```
 
 ## API Reference
