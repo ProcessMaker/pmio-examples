@@ -195,7 +195,7 @@ try {
     $gatewayAttr = new GatewayAttributes();
     $gatewayAttr->setName('Inclusive gateway');
     $gatewayAttr->setType('INCLUSIVE');
-    $gatewayAttr->setDirection('DIVERGENT');
+    $gatewayAttr->setDirection('CONVERGENT');
     $gatewayAttr->setProcessId($process->getData()->getId());
 
     /** @var GatewayItem $inclusiveGateway */
