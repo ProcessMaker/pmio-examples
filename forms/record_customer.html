@@ -101,7 +101,10 @@
                       var key;
                       for (key in items) {
                           if (key == 'notes') $('textarea[name=notes]').val(items[key]);
-                          $('input[name='+key+']').val(items[key]);
+                          else if (key == 'development' ||  key == 'production' || key == 'sandbox') {
+                              if (items[key] == 1) $('input[name=' + key + ']').prop('checked', true);
+                          }
+                          else $('input[name='+key+']').val(items[key]);
                       }
 
                   }).error(function(response){
@@ -124,11 +127,11 @@
                   for (key in temp) {
                       datamodel[temp[key].name] = temp[key].value;
                   }
-                  var env = $('.workspace_info').find(':input[type=checkbox]:checked');
+                  var env = $('.workspace_info').find('input[type=checkbox]');
                   if (env.length > 0)
                   {
                       env.each(function(){
-                          datamodel[this.name] = 1;
+                          datamodel[this.name] = Number(this.checked);
                       });
                   } else
                   {

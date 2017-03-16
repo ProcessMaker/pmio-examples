@@ -99,7 +99,7 @@
                       for (var key in all_data) {
                           if (key == 'notes') $('textarea[name=notes]').val(all_data[key]);
                           if (key == 'development' ||  key == 'production' || key == 'sandbox') {
-                              $('div.'+key).fadeIn(500);
+                             if (all_data[key] ==1) $('div.'+key).fadeIn(500);
                           }
                           $('input[name='+key+']').val(all_data[key]);
                       }
