@@ -166,13 +166,6 @@ try {
     $taskAttr->setType('USER-TASK');
     $taskAttr->setProcessId($process->getData()->getId());
     $taskAttr->setAssignType('CYCLIC');
-    $taskAttr->setTransferFly(true);
-    $taskAttr->setCanUpload(true);
-    $taskAttr->setViewUpload(true);
-    $taskAttr->setViewAdditionalDocumentation(true);
-    $taskAttr->setStart(false);
-    $taskAttr->setSendLastEmail(true);
-    $taskAttr->setSelfserviceTimeout(10);
 
     /** @var TaskItem $result */
     $userTask = $apiInstance->addTask(
