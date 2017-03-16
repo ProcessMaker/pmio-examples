@@ -17,9 +17,6 @@ node {
 
     def deploydomain = '.examples.qacore.processmaker.net'
 
-    // be positive =)
-    currentBuild.result = 'SUCCESS'
-
     checkout scm
 
     gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
@@ -27,20 +24,20 @@ node {
 try {
     stage('Build') {
 
-        if ( !fileExists ('.env') || KEY_TEST != 'Default user key') {
+        if ( !fileExists ('.env') || params.KEY_TEST != 'Default user key') {
             sh """
             echo '<?php' >.env
-            echo '\$host = "${PMCOREHOST}";' >>.env
-            echo '\$key["Test"] = "${KEY_TEST}";' >>.env
-            echo '\$key["Bob"] = "${KEY_BOB}";' >>.env
-            echo '\$key["Alice"] = "${KEY_ALICE}";' >>.env
+            echo '\$host = "${params.PMCOREHOST}";' >>.env
+            echo '\$key["Test"] = "${params.KEY_TEST}";' >>.env
+            echo '\$key["Bob"] = "${params.KEY_BOB}";' >>.env
+            echo '\$key["Alice"] = "${params.KEY_ALICE}";' >>.env
 
             cat .env
             """
         }
     }
 
-    if (currentBuild.result == 'SUCCESS') {
+    if (currentBuild.result != 'UNSTABLE') {
         stage('Deploy') {
 
             vhost = BRANCH_NAME.toLowerCase().replaceAll(" ", "-");
