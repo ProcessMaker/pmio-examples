@@ -51,7 +51,7 @@ include "../.env";
 $apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
 $apiInstance->getApiClient()->getConfig()->setAccessToken($key['Test']);
 
-/** Comment if don't need logs */
+/** Optionally you may enable logging */
 
 $apiInstance->getApiClient()->getConfig()->setDebugFile('my_debug.log');
 $apiInstance->getApiClient()->getConfig()->setDebug(true);
