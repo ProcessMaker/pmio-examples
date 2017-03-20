@@ -131,7 +131,7 @@ Here you will get `access_token` and `refresh_token` to perform Oauth authorizat
 
 ## How to create and launch a new process
 
-Executing this code snippet will create a new Process
+Executing code snippet below creates a new Process
 
 ```php
     /** @var ProcessAttributes $processAttr */
@@ -150,6 +150,38 @@ Executing this code snippet will create a new Process
         )
     );
 ```
+
+As result we get process_id, which we can use in future to add objects to our process.
+  ```
+  print_r($process->getData()->getId());
+  ```
+Before run process we should add group ``$apiInstance->addGroup()`` and attach existing user to that group ``$apiInstance->addUsersToGroup()``.<br>
+After that we should add objects to our process,  such as Start  and End events:``$apiInstance->addEvent()``, and at least one  User task ``$apiInstance->addTask``.
+ All that objects need to join with Flows ``$apiInstance->addFlow()``.
+To run process we just need to trigger Start event object by following method:
+ ```
+ /** @var array $arrayContent*/
+ $arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];
+ /** @var DataModelAttributes $dataModelAttr */
+ $dataModelAttr = new DataModelAttributes();
+ $dataModelAttr->setContent(json_encode($arrayContent));
+ $result = $apiInstance->eventTrigger(
+         $process->getData()->getId(),
+         $startEvent->getData()->getId(),
+         new TriggerEventCreateItem(
+             [
+                 'data' => new DataModel(['attributes' => $dataModelAttr])
+             ]
+         )
+     );
+ ```
+where we pass ``$process->getData()->getId()`` process  and ``$startEvent->getData()->getId()`` start event ids and send in data model any content that we need during running process just passing associative array keys and values``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
+As result, our engine creates process instance with status RUNNING.
+ All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
+
+
+![Alt text](php-sdk-usage/images/start_event.png "Start event")
+
 
 ## API Reference
 
