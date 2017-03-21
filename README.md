@@ -171,7 +171,7 @@ Also we should add objects to our process,  such as **Start event**  and **End e
 
 ### How to add flows between process objects
 
-All objects in **Process** need to be joined by **Flows** ``$apiInstance->addFlow()`` with each other.
+All objects in **Process** need to be joined by **SEQUENTIAL** **Flows** ``$apiInstance->addFlow()`` with each other.
 
 ### How to delegate User to Task
 
@@ -222,6 +222,9 @@ To get all instances belonging to process we can retrieve using ``$apiInstance->
 ## How to use Exclusive gateway and conditional flows (2 examples)
 
 ### Example #1
+
+![Example #1](php-sdk-usage/images/exclusive_gateway_1endevent.png "Example #1")
+
 
 First of all we need to create **Process** and fill it with objects.
 
@@ -338,7 +341,12 @@ In code below we create two script tasks, which do simple things just to add 2 t
     );
 ```
 
-## Create two types of gateways Inclusive and Exclusive
+## Create two types of gateways: Exclusive and Inclusive.
+
+![Exclusive gateway](php-sdk-usage/images/exclusive_gateway.png "Exclusive gateway")
+
+
+![Inclusive gateway](php-sdk-usage/images/inclusive_gateway.png "Inclusive gateway")
 
 ```php
 
@@ -377,5 +385,151 @@ In code below we create two script tasks, which do simple things just to add 2 t
     );
 
 ```
+### Create SEQUENTIAL flows between objects
 
 
+
+![SEQUENTIAL Flow](php-sdk-usage/images/flow.png "SEQUENTIAL Flow")
+
+```php
+    /** @var FlowAttributes $flowAttr */
+    $flowAttr= new FlowAttributes();
+    $flowAttr->setName('Flow StartEvent with Exclusive Gateway');
+    $flowAttr->setType('SEQUENTIAL');
+    $flowAttr->setProcessId($process->getData()->getId());
+    $flowAttr->setFromObjectId($startEvent->getData()->getId());
+    $flowAttr->setFromObjectType($startEvent->getData()->getType());
+    $flowAttr->setToObjectId($exclusiveGateway->getData()->getId());
+    $flowAttr->setToObjectType($exclusiveGateway->getData()->getType());
+    $apiInstance->addFlow(
+            $process->getData()->getId(),
+            new FlowCreateItem([
+                'data' => new Flow(['attributes' => $flowAttr])
+            ])
+        );
+
+    /** @var FlowAttributes $flowAttr */
+    $flowAttr= new FlowAttributes();
+    $flowAttr->setName('Flow FirstDirection with Inclusive Gateway');
+    $flowAttr->setType('SEQUENTIAL');
+    $flowAttr->setProcessId($process->getData()->getId());
+    $flowAttr->setFromObjectId($firstDirectTask->getData()->getId());
+    $flowAttr->setFromObjectType($firstDirectTask->getData()->getType());
+    $flowAttr->setToObjectId($inclusiveGateway->getData()->getId());
+    $flowAttr->setToObjectType($inclusiveGateway->getData()->getType());
+    $apiInstance->addFlow(
+            $process->getData()->getId(),
+            new FlowCreateItem([
+                'data' => new Flow(['attributes' => $flowAttr])
+            ])
+        );
+    /** @var FlowAttributes $flowAttr */
+    $flowAttr= new FlowAttributes();
+    $flowAttr->setName('Flow SecondDirection with Inclusive Gateway');
+    $flowAttr->setType('SEQUENTIAL');
+    $flowAttr->setProcessId($process->getData()->getId());
+    $flowAttr->setFromObjectId($secondDirectTask->getData()->getId());
+    $flowAttr->setFromObjectType($secondDirectTask->getData()->getType());
+    $flowAttr->setToObjectId($inclusiveGateway->getData()->getId());
+    $flowAttr->setToObjectType($inclusiveGateway->getData()->getType());
+    $apiInstance->addFlow(
+            $process->getData()->getId(),
+            new FlowCreateItem([
+                'data' => new Flow(['attributes' => $flowAttr])
+            ])
+        );
+    /** @var FlowAttributes $flowAttr */
+    $flowAttr= new FlowAttributes();
+    $flowAttr->setName('Flow Inclusive Gateway with end Event');
+    $flowAttr->setType('SEQUENTIAL');
+    $flowAttr->setProcessId($process->getData()->getId());
+    $flowAttr->setFromObjectId($inclusiveGateway->getData()->getId());
+    $flowAttr->setFromObjectType($inclusiveGateway->getData()->getType());
+    $flowAttr->setToObjectId($endEvent->getData()->getId());
+    $flowAttr->setToObjectType($endEvent->getData()->getType());
+    $apiInstance->addFlow(
+            $process->getData()->getId(),
+            new FlowCreateItem([
+                'data' => new Flow(['attributes' => $flowAttr])
+            ])
+        );
+
+```
+
+### Create two SEQUENTIAL flows with conditions
+
+![SEQUENTIAL Flow with condition](php-sdk-usage/images/first_direction_task.png "SEQUENTIAL Flow with condition")
+
+```php
+
+    /** @var FlowAttributes $flowAttr */
+    $flowAttr= new FlowAttributes();
+    $flowAttr->setName('Flow Exclusive Gateway with First direction');
+    $flowAttr->setType('SEQUENTIAL');
+    $flowAttr->setProcessId($process->getData()->getId());
+    $flowAttr->setFromObjectId($exclusiveGateway->getData()->getId());
+    $flowAttr->setFromObjectType($exclusiveGateway->getData()->getType());
+    $flowAttr->setToObjectId($firstDirectTask->getData()->getId());
+    $flowAttr->setToObjectType($firstDirectTask->getData()->getType());
+    $flowAttr->setCondition('direction=1');
+    $apiInstance->addFlow(
+            $process->getData()->getId(),
+            new FlowCreateItem([
+                'data' => new Flow(['attributes' => $flowAttr])
+            ])
+        );
+```
+
+![SEQUENTIAL Flow with condition](php-sdk-usage/images/second_direction_task.png "SEQUENTIAL Flow with condition")
+
+
+```php
+
+
+    /** @var FlowAttributes $flowAttr */
+    $flowAttr= new FlowAttributes();
+    $flowAttr->setName('Flow Exclusive Gateway with Second direction');
+    $flowAttr->setType('SEQUENTIAL');
+    $flowAttr->setProcessId($process->getData()->getId());
+    $flowAttr->setFromObjectId($exclusiveGateway->getData()->getId());
+    $flowAttr->setFromObjectType($exclusiveGateway->getData()->getType());
+    $flowAttr->setToObjectId($secondDirectTask->getData()->getId());
+    $flowAttr->setToObjectType($secondDirectTask->getData()->getType());
+    $flowAttr->setCondition('direction=2');
+    $apiInstance->addFlow(
+            $process->getData()->getId(),
+            new FlowCreateItem([
+                'data' => new Flow(['attributes' => $flowAttr])
+            ])
+        );
+
+```
+
+### Start process with random data - `['direction' => rand(1,2)]` in  data model on start event
+
+```php
+ /** @var array $arrayContent */
+    $arrayContent = ['direction' => rand(1,2)];
+    /** @var DataModelAttributes $dataModelAttr */
+    $dataModelAttr = new DataModelAttributes();
+    $dataModelAttr->setContent(json_encode($arrayContent));
+    /** @var DataModelItem $result */
+    $result = $apiInstance->eventTrigger(
+        $process->getData()->getId(),
+        $startEvent->getData()->getId(),
+        new TriggerEventCreateItem(
+            [
+                'data' => new DataModel(['attributes' => $dataModelAttr])
+            ]
+        )
+    );
+
+```
+
+As result engine will run **Process** and creates **Process instance** with status **COMPLETE**, which we can retrieve:
+```php
+    /** @var InstanceCollection $instances */
+    $instances = $apiInstance->findInstances($process->getData()->getId());
+
+```
+To check direction way of our **Process instance**
