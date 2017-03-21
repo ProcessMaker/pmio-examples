@@ -142,6 +142,7 @@ Executing code snippet below creates a new **Process**
     $processAttr->setDurationBy('WORKING_DAYS');
     $processAttr->setType('NORMAL');
     $processAttr->setDesignAccess('PUBLIC');
+
     /** @var ProcessItem $result */
     $process = $apiInstance->addProcess(new ProcessCreateItem(
             [
@@ -153,7 +154,9 @@ Executing code snippet below creates a new **Process**
 
 As result we get process_id, which we can use in future to add objects to our **Process** ``php  $process->getData()->getId();``.
 
-Before run process we should create new **Group** and attach existing **User** to that group
+### How to assign user to task
+
+To run process, we should create new **Group** and attach existing **User** to that group
 ````php
 /** @var GroupAddUsersItem $groupAddUserItem */
 $groupAddUserItem = new GroupAddUsersItem([
@@ -164,14 +167,15 @@ $groupAddUserItem = new GroupAddUsersItem([
 $apiInstance->addUsersToGroup($group->getData()->getId(), groupAddUserItem);
 ````
 ### How to add objects to process
-Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask()``.
+Also we should add objects to our process,  such as **Start event**  and **End event**: ``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask()``.
 
 ### How to add flows between process objects
 
-All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each other.
+All objects in **Process** need to be joined by **Flows** ``$apiInstance->addFlow()`` with each other.
 
 ### How to delegate User to Task
-When we have `process id`, `task id` and `group id`, we can assign **Task** to **Group** with following method:
+
+Now we have `process id`, `task id` and `group id` and can assign **Task** to **Group** with following method:
 ```
  /** @var TaskAddGroupsItem $taskAddGroupsItem */
  $taskAddGroupsItem = new TaskAddGroupsItem([
@@ -185,7 +189,7 @@ $apiInstance->addGroupsToTask(
        $taskAddGroupsItem
        );
 ```
-### How to start process
+### How to run process
 
 To run process we just need to trigger **Start event** object by following snippet.
 
@@ -208,21 +212,164 @@ To run process we just need to trigger **Start event** object by following snipp
 
 ```
 
-Where we pass ``$process->getData()->getId()`` **Process** and ``$startEvent->getData()->getId()`` **Start event** ids and send in **Data model** any content that we need during running process just passing associative array keys and values ``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
+Just pass ``$process->getData()->getId()`` **Process** id and ``$startEvent->getData()->getId()`` **Start event** id and in body **Data model** any content that we need during running **Process** just putting into associative array keys and values ``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
 
 As result, our engine creates **Process instance** with status **RUNNING**.
-All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
+To get all instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
 
 
 ## How to use Exclusive gateway and conditional flows (2 examples)
 
+### Example #1
+
+### Create **Process** with random name
+
+
+```php
+/** @var ProcessAttributes $processAttr */
+    $processAttr = new ProcessAttributes();
+
+    $processAttr->setStatus('ACTIVE');
+    $processAttr->setName('Example process '.$random);
+    $processAttr->setDurationBy('WORKING_DAYS');
+    $processAttr->setType('NORMAL');
+    $processAttr->setDesignAccess('PUBLIC');
+    /** @var ProcessItem $result */
+    $process = $apiInstance->addProcess(new ProcessCreateItem(
+            [
+                'data' => new Process(['attributes' => $processAttr])
+            ]
+        )
+    );
+
+```
+
+### Create **Start event**
+
+```php
+/** @var EventCreateItem $eventAttr */
+    $eventAttr = new EventAttributes();
+    $eventAttr->setName('Start event');
+    $eventAttr->setType('START');
+    $eventAttr->setProcessId($process->getData()->getId());
+    $eventAttr->setDefinition('MESSAGE');
+    /** @var EventItem $startEvent */
+    $startEvent = $apiInstance->addEvent(
+        $process->getData()->getId(),
+        new EventCreateItem(
+            [
+                'data' => new Event(['attributes' => $eventAttr])
+            ]
+        )
+    );
+```
+
 ![Start event](php-sdk-usage/images/start_event.png "Start event")
 
 
+### Create **End event**
+```php
+/** @var EventCreateItem $eventAttr */
+    $eventAttr = new EventAttributes();
+    $eventAttr->setName('End event');
+    $eventAttr->setType('END');
+    $eventAttr->setProcessId($process->getData()->getId());
+    $eventAttr->setDefinition('MESSAGE');
+    /** @var EventItem $endEvent */
+    $endEvent = $apiInstance->addEvent(
+        $process->getData()->getId(),
+        new EventCreateItem(
+            [
+                'data' => new Event(['attributes' => $eventAttr])
+            ]
+        )
+    );
 
+```
+![Start event](php-sdk-usage/images/end_event.png "Start event")
 
+### Create two script tasks
+In code below we create two script tasks, which do simple things just to add 2 types of variables to our **Data model**
 
+```php
+
+    /** @var TaskAttributes $taskAttr */
+    $taskAttr = new TaskAttributes();
+    $taskAttr->setName('First direction');
+    $taskAttr->setType('SCRIPT-TASK');
+    $taskAttr->setProcessId($process->getData()->getId());
+    $taskAttr->setAssignType('CYCLIC');
+    $taskAttr->setScript('$aData[\'First_Direction\'] = 1;');
+
+    /** @var TaskItem $result */
+    $firstDirectTask = $apiInstance->addTask(
+        $process->getData()->getId(),
+        new TaskCreateItem(
+            [
+                'data' => new Task(['attributes' => $taskAttr])
+            ]
+        )
+    );
+
+    /** @var TaskAttributes $taskAttr */
+    $taskAttr = new TaskAttributes();
+    $taskAttr->setName('Second direction');
+    $taskAttr->setType('SCRIPT-TASK');
+    $taskAttr->setProcessId($process->getData()->getId());
+    $taskAttr->setAssignType('CYCLIC');
+    $taskAttr->setScript('$aData[\'Second_Direction\'] = 2;');
+
+    /** @var TaskItem $result */
+    $secondDirectTask = $apiInstance->addTask(
+        $process->getData()->getId(),
+        new TaskCreateItem(
+            [
+                'data' => new Task(['attributes' => $taskAttr])
+            ]
+        )
+    );
+```
+
+## Create two types of gateways Inclusive and Exclusive
+
+```php
+
+    /** @var GatewayAttributes $gatewayAttr */
+    $gatewayAttr = new GatewayAttributes();
+    $gatewayAttr->setName('Exclusive gateway');
+    $gatewayAttr->setType('EXCLUSIVE');
+    $gatewayAttr->setDirection('DIVERGENT');
+    $gatewayAttr->setProcessId($process->getData()->getId());
+
+    /** @var GatewayItem $exclusiveGateway */
+    $exclusiveGateway = $apiInstance->addGateway(
+        $process->getData()->getId(),
+        new GatewayCreateItem(
+            [
+                'data' => new Gateway(['attributes' => $gatewayAttr])
+            ]
+        )
+    );
+
+    /** @var GatewayAttributes $gatewayAttr */
+    $gatewayAttr = new GatewayAttributes();
+    $gatewayAttr->setName('Inclusive gateway');
+    $gatewayAttr->setType('INCLUSIVE');
+    $gatewayAttr->setDirection('CONVERGENT');
+    $gatewayAttr->setProcessId($process->getData()->getId());
+
+    /** @var GatewayItem $inclusiveGateway */
+    $inclusiveGateway = $apiInstance->addGateway(
+        $process->getData()->getId(),
+        new GatewayCreateItem(
+            [
+                'data' => new Gateway(['attributes' => $gatewayAttr])
+            ]
+        )
+    );
+
+```
 
 
 
