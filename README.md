@@ -131,7 +131,7 @@ Here you will get `access_token` and `refresh_token` to perform Oauth authorizat
 
 ## How to create and launch a new process
 
-Executing code snippet below creates a new Process
+Executing code snippet below creates a new **Process**
 
 ```php
     /** @var ProcessAttributes $processAttr */
@@ -151,13 +151,13 @@ Executing code snippet below creates a new Process
     );
 ```
 
-As result we get process_id, which we can use in future to add objects to our process.
+As result we get process_id, which we can use in future to add objects to our **Process**.
   ```
   print_r($process->getData()->getId());
   ```
-Before run process we should add group ``$apiInstance->addGroup()`` and attach existing user to that group ``$apiInstance->addUsersToGroup()``.<br>
-After that we should add objects to our process,  such as Start  and End events:``$apiInstance->addEvent()``, and at least one  User task ``$apiInstance->addTask``.
- All that objects need to join with Flows ``$apiInstance->addFlow()``.
+Before run process we should add **Group** ``$apiInstance->addGroup()`` and attach existing **User** to that group ``$apiInstance->addUsersToGroup()``.<br>
+Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask``.
+ All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
 To run process we just need to trigger Start event object by following method:
  ```
  /** @var array $arrayContent*/
@@ -179,9 +179,9 @@ where we pass ``$process->getData()->getId()`` process  and ``$startEvent->getDa
 As result, our engine creates process instance with status RUNNING.
  All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
-
-![Alt text](php-sdk-usage/images/start_event.png "Start event")
-
+<p align="centere">
+![Start event](php-sdk-usage/images/start_event.png "Start event")
+</p>
 
 ## API Reference
 
