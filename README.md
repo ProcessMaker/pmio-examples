@@ -181,7 +181,7 @@ where we pass ``$process->getData()->getId()`` process  and ``$startEvent->getDa
 As result, our engine creates process instance with status RUNNING.
  All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
-<p align="centere">
+<p align="center">
 ![Start event](php-sdk-usage/images/start_event.png "Start event")
 </p>
 
