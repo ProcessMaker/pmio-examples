@@ -157,7 +157,18 @@ As result we get process_id, which we can use in future to add objects to our **
   $process->getData()->getId();
   ```
 
-Before run process we should add **Group** ``$apiInstance->addGroup()`` and attach existing **User** to that group ``$apiInstance->addUsersToGroup()``.<br>
+Before run process we should add **Group** ``$apiInstance->addGroup()`` and attach existing **User** to that group
+````php
+/** @var GroupAddUsersItem $groupAddUserItem */
+    $groupAddUserItem = new GroupAddUsersItem([
+        'data' => new UserIds([
+            'users' => [$apiInstance->myselfUser()->getData()->getId()]
+        ])
+    ]);
+
+    $result = $apiInstance->addUsersToGroup($group->getData()->getId(), $groupAddUserItem);
+````
+
 Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask``.
  All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
 To run process we just need to trigger **Start event** object by following snippet.
