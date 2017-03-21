@@ -160,31 +160,39 @@ As result we get process_id, which we can use in future to add objects to our **
 Before run process we should add **Group** ``$apiInstance->addGroup()`` and attach existing **User** to that group ``$apiInstance->addUsersToGroup()``.<br>
 Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask``.
  All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
-To run process we just need to trigger Start event object by following snippet.
+To run process we just need to trigger **Start event** object by following snippet.
 
  ```php
- /** @var array $arrayContent*/<br>
- $arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];
- /** @var DataModelAttributes $dataModelAttr */
- $dataModelAttr = new DataModelAttributes();
- $dataModelAttr->setContent(json_encode($arrayContent));
- $result = $apiInstance->eventTrigger(
+ /** @var array $arrayContent */
+     $arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];
+     /** @var DataModelAttributes $dataModelAttr */
+     $dataModelAttr = new DataModelAttributes();
+     $dataModelAttr->setContent(json_encode($arrayContent));
+     /** @var DataModelItem $result */
+     $result = $apiInstance->eventTrigger(
          $process->getData()->getId(),
          $startEvent->getData()->getId(),
          new TriggerEventCreateItem(
              [
-                 'data' => new DataModel(['attributes' =>   $dataModelAttr])
+                 'data' => new DataModel(['attributes' => $dataModelAttr])
              ]
          )
      );
  ```
 
-Where we pass ``$process->getData()->getId()`` process and ``$startEvent->getData()->getId()`` start event ids and send in data model any content that we need during running process just passing associative array keys and values``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
-As result, our engine creates process instance with status RUNNING.
+Where we pass ``$process->getData()->getId()`` **Process** and ``$startEvent->getData()->getId()`` **Start event** ids and send in **Data model** any content that we need during running process just passing associative array keys and values``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
+As result, our engine creates **Process instance** with status RUNNING.
  All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
 
 ![Start event](php-sdk-usage/images/start_event.png "Start event")
+
+
+
+
+
+
+
 
 
 ## API Reference
