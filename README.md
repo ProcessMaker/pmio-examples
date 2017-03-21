@@ -168,7 +168,7 @@ Next, we should add objects to our process,  such as **Start**  and **End events
 
 ### How to add flows between process objects
 
-All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
+All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each other.
 
 ### How to delegate User to Task
 When we have `process id`, `task id` and `group id`, we can assign **Task** to **Group** with following method:
