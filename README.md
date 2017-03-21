@@ -172,7 +172,7 @@ All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with
 
 ### How to delegate User to Task
 When we have `process id`, `task id` and `group id`, we can assign **Task** to **Group** with following method:
-```php
+```
  /** @var TaskAddGroupsItem $taskAddGroupsItem */
  $taskAddGroupsItem = new TaskAddGroupsItem([
      'data' => new GroupIds([
@@ -185,6 +185,7 @@ $apiInstance->addGroupsToTask(
        $taskAddGroupsItem
        );
 ```
+
 To run process we just need to trigger **Start event** object by following snippet.
 
  ```php
