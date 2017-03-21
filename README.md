@@ -151,11 +151,7 @@ Executing code snippet below creates a new **Process**
     );
 ```
 
-As result we get process_id, which we can use in future to add objects to our **Process**.
-
-  ```php
-  $process->getData()->getId();
-  ```
+As result we get process_id, which we can use in future to add objects to our **Process** ``php  $process->getData()->getId();``.
 
 Before run process we should add **Group** ``$apiInstance->addGroup()`` and attach existing **User** to that group
 ````php
@@ -166,14 +162,14 @@ Before run process we should add **Group** ``$apiInstance->addGroup()`` and atta
         ])
     ]);
 
-    $result = $apiInstance->addUsersToGroup($group->getData()->getId(), $groupAddUserItem);
+    $apiInstance->addUsersToGroup($group->getData()->getId(), $groupAddUserItem);
 ````
 
 Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask``.
  All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
 To run process we just need to trigger **Start event** object by following snippet.
 
- ```php
+ ````php
  /** @var array $arrayContent */
      $arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];
      /** @var DataModelAttributes $dataModelAttr */
@@ -189,7 +185,7 @@ To run process we just need to trigger **Start event** object by following snipp
              ]
          )
      );
- ```
+ ````
 
 Where we pass ``$process->getData()->getId()`` **Process** and ``$startEvent->getData()->getId()`` **Start event** ids and send in **Data model** any content that we need during running process just passing associative array keys and values``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
 As result, our engine creates **Process instance** with status RUNNING.
