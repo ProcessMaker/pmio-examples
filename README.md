@@ -207,9 +207,10 @@ To run process we just need to trigger **Start event** object by following snipp
 
  ```
 
-Where we pass ``$process->getData()->getId()`` **Process** and ``$startEvent->getData()->getId()`` **Start event** ids and send in **Data model** any content that we need during running process just passing associative array keys and values``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
-As result, our engine creates **Process instance** with status RUNNING.
- All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
+Where we pass ``$process->getData()->getId()`` **Process** and ``$startEvent->getData()->getId()`` **Start event** ids and send in **Data model** any content that we need during running process just passing associative array keys and values ``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
+
+As result, our engine creates **Process instance** with status **RUNNING**.
+All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
 
 
