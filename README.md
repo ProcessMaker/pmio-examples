@@ -223,6 +223,8 @@ To get all instances belonging to process we can retrieve using ``$apiInstance->
 
 ### Example #1
 
+First of all we need to create **Process** and fill it with objects.
+
 ### Create **Process** with random name
 
 
@@ -287,10 +289,12 @@ To get all instances belonging to process we can retrieve using ``$apiInstance->
     );
 
 ```
-![Start event](php-sdk-usage/images/end_event.png "Start event")
+![End event](php-sdk-usage/images/end_event.png "End event")
 
 ### Create two script tasks
 In code below we create two script tasks, which do simple things just to add 2 types of variables to our **Data model**
+![First direction script task](php-sdk-usage/images/first_direction_task.png "First direction script task")
+![Second direction script task](php-sdk-usage/images/second_direction_task.png "Second direction script task")
 
 ```php
 
@@ -372,20 +376,3 @@ In code below we create two script tasks, which do simple things just to add 2 t
 ```
 
 
-
-
-## API Reference
-
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
-
-## Tests
-
-Describe and show how to run the tests with code examples.
-
-## Contributors
-
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
-
-## License
-
-A short snippet describing the license (MIT, Apache, etc.)
