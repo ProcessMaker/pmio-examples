@@ -170,7 +170,7 @@ To run process we just need to trigger Start event object by following method:
          $startEvent->getData()->getId(),
          new TriggerEventCreateItem(
              [
-                 'data' => new DataModel(['attributes' => $dataModelAttr])
+                 'data' => new DataModel(['attributes' =>   $dataModelAttr])
              ]
          )
      );
