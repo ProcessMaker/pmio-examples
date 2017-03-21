@@ -505,7 +505,7 @@ In code below we create two script tasks, which do simple things just to add 2 t
 
 ```
 
-### Start process with random data - `['direction' => rand(1,2)]` in  data model on start event
+### Start process with random data - `['direction' => rand(1,2)]` in  data model passing to Start event
 
 ```php
  /** @var array $arrayContent */
