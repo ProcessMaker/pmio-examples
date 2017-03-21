@@ -156,17 +156,35 @@ As result we get process_id, which we can use in future to add objects to our **
 Before run process we should create new **Group** and attach existing **User** to that group
 ````php
 /** @var GroupAddUsersItem $groupAddUserItem */
-    $groupAddUserItem = new GroupAddUsersItem([
-        'data' => new UserIds([
-            'users' => [$apiInstance->myselfUser()->getData()->getId()]
-        ])
-    ]);
-
-    $apiInstance->addUsersToGroup($group->getData()->getId(), $groupAddUserItem);
+$groupAddUserItem = new GroupAddUsersItem([
+     'data' => new UserIds([
+         'users' => [$apiInstance->myselfUser()->getData()->getId()]
+      ])
+  ]);
+$apiInstance->addUsersToGroup($group->getData()->getId(), groupAddUserItem);
 ````
+### How to add objects to process
+Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask()``.
 
-Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask``.
- All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
+### How to add flows between process objects
+
+All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
+
+### How to delegate User to Task
+When we have `process id`, `task id` and `group id`, we can assign **Task** to **Group** with following method:
+```php
+ /** @var TaskAddGroupsItem $taskAddGroupsItem */
+ $taskAddGroupsItem = new TaskAddGroupsItem([
+     'data' => new GroupIds([
+         'groups' => [$group->getData()->getId()]
+     ])
+ ]);
+$apiInstance->addGroupsToTask(
+       $process->getData()->getId(),
+       $userTask->getData()->getId(),
+       $taskAddGroupsItem
+       );
+```
 To run process we just need to trigger **Start event** object by following snippet.
 
  ```php
@@ -192,6 +210,9 @@ Where we pass ``$process->getData()->getId()`` **Process** and ``$startEvent->ge
 As result, our engine creates **Process instance** with status RUNNING.
  All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
+
+
+## How to use Exclusive gateway and conditional flows (2 examples)
 
 ![Start event](php-sdk-usage/images/start_event.png "Start event")
 

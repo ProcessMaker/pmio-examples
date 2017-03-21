@@ -185,6 +185,7 @@ try {
 /** Assign group to task */
 
 try {
+    /** @var TaskAddGroupsItem $taskAddGroupsItem */
     $taskAddGroupsItem = new TaskAddGroupsItem([
         'data' => new GroupIds([
             'groups' => [$group->getData()->getId()]
