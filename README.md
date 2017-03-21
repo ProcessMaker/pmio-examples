@@ -185,6 +185,7 @@ $apiInstance->addGroupsToTask(
        $taskAddGroupsItem
        );
 ```
+### How to start process
 
 To run process we just need to trigger **Start event** object by following snippet.
 
