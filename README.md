@@ -458,7 +458,7 @@ In code below we create two script tasks, which do simple things just to add 2 t
 
 ### Create two SEQUENTIAL flows with conditions
 
-![SEQUENTIAL Flow with condition](php-sdk-usage/images/first_direction_task.png "SEQUENTIAL Flow with condition")
+![SEQUENTIAL Flow with condition](php-sdk-usage/images/conditional_flow1.png "SEQUENTIAL Flow with condition")
 
 ```php
 
@@ -480,7 +480,7 @@ In code below we create two script tasks, which do simple things just to add 2 t
         );
 ```
 
-![SEQUENTIAL Flow with condition](php-sdk-usage/images/second_direction_task.png "SEQUENTIAL Flow with condition")
+![SEQUENTIAL Flow with condition](php-sdk-usage/images/conditional_flow2.png "SEQUENTIAL Flow with condition")
 
 
 ```php
