@@ -293,7 +293,10 @@ First of all we need to create **Process** and fill it with objects.
 
 ### Create two script tasks
 In code below we create two script tasks, which do simple things just to add 2 types of variables to our **Data model**
+
 ![First direction script task](php-sdk-usage/images/first_direction_task.png "First direction script task")
+
+
 ![Second direction script task](php-sdk-usage/images/second_direction_task.png "Second direction script task")
 
 ```php
