@@ -152,9 +152,11 @@ Executing code snippet below creates a new **Process**
 ```
 
 As result we get process_id, which we can use in future to add objects to our **Process**.
+
   ```
   print_r($process->getData()->getId());
   ```
+
 Before run process we should add **Group** ``$apiInstance->addGroup()`` and attach existing **User** to that group ``$apiInstance->addUsersToGroup()``.<br>
 Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask``.
  All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
