@@ -162,7 +162,7 @@ Next, we should add objects to our process,  such as **Start**  and **End events
  All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
 To run process we just need to trigger Start event object by following method:
  ```php
- /** @var array $arrayContent*/
+ /** @var array $arrayContent*/<br>
  $arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];
  /** @var DataModelAttributes $dataModelAttr */
  $dataModelAttr = new DataModelAttributes();
@@ -181,9 +181,9 @@ where we pass ``$process->getData()->getId()`` process  and ``$startEvent->getDa
 As result, our engine creates process instance with status RUNNING.
  All instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
-<p align="center">
+
 ![Start event](php-sdk-usage/images/start_event.png "Start event")
-</p>
+
 
 ## API Reference
 
