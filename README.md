@@ -153,7 +153,7 @@ Executing code snippet below creates a new **Process**
 
 As result we get process_id, which we can use in future to add objects to our **Process** ``php  $process->getData()->getId();``.
 
-Before run process we should add **Group** ``$apiInstance->addGroup()`` and attach existing **User** to that group
+Before run process we should create new **Group** and attach existing **User** to that group
 ````php
 /** @var GroupAddUsersItem $groupAddUserItem */
     $groupAddUserItem = new GroupAddUsersItem([
