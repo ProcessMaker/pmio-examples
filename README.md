@@ -159,7 +159,7 @@ Before run process we should add **Group** ``$apiInstance->addGroup()`` and atta
 Next, we should add objects to our process,  such as **Start**  and **End events**:``$apiInstance->addEvent()``, and at least one  **Task** object ``$apiInstance->addTask``.
  All that objects need to be joined by **Flows** ``$apiInstance->addFlow()`` with each one.
 To run process we just need to trigger Start event object by following method:
- ```
+ ```php
  /** @var array $arrayContent*/
  $arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];
  /** @var DataModelAttributes $dataModelAttr */
