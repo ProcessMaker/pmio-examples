@@ -671,7 +671,7 @@ $endEvent2 = $apiInstance->addEvent(
 ```
 
 ### Create two script tasks
-In code below we create two script tasks, which do simple things just to add 2 types of variables to our **Data model**
+Code snippet below creates two script tasks, which do simple things just to add 2 types of variables to our **Data model**
 
 ![First direction script task](php-sdk-usage/images/first_direction_task.png "First direction script task")
 
