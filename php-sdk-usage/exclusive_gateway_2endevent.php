@@ -186,7 +186,7 @@ try {
     dumpError($e, 'Exception when calling ProcessmakerApi->addTask: '.$e->getMessage().PHP_EOL);
 }
 
-/** Create Exclusive and Inclusive gateway  */
+/** Create Exclusive gateway  */
 
 try {
     /** @var GatewayAttributes $gatewayAttr */

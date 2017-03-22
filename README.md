@@ -1,5 +1,6 @@
 * [Installation](#markdown-header-installation)
 * [SDK Initialization](#markdown-header-sdk-initialization)
+* [How to create a new user](#markdown-header-how-to-create-a-new-user)
 
 ## Synopsis
 
@@ -220,7 +221,7 @@ To run process we just need to trigger **Start event** object by following snipp
 Just pass ``$process->getData()->getId()`` **Process** id and ``$startEvent->getData()->getId()`` **Start event** id and in body **Data model** any content that we need during running **Process** just putting into associative array keys and values ``$arrayContent = ['key' => 6, 'add' => 15, 'confirm' => false];``.
 
 As result, our engine creates **Process instance** with status **RUNNING**.
-To get all instances belonging to process we can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
+To get all instances belonging to **Process** you can retrieve using ``$apiInstance->findInstances($process->getData()->getId())`` method.
 
 
 
@@ -228,19 +229,21 @@ To get all instances belonging to process we can retrieve using ``$apiInstance->
 
 ### Example #1
 
+In Example#1 implemented **Process** showed below:
+
 ![Example #1](php-sdk-usage/images/exclusive_gateway_1endevent.png "Example #1")
 
+**Process** has **Exclusive** and **Inclusive** gateways and one **End event**.
 
-First of all we need to create **Process** and fill it with objects.
+First of all create **Process** and fill it with objects.
 
-### Create **Process** with random name
-
+### Create **Process**
 
 ```php
 /** @var ProcessAttributes $processAttr */
 $processAttr = new ProcessAttributes();
 $processAttr->setStatus('ACTIVE');
-$processAttr->setName('Example process '.$random);
+$processAttr->setName('Example process');
 $processAttr->setDurationBy('WORKING_DAYS');
 $processAttr->setType('NORMAL');
 $processAttr->setDesignAccess('PUBLIC');
@@ -255,6 +258,8 @@ $process = $apiInstance->addProcess(new ProcessCreateItem(
 ```
 
 ### Create **Start event**
+
+![Start event](php-sdk-usage/images/start_event.png "Start event")
 
 ```php
 /** @var EventCreateItem $eventAttr */
@@ -274,9 +279,6 @@ $startEvent = $apiInstance->addEvent(
 );
 
 ```
-
-![Start event](php-sdk-usage/images/start_event.png "Start event")
-
 
 ### Create **End event**
 ```php
@@ -300,7 +302,7 @@ $endEvent = $apiInstance->addEvent(
 ![End event](php-sdk-usage/images/end_event.png "End event")
 
 ### Create two script tasks
-In code below we create two script tasks, which do simple things just to add 2 types of variables to our **Data model**
+Code snippet below creates two script tasks, which do simple things, just to add 2 types of variables to our **Data model** during running **Process**
 
 ![First direction script task](php-sdk-usage/images/first_direction_task.png "First direction script task")
 
@@ -512,7 +514,290 @@ $apiInstance->addFlow(
 
 ```
 
-### Start process with random data - `['direction' => rand(1,2)]` in  data model passing to Start event
+### Run Process with random data - `['direction' => rand(1,2)]` in  Data model
+
+```php
+/** @var array $arrayContent */
+$arrayContent = ['direction' => rand(1,2)];
+/** @var DataModelAttributes $dataModelAttr */
+$dataModelAttr = new DataModelAttributes();
+$dataModelAttr->setContent(json_encode($arrayContent));
+/** @var DataModelItem $result */
+$result = $apiInstance->eventTrigger(
+    $process->getData()->getId(),
+    $startEvent->getData()->getId(),
+    new TriggerEventCreateItem(
+        [
+            'data' => new DataModel(['attributes' => $dataModelAttr])
+        ]
+    )
+);
+
+```
+
+As result engine will run **Process** and creates **Process instance** and lead it through **Process** and finishes with status **COMPLETE**, which can be retrieved:
+```php
+/** @var InstanceCollection $instances */
+$instances = $apiInstance->findInstances($process->getData()->getId());
+
+```
+Direction of our **Process instance** will be showed in **Data model** :
+
+```php
+$apiInstance->findDataModel(
+            $process->getData()->getId(),
+            $instances->getData()[0]->getId()
+        );
+
+```
+Inside **Data model** you can find array with `['First_Direction'] = 1` or  `['Second_Direction'] = 2` depending on data, that have been passed to **Start event** trigger.
+
+### Example2
+
+In Example#2 implemented **Process** showed below:
+
+![Example #2](php-sdk-usage/images/exclusive_gateway_2endevents.png "Example #2")
+
+**Process** has just **Exclusive** gateway and two **End events**.
+
+First of all create **Process** and fill it with objects.
+
+### Create **Process**
+
+```php
+/** @var ProcessAttributes $processAttr */
+$processAttr = new ProcessAttributes();
+$processAttr->setStatus('ACTIVE');
+$processAttr->setName('Example process');
+$processAttr->setDurationBy('WORKING_DAYS');
+$processAttr->setType('NORMAL');
+$processAttr->setDesignAccess('PUBLIC');
+/** @var ProcessItem $result */
+$process = $apiInstance->addProcess(new ProcessCreateItem(
+        [
+            'data' => new Process(['attributes' => $processAttr])
+        ]
+   )
+);
+
+```
+
+### Create **Start event**
+
+![Start event](php-sdk-usage/images/start_event.png "Start event")
+
+```php
+/** @var EventCreateItem $eventAttr */
+$eventAttr = new EventAttributes();
+$eventAttr->setName('Start event');
+$eventAttr->setType('START');
+$eventAttr->setProcessId($process->getData()->getId());
+$eventAttr->setDefinition('MESSAGE');
+/** @var EventItem $startEvent */
+$startEvent = $apiInstance->addEvent(
+    $process->getData()->getId(),
+    new EventCreateItem(
+        [
+           'data' => new Event(['attributes' => $eventAttr])
+        ]
+    )
+);
+
+```
+
+### Create two **End events**
+
+![End event](php-sdk-usage/images/end_event.png "End event")
+
+```php
+/** @var EventCreateItem $eventAttr */
+$eventAttr = new EventAttributes();
+$eventAttr->setName('End event');
+$eventAttr->setType('END');
+$eventAttr->setProcessId($process->getData()->getId());
+$eventAttr->setDefinition('MESSAGE');
+/** @var EventItem $endEvent */
+$endEvent = $apiInstance->addEvent(
+    $process->getData()->getId(),
+    new EventCreateItem(
+        [
+            'data' => new Event(['attributes' => $eventAttr])
+        ]
+    )
+);
+
+```
+
+![End event2](php-sdk-usage/images/end_event2.png "End event2")
+
+```php
+/** @var EventCreateItem $eventAttr */
+$eventAttr = new EventAttributes();
+$eventAttr->setName('End event2');
+$eventAttr->setType('END');
+$eventAttr->setProcessId($process->getData()->getId());
+$eventAttr->setDefinition('MESSAGE');
+/** @var EventItem $endEvent2 */
+$endEvent2 = $apiInstance->addEvent(
+    $process->getData()->getId(),
+    new EventCreateItem(
+        [
+           'data' => new Event(['attributes' => $eventAttr])
+        ]
+    )
+);
+
+```
+
+### Create two script tasks
+In code below we create two script tasks, which do simple things just to add 2 types of variables to our **Data model**
+
+![First direction script task](php-sdk-usage/images/first_direction_task.png "First direction script task")
+
+
+```php
+/** @var TaskAttributes $taskAttr */
+$taskAttr = new TaskAttributes();
+$taskAttr->setName('First direction');
+$taskAttr->setType('SCRIPT-TASK');
+$taskAttr->setProcessId($process->getData()->getId());
+$taskAttr->setAssignType('CYCLIC');
+$taskAttr->setScript('$aData[\'First_Direction\'] = 1;');
+/** @var TaskItem $result */
+$firstDirectTask = $apiInstance->addTask(
+    $process->getData()->getId(),
+    new TaskCreateItem(
+       [
+           'data' => new Task(['attributes' => $taskAttr])
+       ]
+    )
+);
+```
+
+![Second direction script task](php-sdk-usage/images/second_direction_task.png "Second direction script task")
+
+```php
+/** @var TaskAttributes $taskAttr */
+$taskAttr = new TaskAttributes();
+$taskAttr->setName('Second direction');
+$taskAttr->setType('SCRIPT-TASK');
+$taskAttr->setProcessId($process->getData()->getId());
+$taskAttr->setAssignType('CYCLIC');
+$taskAttr->setScript('$aData[\'Second_Direction\'] = 2;');
+/** @var TaskItem $result */
+$secondDirectTask = $apiInstance->addTask(
+    $process->getData()->getId(),
+    new TaskCreateItem(
+        [
+            'data' => new Task(['attributes' => $taskAttr])
+        ]
+    )
+);
+
+```
+
+### Create SEQUENTIAL flows between objects
+
+```php
+/** @var FlowAttributes $flowAttr */
+$flowAttr= new FlowAttributes();
+$flowAttr->setName('Flow StartEvent with Exclusive Gateway');
+$flowAttr->setType('SEQUENTIAL');
+$flowAttr->setProcessId($process->getData()->getId());
+$flowAttr->setFromObjectId($startEvent->getData()->getId());
+$flowAttr->setFromObjectType($startEvent->getData()->getType());
+$flowAttr->setToObjectId($exclusiveGateway->getData()->getId());
+$flowAttr->setToObjectType($exclusiveGateway->getData()->getType());
+$apiInstance->addFlow(
+        $process->getData()->getId(),
+        new FlowCreateItem([
+           'data' => new Flow(['attributes' => $flowAttr])
+        ])
+    );
+
+/** @var FlowAttributes $flowAttr */
+$flowAttr= new FlowAttributes();
+$flowAttr->setName('Flow FirstDirection with End event');
+$flowAttr->setType('SEQUENTIAL');
+$flowAttr->setProcessId($process->getData()->getId());
+$flowAttr->setFromObjectId($firstDirectTask->getData()->getId());
+$flowAttr->setFromObjectType($firstDirectTask->getData()->getType());
+$flowAttr->setToObjectId($endEvent->getData()->getId());
+$flowAttr->setToObjectType($endEvent->getData()->getType());
+$apiInstance->addFlow(
+        $process->getData()->getId(),
+        new FlowCreateItem([
+            'data' => new Flow(['attributes' => $flowAttr])
+        ])
+    );
+
+/** @var FlowAttributes $flowAttr */
+$flowAttr= new FlowAttributes();
+$flowAttr->setName('Flow SecondDirection to Endevent2');
+$flowAttr->setType('SEQUENTIAL');
+$flowAttr->setProcessId($process->getData()->getId());
+$flowAttr->setFromObjectId($secondDirectTask->getData()->getId());
+$flowAttr->setFromObjectType($secondDirectTask->getData()->getType());
+$flowAttr->setToObjectId($endEvent2->getData()->getId());
+$flowAttr->setToObjectType($endEvent2->getData()->getType());
+$apiInstance->addFlow(
+        $process->getData()->getId(),
+        new FlowCreateItem([
+            'data' => new Flow(['attributes' => $flowAttr])
+        ])
+    );
+
+```
+
+### Create two SEQUENTIAL flows with conditions
+
+![SEQUENTIAL Flow with condition](php-sdk-usage/images/conditional_flow1.png "SEQUENTIAL Flow with condition")
+
+```php
+
+/** @var FlowAttributes $flowAttr */
+$flowAttr= new FlowAttributes();
+$flowAttr->setName('Flow Exclusive Gateway with First direction');
+$flowAttr->setType('SEQUENTIAL');
+$flowAttr->setProcessId($process->getData()->getId());
+$flowAttr->setFromObjectId($exclusiveGateway->getData()->getId());
+$flowAttr->setFromObjectType($exclusiveGateway->getData()->getType());
+$flowAttr->setToObjectId($firstDirectTask->getData()->getId());
+$flowAttr->setToObjectType($firstDirectTask->getData()->getType());
+$flowAttr->setCondition('direction=1');
+$apiInstance->addFlow(
+       $process->getData()->getId(),
+       new FlowCreateItem([
+            'data' => new Flow(['attributes' => $flowAttr])
+       ])
+   );
+
+```
+
+![SEQUENTIAL Flow with condition](php-sdk-usage/images/conditional_flow2.png "SEQUENTIAL Flow with condition")
+
+
+```php
+/** @var FlowAttributes $flowAttr */
+$flowAttr= new FlowAttributes();
+$flowAttr->setName('Flow Exclusive Gateway with Second direction');
+$flowAttr->setType('SEQUENTIAL');
+$flowAttr->setProcessId($process->getData()->getId());
+$flowAttr->setFromObjectId($exclusiveGateway->getData()->getId());
+$flowAttr->setFromObjectType($exclusiveGateway->getData()->getType());
+$flowAttr->setToObjectId($secondDirectTask->getData()->getId());
+$flowAttr->setToObjectType($secondDirectTask->getData()->getType());
+$flowAttr->setCondition('direction=2');
+$apiInstance->addFlow(
+        $process->getData()->getId(),
+        new FlowCreateItem([
+            'data' => new Flow(['attributes' => $flowAttr])
+        ])
+    );
+
+```
+
+### Run Process with random data - `['direction' => rand(1,2)]` in  Data model
 
 ```php
 /** @var array $arrayContent */
@@ -539,7 +824,7 @@ As result engine will run **Process** and creates **Process instance** with stat
 $instances = $apiInstance->findInstances($process->getData()->getId());
 
 ```
-To check direction way of our **Process instance** we can check retriving **Data model**:
+Direction of our **Process instance** will be showed in **Data model** :
 
 ```php
 $apiInstance->findDataModel(
@@ -548,4 +833,4 @@ $apiInstance->findDataModel(
         );
 
 ```
-Inside **Data model** we can find array with `['First_Direction'] = 1` or  `['Second_Direction'] = 2` depending on data we pass to **Start event** trigger.
+Inside **Data model** you can find array with `['First_Direction'] = 1` or  `['Second_Direction'] = 2` depending on data, that have been passed to **Start event** trigger.
