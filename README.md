@@ -281,6 +281,9 @@ $startEvent = $apiInstance->addEvent(
 ```
 
 ### Create **End event**
+
+![End event](php-sdk-usage/images/end_event.png "End event")
+
 ```php
 /** @var EventCreateItem $eventAttr */
 $eventAttr = new EventAttributes();
@@ -299,7 +302,6 @@ $endEvent = $apiInstance->addEvent(
 );
 
 ```
-![End event](php-sdk-usage/images/end_event.png "End event")
 
 ### Create two script tasks
 Code snippet below creates two script tasks, which do simple things, just to add 2 types of variables to our **Data model** during running **Process**
@@ -697,6 +699,8 @@ $secondDirectTask = $apiInstance->addTask(
 ```
 
 ### Create SEQUENTIAL flows between objects
+
+![SEQUENTIAL Flow](php-sdk-usage/images/flow.png "SEQUENTIAL Flow")
 
 ```php
 /** @var FlowAttributes $flowAttr */
