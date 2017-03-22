@@ -10,8 +10,8 @@ At the top of the file there should be a short introduction and/ or overview tha
 A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
 
 
-## <a name="installation"></a>Installation
-
+## Installation
+<a name="installation"></a>
 To use PHP SDK in your code create or add into your composer.json file the following:
  
 ```
