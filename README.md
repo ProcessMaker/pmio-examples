@@ -857,3 +857,5 @@ $apiInstance->findDataModel(
 
 ```
 Inside **Data model** you can find array with `['First_Direction'] = 1` or  `['Second_Direction'] = 2` depending on data, that have been passed to **Start event** trigger.
+
+All examples described above, you can find in this repository.
