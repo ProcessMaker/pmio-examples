@@ -535,4 +535,13 @@ As result engine will run **Process** and creates **Process instance** with stat
 $instances = $apiInstance->findInstances($process->getData()->getId());
 
 ```
-To check direction way of our **Process instance**
+To check direction way of our **Process instance** we can check retriving **Data model**:
+
+```php
+$apiInstance->findDataModel(
+            $process->getData()->getId(),
+            $instances->getData()[0]->getId()
+        );
+
+```
+Inside **Data model** we can find array with `['First_Direction'] = 1` or  `['Second_Direction'] = 2` depending on data we pass to **Start event** trigger.
