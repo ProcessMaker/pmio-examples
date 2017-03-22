@@ -2,6 +2,25 @@
 * [SDK Initialization](#markdown-header-sdk-initialization)
 * [How to create a new user](#markdown-header-how-to-create-a-new-user)
 
+   > [Retrieving client_secret](#markdown-header-retrieving-client_secret)
+
+   > [Getting authorization key](#markdown-header-getting-authorization-key)
+
+* [How to create and launch a new process](#markdown-header-how-to-create-and-launch-a-new-process)
+
+   > [How to assign user to task](#markdown-header-how-to-assign-user-to-task)
+
+   > [How to add objects to process](#markdown-header-how-to-add-objects-to-process)
+
+   > [How to add flows between process objects](#markdown-header-how-to-add-flows-between-process-objects)
+
+   > [How to delegate user to task](#markdown-header-how-to-delegate-user-to-task)
+
+   > [How to run process](#markdown-header-how-to-run-process)
+
+* [Example#1](#markdown-header-example1)
+* [Example#2](#markdown-header-example2)
+
 ## Synopsis
 
 At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
