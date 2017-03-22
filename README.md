@@ -1,5 +1,5 @@
-* [Installation](#installation)
-* [SDK Initialization](#SDK-initialization)
+* [Installation](#markdown-header-installation)
+* [SDK Initialization](#markdown-header-sdk-initialization)
 
 ## Synopsis
 
@@ -11,7 +11,7 @@ A short description of the motivation behind the creation and maintenance of the
 
 
 ## Installation
-<a name="installation"></a>
+
 To use PHP SDK in your code create or add into your composer.json file the following:
  
 ```
