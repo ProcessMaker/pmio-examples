@@ -27,13 +27,16 @@ At the top of the file there should be a short introduction and/ or overview tha
 
 ## Motivation
 
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
+The ProcessMaker I/O SDK let developers to use ProcessMaker I/O API building applications, IoT systems, intelligent rules systems, AI based systems and more.   
+The following documentation covers the 1.0.0. version of the ProcessMaker I/O PHP SDK
+This description is based on PHP software language and related to the ProcessMaker I/O PHP SDK (below ProcessMaker SDK)
 
 
 ## Installation
 
-To use PHP SDK in your code create or add into your composer.json file the following:
- 
+For using ProcessMaker SDK  in your project you need follow the next steps:
+1st. Create composer.json or add into your current file
+
 ```
 {
   "minimum-stability": "dev",
@@ -49,9 +52,12 @@ To use PHP SDK in your code create or add into your composer.json file the follo
 }
 ```
 
-and run `composer install`.
+2nd. Run installer
 
-Don't forget to use composer auto-loader by including the following at the top of your script:
+`composer install`.
+
+3d. Check that auto-loader is included at the top of your script:
+
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 ```
