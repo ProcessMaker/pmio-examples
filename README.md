@@ -37,7 +37,7 @@ This description is based on PHP software language and related to the ProcessMak
 For using ProcessMaker SDK  in your project you need follow the next steps:
 <ol>
 <li>Create composer.json or add into your current file<li>
-
+</ol>
 
 ```
 {
@@ -55,6 +55,7 @@ For using ProcessMaker SDK  in your project you need follow the next steps:
 ```
 
 
+<ol>
 <li> Run installer</li> 
 </ol>
 
