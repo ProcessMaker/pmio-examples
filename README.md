@@ -55,7 +55,8 @@ For using ProcessMaker SDK  in your project you need follow the next steps:
 ```
 
 
-<li> Run installer </li>
+2. Run installer
+
 
 `composer install`.
 
