@@ -35,7 +35,8 @@ This description is based on PHP software language and related to the ProcessMak
 ## Installation
 
 For using ProcessMaker SDK  in your project you need follow the next steps:
-1. Create composer.json or add into your current file
+<ol>
+<li> Create composer.json or add into your current file </li>
 
 ```
 {
@@ -52,12 +53,13 @@ For using ProcessMaker SDK  in your project you need follow the next steps:
 }
 ```
 
-2. Run installer
+
+<li> Run installer </li>
 
 `composer install`.
 
-3. Check that auto-loader is included at the top of your script:
-
+<li> Check that auto-loader is included at the top of your script:</li>
+</ol>
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 ```
