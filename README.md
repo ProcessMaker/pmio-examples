@@ -28,14 +28,13 @@ The ProcessMaker I/O SDK let developers to use ProcessMaker I/O API building app
 ## Motivation
 
 The following documentation covers the 1.0.0. version of the ProcessMaker I/O PHP SDK
-This description is based on PHP software language and related to the ProcessMaker I/O PHP SDK (below ProcessMaker SDK)
+This description is based on PHP software language and related to the ProcessMaker I/O PHP SDK. Here you can find information to install and configure this  ProcessMaker PHP SDK. 
 
 ## Installation
 
-For using ProcessMaker SDK  in your project you need follow the next steps:
-<ol>
-<li>Create composer.json or add into your current file<li>
-</ol>
+For using ProcessMaker I/O SDK  in your project you need follow the next steps:
+
+1. Create composer.json or add into your current file
 
 ```
 {
@@ -52,38 +51,44 @@ For using ProcessMaker SDK  in your project you need follow the next steps:
 }
 ```
 
-<li> Run installer</li> 
+2.  Run installer
 
 `composer install`.
 
-<li> Check that auto-loader is included at the top of your script:</li>
-</ol>
+3. Check that auto-loader is included at the top of your script:
+
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 ```
 
 ## SDK Initialization
 
+The method apiInstance() is used to initialize the SDK. 
+
 ```php
 use Swagger\Client\Api\ProcessmakerApi;
 
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
+```
+Next step is the $host and authorization key $key definition and setup
 
+```php
 $host = '_DEFINE_API_HOST_';
 $key = '_DEFINE_AUTHORIZATION_KEY_';
 
 $apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
 $apiInstance->getApiClient()->getConfig()->setAccessToken($key);
+```
+You have option to enable looging and saving debug activities to the file, as example my_debug.log 
 
-/** Optionally you may enable logging */
-
+```php
 $apiInstance->getApiClient()->getConfig()->setDebugFile('my_debug.log');
 $apiInstance->getApiClient()->getConfig()->setDebug(true);
 ```
 
-## Code Example
-
+## Examples
+For general code examples please see below.
 ### How to create a new user
 
 ```php
