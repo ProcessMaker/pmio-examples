@@ -23,14 +23,12 @@
 
 ## Synopsis
 
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+The ProcessMaker I/O SDK let developers to use ProcessMaker I/O API building applications, IoT systems, intelligent rules systems, AI based systems and more.   
 
 ## Motivation
 
-The ProcessMaker I/O SDK let developers to use ProcessMaker I/O API building applications, IoT systems, intelligent rules systems, AI based systems and more.   
 The following documentation covers the 1.0.0. version of the ProcessMaker I/O PHP SDK
 This description is based on PHP software language and related to the ProcessMaker I/O PHP SDK (below ProcessMaker SDK)
-
 
 ## Installation
 
@@ -54,10 +52,7 @@ For using ProcessMaker SDK  in your project you need follow the next steps:
 }
 ```
 
-
-<ol>
 <li> Run installer</li> 
-</ol>
 
 `composer install`.
 
