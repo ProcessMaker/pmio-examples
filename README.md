@@ -21,12 +21,9 @@
 * [Example#1](#markdown-header-example1)
 * [Example#2](#markdown-header-example2)
 
-## Synopsis
+## ProcessMaker I/O PHP SDK
 
-The ProcessMaker I/O SDK let developers to use ProcessMaker I/O API building applications, IoT systems, intelligent rules systems, AI based systems and more.   
-
-## Motivation
-
+The ProcessMaker I/O SDK gives developers access to the ProcessMaker I/O engine and lets build your applications, IoT systems, intelligent rules systems, AI based systems and more.   
 The following documentation covers the 1.0.0. version of the ProcessMaker I/O PHP SDK
 This description is based on PHP software language and related to the ProcessMaker I/O PHP SDK. Here you can find information to install and configure this  ProcessMaker PHP SDK. 
 
@@ -34,7 +31,7 @@ This description is based on PHP software language and related to the ProcessMak
 
 For using ProcessMaker I/O SDK  in your project you need follow the next steps:
 
-1. Create composer.json or add into your current file
+1. Get PHP package manager and create composer.json. Then add composer.json file in your project in root folder or into your current file.
 
 ```
 {
@@ -51,7 +48,7 @@ For using ProcessMaker I/O SDK  in your project you need follow the next steps:
 }
 ```
 
-2.  Run installer
+2.  Run "composer installer" to dawload the SDK and setup the autoloader
 
 `composer install`.
 
@@ -63,7 +60,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 ## SDK Initialization
 
-The method apiInstance() is used to initialize the SDK. 
+After installation you need to initialize the SDK using ProcessMaker I/O API keys.
+
+You should use the method apiInstance() for SDK initialization. 
 
 ```php
 use Swagger\Client\Api\ProcessmakerApi;
@@ -71,7 +70,7 @@ use Swagger\Client\Api\ProcessmakerApi;
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
 ```
-Next step is the $host and authorization key $key definition and setup
+Then you should define server url - $host and authorization API key - $key and set up its
 
 ```php
 $host = '_DEFINE_API_HOST_';
@@ -87,7 +86,14 @@ $apiInstance->getApiClient()->getConfig()->setDebugFile('my_debug.log');
 $apiInstance->getApiClient()->getConfig()->setDebug(true);
 ```
 
-## Examples
+## Usage 
+
+Please check our ProcessMaker API documentation (link to the new document) for the detailed API description 
+
+The list of examples (link to the new document) to help you to start with our SDK. 
+
+/New document /
+
 For general code examples please see below.
 ### How to create a new user
 
