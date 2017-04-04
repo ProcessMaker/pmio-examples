@@ -90,7 +90,7 @@ $apiInstance->getApiClient()->getConfig()->setDebug(true);
 
 Please check our ProcessMaker API documentation (link to the new document) for the detailed API description 
 
-The list of [examples](/usage.md) to help you to start with our SDK.
+The list of [examples](USAGE.md) to help you to start with our SDK.
 
 
 
