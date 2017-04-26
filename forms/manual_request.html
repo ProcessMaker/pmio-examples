@@ -120,7 +120,7 @@
                       'headers':headers
                   }).success(function(response) {
                       /*Logging response*/
-                      $('textarea[name=response]').html('').val('Response from: \n'+host+api_url+'\nData in JSON: \n'+JSON.stringify(response.data));
+                      $('textarea[name=response]').html('').val('Response from: \n'+trigger_event_url+'\nData in JSON: \n'+JSON.stringify(response.data));
                       /*Logging response*/
                       alert('Record customer created');
                   }).error(function(response){

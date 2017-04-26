@@ -1,0 +1,12 @@
+{
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/colosa/pmio-sdk-php.git"
+    }
+  ],
+  "require": {
+    "colosa/pmio-sdk-php": "1.0.0.x-dev"
+  }
+}
