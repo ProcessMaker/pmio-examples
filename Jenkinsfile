@@ -62,7 +62,7 @@ try {
             }
             echo 'Status: ' + currentBuild.result
                 hipchatSend (color: 'GREEN', notify: true, room: 'pm.io', textFormat: false, failOnError: false,
-                message: "<img src='http://ieltsplanet.info/wp-content/uploads/avatars/11860/3135a9543009deaed32574afacdb0c53-bpthumb.png' width=50 height=50 align='left'>$env.JOB_NAME [#${env.BUILD_NUMBER}] - ${currentBuild.result} (<a href='${env.BUILD_URL}'>Open</a>)<br>Deployed to <b>$deploydomain</b>"
+                message: "<img src='http://ieltsplanet.info/wp-content/uploads/avatars/11860/3135a9543009deaed32574afacdb0c53-bpthumb.png' width=50 height=50 align='left'>$env.JOB_NAME [#${env.BUILD_NUMBER}] - SUCCESS (<a href='${env.BUILD_URL}'>Open</a>)<br>Deployed to <b>$deploydomain</b>"
                 )
 
         }
@@ -70,14 +70,14 @@ try {
 
     } else {
             hipchatSend (color: 'YELLOW', notify: true, room: 'pm.io', textFormat: false, failOnError: false,
-                  message: "$env.JOB_NAME [#${env.BUILD_NUMBER}] - ${currentBuild.result} (<a href='${env.BUILD_URL}'>Open</a>)"
+                  message: "$env.JOB_NAME [#${env.BUILD_NUMBER}] - UNSTABLE (<a href='${env.BUILD_URL}'>Open</a>)"
             )
     }
 } catch(error) {
         echo error
     currentBuild.result = "FAILED"
     hipchatSend (color: 'RED', notify: true, room: 'pm.io', textFormat: false, failOnError: false,
-        message: "<img src='http://i.istockimg.com/file_thumbview_approve/86219539/3/stock-illustration-86219539-cute-cartoon-piggy.jpg' width=50 height=50 align='left'>$env.JOB_NAME [#${env.BUILD_NUMBER}] - ${currentBuild.result} (<a href='${env.BUILD_URL}'>Open</a>)"
+        message: "<img src='http://i.istockimg.com/file_thumbview_approve/86219539/3/stock-illustration-86219539-cute-cartoon-piggy.jpg' width=50 height=50 align='left'>$env.JOB_NAME [#${env.BUILD_NUMBER}] - FAILED (<a href='${env.BUILD_URL}'>Open</a>)"
     )
 }
 }
