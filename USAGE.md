@@ -192,7 +192,7 @@ To get all instances belonging to **Process** you can retrieve using ``$apiInsta
 
 In Example#1 implemented **Process** showed below:
 
-![Example #1](php-sdk-usage/images/exclusive_gateway_1endevent.png "Example #1")
+![Example #1](/php-sdk-usage/images/exclusive_gateway_1endevent.png "Example #1")
 
 **Process** has **Exclusive** and **Inclusive** gateways and one **End event**.
 
