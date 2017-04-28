@@ -90,20 +90,10 @@
                         <li<?php echo (preg_match('/processes_form.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="processes_form.html?example=nda">Process List</a></li>
                         <li><a target="_new" href="https://docs.google.com/a/processmaker.com/forms/d/e/1FAIpQLSeCpy4wYwvLkSjUJIAr-VHjsquKS9SXlAhIMokmYU0MqtuPTQ/viewform">Manual Request (google form)</a></li>
 
-                        <li<?php echo (preg_match('/verify_on_boarding_data.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="check_nda_status.html">Check NDA status </a></li>
+                        <li<?php echo (preg_match('/verify_on_boarding_data.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="check_nda_status.html?example=nda">Check NDA status </a></li>
 
                     </ul>
-                    <!--<ul class="nav navbar-nav navbar-right">
-                        <li><img align="right" height="50" src="<?php /*echo $avatar;*/?>"></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php /*echo $user;*/?> <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="?user=Test">Test</a></li>
-                                <li><a href="?user=Alice">Alice</a></li>
-                                <li><a href="?user=Bob">Bob</a></li>
-                            </ul>
-                        </li>
-                    </ul>-->
+
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
