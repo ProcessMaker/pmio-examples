@@ -12,10 +12,12 @@
 
     .nav-tabs, .nav-pills {
         text-align:center;
+        height: 45px;
     }
 </style>
 <!-- Nav tabs -->
-
+<a href="/"><img alt="PM Core" height="45" src="http://www.processmaker.com/sites/all/themes/pmthemev2/img/white-badge.png" style="position: absolute;">
+    </a>
 <ul id="myTabs" class="nav nav-tabs" role="tablist">
 
     <li role="presentation" class="mvp"><a href="#mvp" aria-controls="nda" role="tab" data-toggle="tab">MVP example</a></li>
@@ -25,7 +27,6 @@
 
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane" id="mvp">
-   <center><h1>MVP example</h1></center>
       <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -36,7 +37,6 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <img alt="PM Core" height="48" src="http://www.processmaker.com/sites/all/themes/pmthemev2/img/white-badge.png">
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -68,7 +68,6 @@
 </nav>
         </div>
     <div role="tabpanel" class="tab-pane" id="nda">
-        <center><h2>NDA example</h2></center>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
@@ -79,7 +78,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <img alt="PM Core" height="48" src="http://www.processmaker.com/sites/all/themes/pmthemev2/img/white-badge.png">
+
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -90,7 +89,7 @@
                         <li<?php echo (preg_match('/processes_form.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="processes_form.html?example=nda">Process List</a></li>
                         <li><a target="_new" href="https://docs.google.com/a/processmaker.com/forms/d/e/1FAIpQLSeCpy4wYwvLkSjUJIAr-VHjsquKS9SXlAhIMokmYU0MqtuPTQ/viewform">Manual Request (google form)</a></li>
 
-                        <li<?php echo (preg_match('/verify_on_boarding_data.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="check_nda_status.html?example=nda">Check NDA status </a></li>
+                        <li<?php echo (preg_match('/check_nda_status.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="check_nda_status.html?example=nda">Check NDA status </a></li>
 
                     </ul>
 

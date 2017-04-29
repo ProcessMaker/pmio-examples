@@ -25,4 +25,5 @@ $file = str_replace("/","forms/", str_replace('?'.$_SERVER['QUERY_STRING'],'', $
 if(!is_file($file)) $file = 'forms/import_form.html';
 
 include $file;
+
 ?>
