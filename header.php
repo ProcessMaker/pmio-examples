@@ -99,7 +99,16 @@
     </div>
 </div>
 <script type="text/javascript">
+    $('ul#myTabs li a').on('click', function (e) {
+        var link = $(this).attr('href');
+        if (link == '#nda') window.location.replace('http://'+window.location.host+'?example=nda&user=Test');
+        else if (link == '#mvp') window.location.replace('http://'+window.location.host);
+    });
+
     <?php if (isset($_GET['example']) && $_GET['example'] == 'nda') {
         echo '$(\'#myTabs a[href="#nda"]\').tab(\'show\');';
-    } else echo '$(\'#myTabs a[href="#mvp"]\').tab(\'show\');'; ?>
+
+    } else
+        echo'$(\'#myTabs a[href="#mvp"]\').tab(\'show\');';
+         ?>
 </script>

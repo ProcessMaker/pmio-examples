@@ -86,7 +86,7 @@
              'cache': false,
              'headers':headers
              }).success(function(response) {
-              $('.link').html('<a target="_blank" href="'+response.included[0].attributes.content.GoogleDocLink+'">Link to shared file</a>');
+              $('.link').html('<a target="_blank" href="'+response.included[0].attributes.content.GoogleDocLink+'">Link to shared file '+response.included[0].attributes.content.GoogleDocLink+'</a>');
 
              $('a.confirm').fadeIn(500);
              }).error(function(response){
@@ -128,7 +128,7 @@
                     /*Logging response*/
                     $('textarea[name=response]').html('').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data));
                     /*Logging response*/
-                    alert('Validated');
+                    window.location.replace("check_nda_status.html?example=nda");
                 }).error(function(response){
                     if (typeof response.responseJSON != 'undefined') {
                         alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
