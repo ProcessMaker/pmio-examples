@@ -337,13 +337,13 @@ $exclusiveGateway = $apiInstance->addGateway(
 
 ```
 
-![Inclusive gateway](php-sdk-usage/images/inclusive_gateway.png "Inclusive gateway")
+![Inclusive gateway](php-sdk-usage/images/exclusive_gateway.png "Exclusive gateway")
 
 ```php
 /** @var GatewayAttributes $gatewayAttr */
 $gatewayAttr = new GatewayAttributes();
-$gatewayAttr->setName('Inclusive gateway');
-$gatewayAttr->setType('INCLUSIVE');
+$gatewayAttr->setName('Exclusive gateway');
+$gatewayAttr->setType('EXCLUSIVE');
 $gatewayAttr->setDirection('CONVERGENT');
 $gatewayAttr->setProcessId($process->getData()->getId());
 /** @var GatewayItem $inclusiveGateway */

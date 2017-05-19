@@ -1,8 +1,33 @@
 <script type="application/javascript">
     document.body.style.backgroundColor = "<?php echo $bgcolor;?>";
-</script>
 
-<nav class="navbar navbar-default">
+</script>
+<style>
+    .nav-tabs > li, .nav-pills > li {
+        float:none;
+        display:inline-block;
+        *display:inline; /* ie7 fix */
+        zoom:1; /* hasLayout ie7 trigger */
+    }
+
+    .nav-tabs, .nav-pills {
+        text-align:center;
+        height: 45px;
+    }
+</style>
+<!-- Nav tabs -->
+<a href="/"><img alt="PM Core" height="45" src="http://www.processmaker.com/sites/all/themes/pmthemev2/img/white-badge.png" style="position: absolute;">
+    </a>
+<ul id="myTabs" class="nav nav-tabs" role="tablist">
+
+    <li role="presentation" class="mvp"><a href="#mvp" aria-controls="nda" role="tab" data-toggle="tab">MVP example</a></li>
+    <li role="presentation"><a href="#nda" aria-controls="nda" role="tab" data-toggle="tab">NDA example</a></li>
+
+</ul>
+
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane" id="mvp">
+      <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -12,7 +37,6 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <img alt="PM Core" height="48" src="http://www.processmaker.com/sites/all/themes/pmthemev2/img/white-badge.png">
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -42,3 +66,49 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+        </div>
+    <div role="tabpanel" class="tab-pane" id="nda">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+
+                        <li<?php echo (preg_match('/import_form.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="/import_form.html?example=nda">Import</a></li>
+                        <li<?php echo (preg_match('/processes_form.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="processes_form.html?example=nda">Process List</a></li>
+                        <li><a target="_new" href="https://docs.google.com/a/processmaker.com/forms/d/e/1FAIpQLSeCpy4wYwvLkSjUJIAr-VHjsquKS9SXlAhIMokmYU0MqtuPTQ/viewform">Manual Request (google form)</a></li>
+
+                        <li<?php echo (preg_match('/check_nda_status.html/',$_SERVER['REQUEST_URI'])?' class="active"':'');?>><a href="check_nda_status.html?example=nda">Check NDA status </a></li>
+
+                    </ul>
+
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $('ul#myTabs li a').on('click', function (e) {
+        var link = $(this).attr('href');
+        if (link == '#nda') window.location.replace('http://'+window.location.host+'?example=nda&user=Test');
+        else if (link == '#mvp') window.location.replace('http://'+window.location.host);
+    });
+
+    <?php if (isset($_GET['example']) && $_GET['example'] == 'nda') {
+        echo '$(\'#myTabs a[href="#nda"]\').tab(\'show\');';
+
+    } else
+        echo'$(\'#myTabs a[href="#mvp"]\').tab(\'show\');';
+         ?>
+</script>
