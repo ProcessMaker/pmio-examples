@@ -4,7 +4,7 @@
 
     * [Getting authorization key](#markdown-header-getting-authorization-key)
 
-* [How to import BPMN file](#markdown-header-how-to-import-BPMN-file)
+* [How to import BPMN file](#markdown-header-how-to-import-bpmn-file)
 
 * [How to create and launch a new process](#markdown-header-how-to-create-and-launch-a-new-process)
 
