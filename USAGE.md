@@ -4,6 +4,8 @@
 
     * [Getting authorization key](#markdown-header-getting-authorization-key)
 
+* [How to import BPMN file](#markdown-header-how-to-import-BPMN-file)
+
 * [How to create and launch a new process](#markdown-header-how-to-create-and-launch-a-new-process)
 
     * [How to assign user to task](#markdown-header-how-to-assign-user-to-task)
@@ -94,6 +96,28 @@ function getCredentials($args, $host)
 ```
 
 Here you will get `access_token` and `refresh_token` to perform Oauth authorization for specific user.
+
+## How to import BPMN file
+
+The following code snippet will allow you to import BPMN file
+
+```php
+$result = $apiInstance->importBpmnFile(new \Swagger\Client\Model\BpmnImportItem(
+    [
+        'data' => new \Swagger\Client\Model\BpmnFile(
+            [
+                'attributes' => (new \Swagger\Client\Model\BpmnFileAttributes())
+                ->setBpmn(file_get_contents('slack.bpmn'))
+            ])
+    ]
+));
+
+/** @var \Swagger\Client\Model\Process[] $processes */
+$processes = $result->getData();
+
+```
+
+Resulting variable ``$process`` will contain an array of created **Processes**
 
 ## How to create and launch a new process
 
