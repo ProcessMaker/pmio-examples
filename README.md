@@ -56,7 +56,7 @@ Then you should define the server URL ($host), and authorization API key ($key):
 $host = '_DEFINE_API_HOST_';
 $key = '_DEFINE_AUTHORIZATION_KEY_';
 
-$apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
+$apiInstance->getApiClient()->getConfig()->setHost("https://$host/api/v1");
 $apiInstance->getApiClient()->getConfig()->setAccessToken($key);
 ```
 You have option to enable logging and saving debug activities to the file, for example my_debug.log:
