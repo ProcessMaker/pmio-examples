@@ -117,7 +117,7 @@ $processes = $result->getData();
 
 ```
 
-Resulting variable ``$process`` will contain an array of created **Processes**
+Resulting variable ``$process`` will contain an array of created **Process(es)**
 
 ## How to create and launch a new process
 
