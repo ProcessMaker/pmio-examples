@@ -1,5 +1,5 @@
-* [Installation](#markdown-header-installation)
-* [SDK Initialization](#markdown-header-sdk-initialization)
+* [Installation](#header-installation)
+* [SDK Initialization](#sdk-initialization)
 
 
 ## ProcessMaker I/O PHP SDK

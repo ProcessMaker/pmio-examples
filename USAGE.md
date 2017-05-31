@@ -1,25 +1,25 @@
-* [How to create a new user](#markdown-header-how-to-create-a-new-user)
+* [How to create a new user](#how-to-create-a-new-user)
 
-    * [Retrieving client_secret](#markdown-header-retrieving-client_secret)
+    * [Retrieving client_secret](#retrieving-client_secret)
 
-    * [Getting authorization key](#markdown-header-getting-authorization-key)
+    * [Getting authorization key](#getting-authorization-key)
 
-* [How to import BPMN file](#markdown-header-how-to-import-bpmn-file)
+* [How to import BPMN file](#how-to-import-bpmn-file)
 
-* [How to create and launch a new process](#markdown-header-how-to-create-and-launch-a-new-process)
+* [How to create and launch a new process](#how-to-create-and-launch-a-new-process)
 
-    * [How to assign user to task](#markdown-header-how-to-assign-user-to-task)
+    * [How to assign user to task](#how-to-assign-user-to-task)
 
-    * [How to add objects to process](#markdown-header-how-to-add-objects-to-process)
+    * [How to add objects to process](#how-to-add-objects-to-process)
 
-    * [How to add flows between process objects](#markdown-header-how-to-add-flows-between-process-objects)
+    * [How to add flows between process objects](#how-to-add-flows-between-process-objects)
 
-    * [How to delegate user to task](#markdown-header-how-to-delegate-user-to-task)
+    * [How to delegate user to task](#how-to-delegate-user-to-task)
 
-    * [How to run process](#markdown-header-how-to-run-process)
+    * [How to run process](#how-to-run-process)
 
-* [Example#1](#markdown-header-example1)
-* [Example#2](#markdown-header-example2)
+* [Example#1](#example1)
+* [Example#2](#example2)
 
 For general code examples please see below.
 ### How to create a new user
