@@ -25,7 +25,7 @@ For general code examples please see below.
 ### How to create a new user
 
 ```php
-/** Setting required attributes for user Bob*/
+/** Setting required attributes for user Bob */
 
 /** @var UserAttributes $bobAttr */
 $bobAttr = new UserAttributes();
@@ -102,17 +102,17 @@ Here you will get `access_token` and `refresh_token` to perform Oauth authorizat
 The following code snippet will allow you to import BPMN file
 
 ```php
-$result = $apiInstance->importBpmnFile(new \Swagger\Client\Model\BpmnImportItem(
+$result = $apiInstance->importBpmnFile(new BpmnImportItem(
     [
-        'data' => new \Swagger\Client\Model\BpmnFile(
+        'data' => new BpmnFile(
             [
-                'attributes' => (new \Swagger\Client\Model\BpmnFileAttributes())
+                'attributes' => (new BpmnFileAttributes())
                 ->setBpmn(file_get_contents('slack.bpmn'))
             ])
     ]
 ));
 
-/** @var \Swagger\Client\Model\Process[] $processes */
+/** @var ProcessMaker\PMIO\Model\Process[] $processes */
 $processes = $result->getData();
 
 ```
