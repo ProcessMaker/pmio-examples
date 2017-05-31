@@ -3,42 +3,38 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Swagger\Client\Api\ProcessmakerApi;
+use \ProcessMaker\PMIO\ApiException;
+use \ProcessMaker\PMIO\ProcessmakerApi;
+use \ProcessMaker\PMIO\Model\Process;
+use \ProcessMaker\PMIO\Model\ProcessCreateItem;
+use \ProcessMaker\PMIO\Model\ProcessAttributes;
+use \ProcessMaker\PMIO\Model\ProcessItem;
 
-use Swagger\Client\ApiException;
+use \ProcessMaker\PMIO\Model\Event;
+use \ProcessMaker\PMIO\Model\EventItem;
+use \ProcessMaker\PMIO\Model\EventAttributes;
+use \ProcessMaker\PMIO\Model\EventCreateItem;
+use \ProcessMaker\PMIO\Model\TriggerEventCreateItem;
 
-use Swagger\Client\Model\Process;
-use Swagger\Client\Model\ProcessCreateItem;
-use Swagger\Client\Model\ProcessAttributes;
-use Swagger\Client\Model\ProcessItem;
+use \ProcessMaker\PMIO\Model\Task;
+use \ProcessMaker\PMIO\Model\TaskItem;
+use \ProcessMaker\PMIO\Model\TaskCreateItem;
+use \ProcessMaker\PMIO\Model\TaskAttributes;
 
-use Swagger\Client\Model\Event;
-use Swagger\Client\Model\EventItem;
-use Swagger\Client\Model\EventAttributes;
-use Swagger\Client\Model\EventCreateItem;
-use Swagger\Client\Model\TriggerEventCreateItem;
+use \ProcessMaker\PMIO\Model\FlowAttributes;
+use \ProcessMaker\PMIO\Model\Flow;
+use \ProcessMaker\PMIO\Model\FlowCreateItem;
 
-use Swagger\Client\Model\Task;
-use Swagger\Client\Model\TaskItem;
-use Swagger\Client\Model\TaskCreateItem;
-use Swagger\Client\Model\TaskAttributes;
+use \ProcessMaker\PMIO\Model\DataModel;
+use \ProcessMaker\PMIO\Model\DataModelAttributes;
+use \ProcessMaker\PMIO\Model\DataModelItem;
 
-use Swagger\Client\Model\FlowAttributes;
-use Swagger\Client\Model\Flow;
-use Swagger\Client\Model\FlowItem;
-use Swagger\Client\Model\FlowCreateItem;
+use \ProcessMaker\PMIO\Model\Gateway;
+use \ProcessMaker\PMIO\Model\GatewayAttributes;
+use \ProcessMaker\PMIO\Model\GatewayItem;
+use \ProcessMaker\PMIO\Model\GatewayCreateItem;
 
-use Swagger\Client\Model\DataModel;
-use Swagger\Client\Model\DataModelAttributes;
-use Swagger\Client\Model\DataModelItem;
-
-use Swagger\Client\Model\Gateway;
-use Swagger\Client\Model\GatewayAttributes;
-use Swagger\Client\Model\GatewayItem;
-use Swagger\Client\Model\GatewayCreateItem;
-
-use Swagger\Client\Model\InstanceCollection;
-
+use \ProcessMaker\PMIO\Model\InstanceCollection;
 
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
@@ -46,7 +42,7 @@ $apiInstance = new ProcessmakerApi;
 /** Setting up host with base path and access token for API core */
 include "../.env";
 
-$apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
+$apiInstance->getApiClient()->getConfig()->setHost("https://$host/api/v1");
 $apiInstance->getApiClient()->getConfig()->setAccessToken($key['Test']);
 
 /** Comment if don't need logs */
@@ -77,7 +73,7 @@ try {
     );
     print_r($process);
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addProcess: '.$e->getMessage().PHP_EOL);
 }
 
@@ -136,7 +132,7 @@ try {
     print_r($endEvent2);
 
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addEvent: '.$e->getMessage().PHP_EOL);
 }
 
@@ -182,7 +178,7 @@ try {
     print_r($secondDirectTask);
 
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addTask: '.$e->getMessage().PHP_EOL);
 }
 
@@ -209,7 +205,7 @@ try {
     print_r($exclusiveGateway);
 
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addGateway: '.$e->getMessage().PHP_EOL);
 }
 
@@ -312,7 +308,7 @@ try {
     )
     );
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addFlow: '.$e->getMessage().PHP_EOL);
 }
 
@@ -335,7 +331,7 @@ try {
             ]
         )
     );
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->eventTrigger: '.$e->getMessage().PHP_EOL);
 }
 
@@ -346,7 +342,7 @@ try {
     /** @var InstanceCollection $instances */
     $instances = $apiInstance->findInstances($process->getData()->getId());
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->findInstances: '.$e->getMessage().PHP_EOL);
 }
 
@@ -361,7 +357,7 @@ try {
         )
     );
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->findDataModel: '.$e->getMessage().PHP_EOL);
 }
 

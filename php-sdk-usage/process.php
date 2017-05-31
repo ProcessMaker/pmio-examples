@@ -3,44 +3,41 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Swagger\Client\Api\ProcessmakerApi;
+use \ProcessMaker\PMIO\ApiException;
+use \ProcessMaker\PMIO\ProcessmakerApi;
 
-use Swagger\Client\ApiException;
+use \ProcessMaker\PMIO\Model\Process;
+use \ProcessMaker\PMIO\Model\ProcessCreateItem;
+use \ProcessMaker\PMIO\Model\ProcessAttributes;
+use \ProcessMaker\PMIO\Model\ProcessItem;
 
-use Swagger\Client\Model\Process;
-use Swagger\Client\Model\ProcessCreateItem;
-use Swagger\Client\Model\ProcessAttributes;
-use Swagger\Client\Model\ProcessItem;
+use \ProcessMaker\PMIO\Model\Group;
+use \ProcessMaker\PMIO\Model\GroupItem;
+use \ProcessMaker\PMIO\Model\GroupAddUsersItem;
+use \ProcessMaker\PMIO\Model\GroupAttributes;
+use \ProcessMaker\PMIO\Model\GroupCreateItem;
+use \ProcessMaker\PMIO\Model\UserIds;
 
-use Swagger\Client\Model\Group;
-use Swagger\Client\Model\GroupItem;
-use Swagger\Client\Model\GroupAddUsersItem;
-use Swagger\Client\Model\GroupCollection;
-use Swagger\Client\Model\GroupAttributes;
-use Swagger\Client\Model\GroupCreateItem;
-use Swagger\Client\Model\UserIds;
+use \ProcessMaker\PMIO\Model\Event;
+use \ProcessMaker\PMIO\Model\EventItem;
+use \ProcessMaker\PMIO\Model\EventAttributes;
+use \ProcessMaker\PMIO\Model\EventCreateItem;
+use \ProcessMaker\PMIO\Model\TriggerEventCreateItem;
 
-use Swagger\Client\Model\Event;
-use Swagger\Client\Model\EventItem;
-use Swagger\Client\Model\EventAttributes;
-use Swagger\Client\Model\EventCreateItem;
-use Swagger\Client\Model\TriggerEventCreateItem;
+use \ProcessMaker\PMIO\Model\Task;
+use \ProcessMaker\PMIO\Model\TaskItem;
+use \ProcessMaker\PMIO\Model\TaskCreateItem;
+use \ProcessMaker\PMIO\Model\TaskAttributes;
+use \ProcessMaker\PMIO\Model\TaskAddGroupsItem;
+use \ProcessMaker\PMIO\Model\GroupIds;
 
-use Swagger\Client\Model\Task;
-use Swagger\Client\Model\TaskItem;
-use Swagger\Client\Model\TaskCreateItem;
-use Swagger\Client\Model\TaskAttributes;
-use Swagger\Client\Model\TaskAddGroupsItem;
-use Swagger\Client\Model\GroupIds;
+use \ProcessMaker\PMIO\Model\FlowAttributes;
+use \ProcessMaker\PMIO\Model\Flow;
+use \ProcessMaker\PMIO\Model\FlowCreateItem;
 
-use Swagger\Client\Model\FlowAttributes;
-use Swagger\Client\Model\Flow;
-use Swagger\Client\Model\FlowItem;
-use Swagger\Client\Model\FlowCreateItem;
-
-use Swagger\Client\Model\DataModel;
-use Swagger\Client\Model\DataModelAttributes;
-use Swagger\Client\Model\DataModelItem;
+use \ProcessMaker\PMIO\Model\DataModel;
+use \ProcessMaker\PMIO\Model\DataModelAttributes;
+use \ProcessMaker\PMIO\Model\DataModelItem;
 
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
@@ -48,7 +45,7 @@ $apiInstance = new ProcessmakerApi;
 /** Setting up host with base path and access token for API core */
 include "../.env";
 
-$apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
+$apiInstance->getApiClient()->getConfig()->setHost("https://$host/api/v1");
 $apiInstance->getApiClient()->getConfig()->setAccessToken($key['Test']);
 
 /** Optionally you may enable logging */
@@ -79,7 +76,7 @@ try {
     );
     print_r($process);
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addProcess: '.$e->getMessage().PHP_EOL);
 }
 
@@ -96,7 +93,7 @@ try {
     ]));
     print_r($group);
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addGroup: '.$e->getMessage().PHP_EOL);
 }
 
@@ -112,7 +109,7 @@ try {
 
     $result = $apiInstance->addUsersToGroup($group->getData()->getId(), $groupAddUserItem);
     print_r($result);
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addUsersToGroup: '.$e->getMessage().PHP_EOL);
 }
 
@@ -153,7 +150,7 @@ try {
     );
     print_r($endEvent);
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addEvent: '.$e->getMessage().PHP_EOL);
 }
 
@@ -178,7 +175,7 @@ try {
     );
     print_r($userTask);
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addTask: '.$e->getMessage().PHP_EOL);
 }
 
@@ -200,7 +197,7 @@ try {
             )
         );
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addGroupToTask: '.$e->getMessage().PHP_EOL);
 }
 
@@ -246,7 +243,7 @@ try {
     );
 
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addFlow: '.$e->getMessage().PHP_EOL);
 }
 
@@ -268,7 +265,7 @@ try {
             ]
         )
     );
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->eventTrigger: '.$e->getMessage().PHP_EOL);
 }
 
@@ -278,7 +275,7 @@ try {
     print_r($apiInstance->findTaskInstances());
 
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->findTaskInstances: '.$e->getMessage().PHP_EOL);
 }
 
@@ -286,7 +283,7 @@ try {
 
 try {
     print_r($apiInstance->findInstances($process->getData()->getId()));
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->findInstances: '.$e->getMessage().PHP_EOL);
 }
 

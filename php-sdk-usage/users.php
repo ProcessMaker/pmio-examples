@@ -2,15 +2,14 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Swagger\Client\Api\ProcessmakerApi;
+use \ProcessMaker\PMIO\ApiException;
+use \ProcessMaker\PMIO\ProcessmakerApi;
 
-use Swagger\Client\ApiException;
-
-use Swagger\Client\Model\UserAttributes;
-use Swagger\Client\Model\User;
-use Swagger\Client\Model\UserItem;
-use Swagger\Client\Model\UserCreateItem;
-use Swagger\Client\Model\ClientItem;
+use \ProcessMaker\PMIO\Model\UserAttributes;
+use \ProcessMaker\PMIO\Model\User;
+use \ProcessMaker\PMIO\Model\UserItem;
+use \ProcessMaker\PMIO\Model\UserCreateItem;
+use \ProcessMaker\PMIO\Model\ClientItem;
 
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
@@ -22,7 +21,7 @@ $random = rand(1,1000);
 /** Setting up host with base path and access token for API core */
 include "../.env";
 
-$apiInstance->getApiClient()->getConfig()->setHost("http://$host/api/v1");
+$apiInstance->getApiClient()->getConfig()->setHost("https://$host/api/v1");
 $apiInstance->getApiClient()->getConfig()->setAccessToken($key['Test']);
 
 /** Optionally you may enable logging */
@@ -35,7 +34,7 @@ try {
     /** @var User $result */
     $result = $apiInstance->myselfUser();
     print_r($result);
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->myselfUser: '.$e->getMessage().PHP_EOL);
 }
 
@@ -69,7 +68,7 @@ try {
         'data' => new User(['attributes' => $aliceAttr])
     ]));
     print_r($alice);
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->addUsers: '.$e->getMessage().PHP_EOL);
 }
 
@@ -78,7 +77,7 @@ try {
 try {
     print_r($apiInstance->findUserById($bob->getData()->getId()));
     print_r($apiInstance->findUserById($alice->getData()->getId()));
-} catch (Exception $e) {
+} catch (ApiException $e) {
     echo 'Exception when calling ProcessmakerApi->FindUserBy: '.$e->getMessage().PHP_EOL;
     dumpError($e);
 }
@@ -93,7 +92,7 @@ try {
     /** @var ClientItem $aliceCredentials */
     $aliceCredentials = $apiInstance->findClientById($alice->getData()->getId(), $alice->getData()->getAttributes()->getClients()[0]);
     print_r($aliceCredentials);
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, 'Exception when calling ProcessmakerApi->findClientById: '.$e->getMessage().PHP_EOL);
 }
 /** Getting access token for created user Bob */
@@ -116,7 +115,7 @@ try {
     print_r(getCredentials($args_for_bob, $host));
     print_r(getCredentials($args_for_alice, $host));
 
-} catch (Exception $e) {
+} catch (ApiException $e) {
     dumpError($e, "Exception when calling http://$host/oauth/access_token: ".$e->getMessage().PHP_EOL);
 }
 
@@ -145,7 +144,6 @@ function dumpError(ApiException $e, $message="")
         $errorArray = $e->getResponseObject()->getErrors();
         print_r($errorArray);
     }
-    echo $message;
-    exit;
+    die($message);
 }
 ?>
