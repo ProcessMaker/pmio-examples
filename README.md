@@ -15,15 +15,14 @@ To use the ProcessMaker I/O SDK in your project, follow the next steps:
 
 ```
 {
-  "minimum-stability": "dev",
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/colosa/pmio-sdk-php.git"
+      "url": "https://github.com/ProcessMaker/pmio-sdk-php.git"
     }
   ],
   "require": {
-    "colosa/pmio-sdk-php": "1.0.0.x-dev"
+    "colosa/pmio-sdk-php": "*@dev"
   }
 }
 ```
@@ -45,7 +44,7 @@ After installation you need to initialize the SDK using ProcessMaker I/O API key
 You should use the method apiInstance() for SDK initialization.
 
 ```php
-use Swagger\Client\Api\ProcessmakerApi;
+use ProcessMaker\PMIO\ProcessmakerApi;
 
 /** @var ProcessmakerApi $apiInstance */
 $apiInstance = new ProcessmakerApi;
