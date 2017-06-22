@@ -28,7 +28,7 @@ public class OauthExample {
         /** Setting up host with base path and access token for API core */
         ApiClient apiClient = client.getApiClient();
         apiClient.setBasePath("https://"+props.getProperty("host")+"/api/v1");
-        apiClient.setAccessToken(props.getProperty("accesToken"));
+        apiClient.setAccessToken(props.getProperty("accessToken"));
 
         /** Optionally you may enable logging */
         apiClient.setDebugging(true);
