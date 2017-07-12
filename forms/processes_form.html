@@ -21,10 +21,11 @@
       <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
       <script type="text/javascript">
           $(document).ready(function() {
               //gettin servername & token key
-              var host = 'http://<?php echo $host;?>/api/v1/';
+              var host = 'https://<?php echo $host;?>/api/v1/';
               var token = '<?php echo $key;?>';
               var headers =
               {
@@ -73,7 +74,7 @@
                           }
 //		    		alert('Process Instances loaded');
                       }
-                  } else alert('No processes found');
+                  } else alert('There are no processes. Please import a proper BPMN file.');
 
               }).error(function(response){
                   if (typeof response.responseJSON != 'undefined') {

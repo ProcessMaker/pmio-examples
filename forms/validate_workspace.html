@@ -23,9 +23,10 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
       <!-- Include all compiled plugins (below), or include individual files as needed -->
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
       <script type="text/javascript">
           $(document).ready(function() {
-              var host = 'http://<?php echo $host;?>/api/v1/';
+              var host = 'https://<?php echo $host;?>/api/v1/';
               var token = '<?php echo $key;?>';
               var headers =
               {
@@ -289,39 +290,7 @@
 </div>
 
 
-<div class="col-sm-12 logging">
-    <div class="panel panel-default ">
-        <div class="panel-heading"><h4>Logging</h4></div>
-        <div class="panel-body">
-            <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
-            <div id="request" class="collapse">
-                <div class="form-group">
-                    <label for="requestText">Request</label>
-                    <textarea id="requestText" name="request" rows="7" class="form-control"></textarea>
-                </div>
-            </div>
-            <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
-            <div id="response" class="collapse">
-                <div class="form-group">
-                    <label for="responseText">Response</label>
-                    <textarea id="responseText" name="response" rows="7" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="host">Host</label>
-                <div class="input-group">
-                    <div class="input-group-addon">URL</div>
-                    <input id="host" name="host" type="text" class="form-control" value="">
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="token">Token key</label>
-                <textarea id="token" name="token" class="form-control" rows="10"></textarea>
-            </div>
-        </div>
-    </div>
-</div>
+    <?php include('footer.html'); ?>
 
 </div>
 

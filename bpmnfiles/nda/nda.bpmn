@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.6.0">
+  <bpmn:signal id="Signal_17c7miq" name="SlackResponse" />
+  <bpmn:message id="Message_02k11y1" name="sent_approval" />
+  <bpmn:message id="Message_1hchchk" name="sent_decline" />
+  <bpmn:collaboration id="Collaboration_00h2138">
+    <bpmn:participant id="Participant_1bdrytd" name="Company" processRef="Process_1" />
+    <bpmn:participant id="Participant_07gu6c2" name="User" processRef="Process_0z32vgd" />
+    <bpmn:messageFlow id="MessageFlow_00b03ce" sourceRef="StartEvent_0k1d9oy" targetRef="StartEvent_1tw2w9k" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" name="Approver" isExecutable="false">
+    <bpmn:sequenceFlow id="SequenceFlow_0xwzm96" sourceRef="ServiceTask_1x7cudp" targetRef="Task_1b79qc7" />
+    <bpmn:sequenceFlow id="SequenceFlow_0wuiupt" sourceRef="StartEvent_1tw2w9k" targetRef="ExclusiveGateway_0dn13wc" />
+    <bpmn:sequenceFlow id="SequenceFlow_0w9sfxc" sourceRef="ExclusiveGateway_09deokd" targetRef="Task_08e6fcg" />
+    <bpmn:serviceTask id="ServiceTask_0mkuk0k" name="Generate  NDA ">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="docx_template">{template_content_from_drive}</camunda:inputParameter>
+            <camunda:inputParameter name="replacement_array">{replacement_array}</camunda:inputParameter>
+            <camunda:outputParameter name="NDA_result">{docx_result}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Docs\DocxConnector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Address" />
+          <camunda:inputParameter name="RequesterName" />
+          <camunda:inputParameter name="RequesterEmail" />
+          <camunda:inputParameter name="ID" />
+          <camunda:inputParameter name="Phone" />
+          <camunda:inputParameter name="CompanyName" />
+          <camunda:inputParameter name="Customer/Employee" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_03dti7j</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jm0oi7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0dn13wc">
+      <bpmn:incoming>SequenceFlow_0wuiupt</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1rmgwiz</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0i00mnb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_19eptko" name="Generate NDA based on html template">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="document_format">DOCX</camunda:inputParameter>
+            <camunda:inputParameter name="document_template"><![CDATA[<strong><center><p>NON-DISCLOSURE AGREEMENT</p></center></strong>
+<br/>
+<p>{RequesterName} {RequesterAddress} and ProcessMaker Raleigh-Durham 201
+West Main Street, Suite 200 Durham, NC 27701 USA agree to enter into a mutual confidential business relationship for the purpose of cooperation. </p>
+<p>In order to achieve this purpose, each party may acquire valuable trade secrets and/or confidential and proprietary information of the other party or its affiliates. In consideration of the foregoing, it is hereby agreed that:</p>
+<br/>
+<ol>
+<li>   
+Confidential Information means all confidential and proprietary information which is disclosed by one party to the other party and is clearly labeled as confidential or proprietary or is disclosed orally is followed up in writing within 30 days of the oral disclosure identifying the subject matter which is confidential or proprietary.</li>
+<li>
+Each party agrees not to use the Confidential Information for any purpose whatsoever except for the purposes set forth above. Each party agrees not to disclose the Confidential Information to any third person and only disclose the confidential information to its employees and those of its affiliates who have a need to know and who agree to
+keep such information confidential. Each party agrees that it shall protect the confidentiality of, and take reasonable steps to prevent disclosure or unauthorized use of, the Confidential Information in order to prevent it from falling into the public domain or the possession of persons not legally bound to maintain its confidentiality, provided that in no event shall such party's obligations exceed the reasonable standard of care taken to protect its own confidential information of like importance. Each party will promptly advise the other party in writing of any misappropriation or misuse by any person of such Confidential Information and provide assistance to the injured party in any legal proceedings related thereto. Each party acknowledges that its obligations hereunder survive in accordance with the terms hereof, notwithstanding the termination of the business relationship of the parties,
+for a period of two (2) years following the last disclosure of Confidential Information by the other party hereunder.</li>
+<li>
+No copies of any Confidential Information may be made except to implement the purposes of this Agreement. Any materials, documents, notes, memoranda, software code, drawings, sketches and other tangible items containing, consisting of or relating to the Confidential
+Information of a party which are furnished hereunder to the other party, or are in the possession of the other party, remain the property of the party which disclosed the Confidential Information and shall be promptly returned to such party upon the disclosing party’s request therefore. Nothing contained in this Agreement shall be construed as granting any rights, by license or otherwise, in any Confidential Information except as  pecified in this Agreement. </li>
+<li>
+Each party's obligations under this Agreement shall not apply to information which: (a) is known by the receiving party or is publicly available at the time of disclosure; (b) becomes publicly available after disclosure by the disclosing party to the receiving party
+through no act of either party; (c) is hereafter rightfully furnished to the receiving party by a third party without restriction as to use or disclosure; (d) is disclosed with the prior written consent of the disclosing party; (e) is information that was independently developed by the receiving party; or (f) is required to be disclosed pursuant to any judicial or administrative proceeding, provided that the receiving party promptly notifies the disclosing party of
+such action and gives the disclosing party the opportunity to seek any legal remedies to maintain such information in confidence.</li>
+<li>   
+Nothing in this Agreement shall obligate either party to disclose any information to the other party or enter into any other agreement with the other party. Each party acknowledges that if
+the other party is required to bring an action to enforce the provisions of this Agreement, the damages will be irreparable and difficult to measure and that the other party shall be entitled to equitable relief including a preliminary injunction in addition to any other relief available. Should litigation arise concerning this Agreement, the prevailing party shall be entitled to its attorneys' fees and court costs in addition to any other relief which may be awarded. This Agreement shall be governed by Arizona law without regard to provisions concerning conflicts of laws. This Agreement and any exhibits attached hereto are the complete and exclusive statement regarding the subject matter of this Agreement and supercede all prior agreements, understandings and communications, oral and written, between the parties
+regarding the subject matter of this Agreement. A waiver of any breach or failure to enforce any of the terms and conditions of this Agreement at any time shall not in any way affect, limit or waive a party's right thereafter to enforce and compel compliance with this Agreement. No modification of this Agreement is effective unless in writing and signed by both parties. The obligations and benefits of this Agreement shall be binding upon and inure to the benefit of the parties and their respective successors, assigns and representatives.
+</li>
+</ol>
+<br/>
+<br/>
+{RequesterCompanyName}  
+<br/>  
+{RequesterName}
+<br/>
+{RequesterAddress}
+<br/>
+{RequesterPhone}
+<br/>
+{RequesterID}
+<br/>  
+Signature 
+<br/>
+<br/>
+ <br/>
+<p>ProcessMaker Raleigh-Durham 201  West Main Street, Suite 200 Durham, NC 27701 USA.</p>
+<p>Julia Zagoruyko</p>
+<br/>
+Signature 
+]]></camunda:inputParameter>
+            <camunda:inputParameter name="options"><![CDATA[{"orientation": "portrait", "size":"A4","filename":"NDA_from_html"}]]></camunda:inputParameter>
+            <camunda:outputParameter name="NDA_result">{file_content}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Docs\HTMLDocConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0i00mnb</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_063hs5v</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1jm0oi7" sourceRef="ServiceTask_0mkuk0k" targetRef="ExclusiveGateway_09deokd" />
+    <bpmn:sequenceFlow id="SequenceFlow_1rmgwiz" name="Business" sourceRef="ExclusiveGateway_0dn13wc" targetRef="Task_1qdiki1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[template="customer"]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0i00mnb" name="Employee" sourceRef="ExclusiveGateway_0dn13wc" targetRef="Task_19eptko">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[template="employee"]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_063hs5v" sourceRef="Task_19eptko" targetRef="ExclusiveGateway_09deokd" />
+    <bpmn:sequenceFlow id="SequenceFlow_0lfwmtu" sourceRef="Task_08e6fcg" targetRef="ServiceTask_1x7cudp" />
+    <bpmn:serviceTask id="Task_1b79qc7" name="Send email to the requester">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">{RequesterEmail}</camunda:inputParameter>
+            <camunda:inputParameter name="body"><![CDATA[Hello {RequesterName},
+Thank you for you interest for our company
+You copy of NDA is shared with your email {RequesterEmail} and located here {GoogleDocLink}
+Please review and sign the NDA before we will proceed with your data.
+Best regards,
+]]></camunda:inputParameter>
+            <camunda:inputParameter name="to_name">{RequesterFullname}</camunda:inputParameter>
+            <camunda:inputParameter name="subj">Notification to requester</camunda:inputParameter>
+            <camunda:inputParameter name="options"><![CDATA[{"mail_driver":"log"}]]></camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>SendMailConnector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="GoogleDocLink" />
+          <camunda:inputParameter name="RequesterEmail" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0xwzm96</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0oz26so</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_0mykg3v" name="Check NDA status" camunda:candidateUsers="test">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="FileID" />
+          <camunda:formField id="DocumentStatus" label="Signed/Unsigned" type="string" defaultValue="Signed" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0oz26so</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0o2fxzv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0oz26so" sourceRef="Task_1b79qc7" targetRef="Task_0mykg3v" />
+    <bpmn:sequenceFlow id="SequenceFlow_0o2fxzv" sourceRef="Task_0mykg3v" targetRef="ExclusiveGateway_06lnooa" />
+    <bpmn:sequenceFlow id="SequenceFlow_0xu7iue" name="signed" sourceRef="ExclusiveGateway_06lnooa" targetRef="Task_05g0avv">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">signed=1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0d83gp7" name="Unsigned" sourceRef="ExclusiveGateway_06lnooa" targetRef="ServiceTask_05sy3xw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">signed=0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0swhjx9" sourceRef="Task_05g0avv" targetRef="EndEvent_1vo33gw" />
+    <bpmn:sequenceFlow id="SequenceFlow_0utb20d" sourceRef="ServiceTask_05sy3xw" targetRef="EndEvent_1vo33gw" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_06lnooa">
+      <bpmn:incoming>SequenceFlow_0o2fxzv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0xu7iue</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0d83gp7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ServiceTask_1x7cudp" name="Set permission ">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="client_id">{client_id}</camunda:inputParameter>
+            <camunda:inputParameter name="client_secret">{client_secret}</camunda:inputParameter>
+            <camunda:inputParameter name="refresh_token">{refresh_token}</camunda:inputParameter>
+            <camunda:inputParameter name="file_id">{NDA_docx_result_file_id}</camunda:inputParameter>
+            <camunda:inputParameter name="permission_list"><![CDATA[[{"sendNotificationEmail":false,"role":"reader","type":"user", "emailAddress":"egor.admin@gmail.com"}]]]></camunda:inputParameter>
+            <camunda:inputParameter name="method">create</camunda:inputParameter>
+            <camunda:outputParameter name="GoogleDocLink">{share_link}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>GoogleDrive\GDPermissionsConnector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="File_name" />
+          <camunda:inputParameter name="RequesterEmail" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0lfwmtu</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0xwzm96</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_05g0avv" name="Add to the file name mark  &#34;Signed&#34;">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="client_id">{client_id}</camunda:inputParameter>
+            <camunda:inputParameter name="client_secret">{client_secret}</camunda:inputParameter>
+            <camunda:inputParameter name="refresh_token">{refresh_token}</camunda:inputParameter>
+            <camunda:inputParameter name="method">update</camunda:inputParameter>
+            <camunda:inputParameter name="file_id">{NDA_docx_result_file_id}</camunda:inputParameter>
+            <camunda:inputParameter name="new_name">{RequesterName}_NDA_docx_result_Signed.docx</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>GoogleDrive\GDConnector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="GoogleDocLink" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0xu7iue</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0swhjx9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_05sy3xw" name="Add to the file name mark &#34;UnSigned&#34;">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="client_id">{client_id}</camunda:inputParameter>
+            <camunda:inputParameter name="client_secret">{client_secret}</camunda:inputParameter>
+            <camunda:inputParameter name="refresh_token">{refresh_token}</camunda:inputParameter>
+            <camunda:inputParameter name="method">update</camunda:inputParameter>
+            <camunda:inputParameter name="file_id">{NDA_docx_result_file_id}</camunda:inputParameter>
+            <camunda:inputParameter name="new_name">{RequesterName}_NDA_docx_result_UnSigned.docx</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>GoogleDrive\GDConnector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="GoogleDocLink" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0d83gp7</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0utb20d</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1vo33gw">
+      <bpmn:incoming>SequenceFlow_0swhjx9</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0utb20d</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_1tw2w9k" name="NDA Request">
+      <bpmn:outgoing>SequenceFlow_0wuiupt</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_17z26qa" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_1qdiki1" name="Read template from the Google Drive">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="file_name">NON-DISCLOSURE AGREEMENT TEMPLATE.docx</camunda:inputParameter>
+            <camunda:inputParameter name="client_id">{client_id}</camunda:inputParameter>
+            <camunda:inputParameter name="client_secret">{client_secret}</camunda:inputParameter>
+            <camunda:inputParameter name="refresh_token">{refresh_token}</camunda:inputParameter>
+            <camunda:outputParameter name="template_content_from_drive">{file_content_from_drive}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>GoogleDrive\GDReaderConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1rmgwiz</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_03dti7j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_09deokd">
+      <bpmn:incoming>SequenceFlow_1jm0oi7</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_063hs5v</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0w9sfxc</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_08e6fcg" name="Upload generated NDA to Google Drive">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="client_id">{client_id}</camunda:inputParameter>
+            <camunda:inputParameter name="client_secret">{client_secret}</camunda:inputParameter>
+            <camunda:inputParameter name="refresh_token">{refresh_token}</camunda:inputParameter>
+            <camunda:inputParameter name="method">write</camunda:inputParameter>
+            <camunda:inputParameter name="file_content">{NDA_result}</camunda:inputParameter>
+            <camunda:inputParameter name="file_name">NDA_docx_result.docx</camunda:inputParameter>
+            <camunda:inputParameter name="folder_name">NDA docx result</camunda:inputParameter>
+            <camunda:outputParameter name="NDA_docx_result_file_id">{file_id}</camunda:outputParameter>
+            <camunda:outputParameter name="NDA_docx_result_folder_id">{folder_id}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>GoogleDrive\GDConnector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="FileName" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0w9sfxc</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0lfwmtu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_03dti7j" sourceRef="Task_1qdiki1" targetRef="ServiceTask_0mkuk0k" />
+  </bpmn:process>
+  <bpmn:process id="Process_0z32vgd" name="Requester" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="NDA form request">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+        </camunda:properties>
+        <camunda:formData>
+          <camunda:formField id="Address" type="string" />
+          <camunda:formField id="RequesterName" type="string" />
+          <camunda:formField id="RequesterEmail" type="string" />
+          <camunda:formField id="ID" type="string" />
+          <camunda:formField id="Phone" type="enum" />
+          <camunda:formField id="CompanyName" type="string" />
+          <camunda:formField id="customer/employee" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_1qiz5yv</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1gn47r9" name="End">
+      <bpmn:incoming>SequenceFlow_0b8dp8u</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateThrowEvent id="StartEvent_0k1d9oy" name="Google Form Request sent">
+      <bpmn:extensionElements>
+        <camunda:field name="original_instance_id">        <camunda:string>{my_process_instance_id}</camunda:string>
+</camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1qiz5yv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0b8dp8u</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_17z26qa" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1qiz5yv" sourceRef="StartEvent_1" targetRef="StartEvent_0k1d9oy" />
+    <bpmn:sequenceFlow id="SequenceFlow_0b8dp8u" sourceRef="StartEvent_0k1d9oy" targetRef="EndEvent_1gn47r9" />
+  </bpmn:process>
+  <bpmn:message id="Message_1s3cle3" name="slack_approve_decision" />
+  <bpmn:message id="Message_171vqg5" name="slack_response" />
+  <bpmn:message id="Message_11qolhi" name="initiate_request" />
+  <bpmn:message id="Message_17z26qa" name="form_request_message" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_00h2138">
+      <bpmndi:BPMNShape id="Participant_1bdrytd_di" bpmnElement="Participant_1bdrytd">
+        <dc:Bounds x="-58" y="288" width="1524" height="620" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="5" y="148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-22" y="184" width="89" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_07gu6c2_di" bpmnElement="Participant_07gu6c2">
+        <dc:Bounds x="-58" y="33" width="1103" height="252" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1qiz5yv_di" bpmnElement="SequenceFlow_1qiz5yv">
+        <di:waypoint xsi:type="dc:Point" x="41" y="166" />
+        <di:waypoint xsi:type="dc:Point" x="280" y="166" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="161" y="151" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_1k1fcld_di" bpmnElement="StartEvent_0k1d9oy">
+        <dc:Bounds x="280" y="148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="264" y="184" width="68" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1gn47r9_di" bpmnElement="EndEvent_1gn47r9">
+        <dc:Bounds x="503" y="148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="512" y="184" width="20" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0b8dp8u_di" bpmnElement="SequenceFlow_0b8dp8u">
+        <di:waypoint xsi:type="dc:Point" x="316" y="166" />
+        <di:waypoint xsi:type="dc:Point" x="503" y="166" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="410" y="151" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0mkuk0k_di" bpmnElement="ServiceTask_0mkuk0k">
+        <dc:Bounds x="342" y="491" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1x7cudp_di" bpmnElement="ServiceTask_1x7cudp">
+        <dc:Bounds x="561" y="754" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xwzm96_di" bpmnElement="SequenceFlow_0xwzm96">
+        <di:waypoint xsi:type="dc:Point" x="661" y="794" />
+        <di:waypoint xsi:type="dc:Point" x="700" y="794" />
+        <di:waypoint xsi:type="dc:Point" x="700" y="794" />
+        <di:waypoint xsi:type="dc:Point" x="738" y="794" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="715" y="794" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0os2tev_di" bpmnElement="Task_1b79qc7">
+        <dc:Bounds x="738" y="754" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1pawanw_di" bpmnElement="StartEvent_1tw2w9k">
+        <dc:Bounds x="21" y="613" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4" y="649" width="70" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_00b03ce_di" bpmnElement="MessageFlow_00b03ce">
+        <di:waypoint xsi:type="dc:Point" x="298" y="184" />
+        <di:waypoint xsi:type="dc:Point" x="298" y="346" />
+        <di:waypoint xsi:type="dc:Point" x="41" y="346" />
+        <di:waypoint xsi:type="dc:Point" x="41" y="614" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="331" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_06lnooa_di" bpmnElement="ExclusiveGateway_06lnooa" isMarkerVisible="true">
+        <dc:Bounds x="936" y="608" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="962" y="658" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xu7iue_di" bpmnElement="SequenceFlow_0xu7iue">
+        <di:waypoint xsi:type="dc:Point" x="961" y="608" />
+        <di:waypoint xsi:type="dc:Point" x="961" y="517" />
+        <di:waypoint xsi:type="dc:Point" x="1023" y="517" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="959" y="588.7599999999999" width="33" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1mo6cip_di" bpmnElement="Task_05g0avv">
+        <dc:Bounds x="1023" y="478" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0oz26so_di" bpmnElement="SequenceFlow_0oz26so">
+        <di:waypoint xsi:type="dc:Point" x="788" y="754" />
+        <di:waypoint xsi:type="dc:Point" x="788" y="725" />
+        <di:waypoint xsi:type="dc:Point" x="788" y="725" />
+        <di:waypoint xsi:type="dc:Point" x="788" y="673" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="803" y="725" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0o2fxzv_di" bpmnElement="SequenceFlow_0o2fxzv">
+        <di:waypoint xsi:type="dc:Point" x="838" y="633" />
+        <di:waypoint xsi:type="dc:Point" x="887" y="633" />
+        <di:waypoint xsi:type="dc:Point" x="887" y="633" />
+        <di:waypoint xsi:type="dc:Point" x="936" y="633" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="902" y="633" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_05sy3xw_di" bpmnElement="ServiceTask_05sy3xw">
+        <dc:Bounds x="1023" y="691" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0d83gp7_di" bpmnElement="SequenceFlow_0d83gp7">
+        <di:waypoint xsi:type="dc:Point" x="961" y="658" />
+        <di:waypoint xsi:type="dc:Point" x="961" y="731" />
+        <di:waypoint xsi:type="dc:Point" x="1023" y="731" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="950" y="695" width="51" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1erieo8_di" bpmnElement="Task_0mykg3v">
+        <dc:Bounds x="738" y="593" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1vo33gw_di" bpmnElement="EndEvent_1vo33gw">
+        <dc:Bounds x="1240" y="598" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1259" y="634" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0swhjx9_di" bpmnElement="SequenceFlow_0swhjx9">
+        <di:waypoint xsi:type="dc:Point" x="1124" y="518" />
+        <di:waypoint xsi:type="dc:Point" x="1180" y="518" />
+        <di:waypoint xsi:type="dc:Point" x="1180" y="616" />
+        <di:waypoint xsi:type="dc:Point" x="1240" y="616" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1195" y="567" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0utb20d_di" bpmnElement="SequenceFlow_0utb20d">
+        <di:waypoint xsi:type="dc:Point" x="1123" y="731" />
+        <di:waypoint xsi:type="dc:Point" x="1177" y="731" />
+        <di:waypoint xsi:type="dc:Point" x="1177" y="616" />
+        <di:waypoint xsi:type="dc:Point" x="1240" y="616" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1192" y="673.5" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1dsnono_di" bpmnElement="Task_08e6fcg">
+        <dc:Bounds x="561" y="596" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0dn13wc_di" bpmnElement="ExclusiveGateway_0dn13wc" isMarkerVisible="true">
+        <dc:Bounds x="141.52820512820512" y="611" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="167" y="661" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1rmgwiz_di" bpmnElement="SequenceFlow_1rmgwiz">
+        <di:waypoint xsi:type="dc:Point" x="167" y="611" />
+        <di:waypoint xsi:type="dc:Point" x="167" y="531" />
+        <di:waypoint xsi:type="dc:Point" x="206" y="531" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="562" width="47" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0i00mnb_di" bpmnElement="SequenceFlow_0i00mnb">
+        <di:waypoint xsi:type="dc:Point" x="167" y="661" />
+        <di:waypoint xsi:type="dc:Point" x="167" y="740" />
+        <di:waypoint xsi:type="dc:Point" x="273" y="740" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="700.5" width="49" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_121e7zu_di" bpmnElement="Task_19eptko">
+        <dc:Bounds x="273" y="700" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0wuiupt_di" bpmnElement="SequenceFlow_0wuiupt">
+        <di:waypoint xsi:type="dc:Point" x="57" y="631" />
+        <di:waypoint xsi:type="dc:Point" x="100" y="631" />
+        <di:waypoint xsi:type="dc:Point" x="100" y="636" />
+        <di:waypoint xsi:type="dc:Point" x="142" y="636" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="115" y="633.5" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_09deokd_di" bpmnElement="ExclusiveGateway_09deokd" isMarkerVisible="true">
+        <dc:Bounds x="483" y="611" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="508" y="661" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jm0oi7_di" bpmnElement="SequenceFlow_1jm0oi7">
+        <di:waypoint xsi:type="dc:Point" x="442" y="531" />
+        <di:waypoint xsi:type="dc:Point" x="508" y="531" />
+        <di:waypoint xsi:type="dc:Point" x="508" y="611" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="475" y="516" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_063hs5v_di" bpmnElement="SequenceFlow_063hs5v">
+        <di:waypoint xsi:type="dc:Point" x="373" y="740" />
+        <di:waypoint xsi:type="dc:Point" x="508" y="740" />
+        <di:waypoint xsi:type="dc:Point" x="508" y="661" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="441" y="725" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0w9sfxc_di" bpmnElement="SequenceFlow_0w9sfxc">
+        <di:waypoint xsi:type="dc:Point" x="533" y="636" />
+        <di:waypoint xsi:type="dc:Point" x="561" y="636" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="547" y="621" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lfwmtu_di" bpmnElement="SequenceFlow_0lfwmtu">
+        <di:waypoint xsi:type="dc:Point" x="611" y="676" />
+        <di:waypoint xsi:type="dc:Point" x="611" y="754" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="626" y="715" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0pftoxa_di" bpmnElement="Task_1qdiki1">
+        <dc:Bounds x="206" y="491" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_03dti7j_di" bpmnElement="SequenceFlow_03dti7j">
+        <di:waypoint xsi:type="dc:Point" x="306" y="531" />
+        <di:waypoint xsi:type="dc:Point" x="342" y="531" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="324" y="516" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

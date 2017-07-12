@@ -67,6 +67,6 @@ $apiInstance->getApiClient()->getConfig()->setDebug(true);
 
 ## Usage 
 
-Please read our ProcessMaker [API documentation](https://colosa.github.io/pmio-api-doc/) for a detailed description of the API.
+Please read our ProcessMaker [API documentation](https://docs.api.processmaker.io/) for a detailed description of the API.
 
 Here is a list of [examples](USAGE.md) to help you get started with our PHP SDK.

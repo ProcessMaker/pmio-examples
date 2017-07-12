@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Readme</title>
+
+
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var host = 'https://<?php echo $host;?>/api/v1/';
+            var token = '<?php echo $key; ?>';
+            $('input[name=host]').val(host);
+            $('textarea[name=token]').val(token);
+        });
+    </script>
+</head>
+<body>
+<?php include "header.php";?>
+<div class="text-center">
+    <div class="col-xs-6 col-xs-offset-3 form-horizontal">
+
+        <div class="form-group">
+
+
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading"><h3>BPMN file to start and documentation</h3></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <?php if (isset($_GET['example']) && $_GET['example'] == 'nda'): ?>
+                        <p><a target="_blank" href="https://processmaker.atlassian.net/wiki/spaces/PMIOKB/pages/87812418/NDA+Agreement+Signing+Use+Case+with+Google+API+connectors">Instructions for NDA example</a></p>
+                        <p><a href="/bpmnfiles/nda/nda.bpmn">NDA BPMN file</a></p>
+                        <p><a href="/bpmnfiles/nda/NON-DISCLOSURE-AGREEMENT-TEMPLATE.docx">NDA Document Template</a></p>
+                        <?php elseif (isset($_GET['example']) && $_GET['example'] == 'slack'): ?>
+                        <p><a target="_blank" href="https://processmaker.atlassian.net/wiki/spaces/PMIOKB/pages/87812346/Leave+Absence+Request+Use+case+with+Slack+connectors">Instructions for Slack example</a></p>
+                        <p><a href="/bpmnfiles/slack/slack.bpmn">Slack BPMN file</a></p>
+                        <?php else: ?>
+                        <p><a href="/bpmnfiles/onboarding/onboarding.bpmn">Onboarding BPMN file</a></p>
+                        <p><a target="_blank" href="https://processmaker.atlassian.net/wiki/spaces/PMIOKB/pages/88181951/Onboarding+process+example">Instructions for Onboarding example</a></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <a class="btn btn-success import" style="display:none;"><span class="glyphicon glyphicon-download-alt"></span>Start Import</a>
+        </div>
+    </div>
+
+    <?php include('footer.html'); ?>
+
+</div>
+
+</body>
+</html>

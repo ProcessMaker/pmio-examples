@@ -1,0 +1,53 @@
+<div class="col-sm-12 logging">
+    <div class="panel panel-default ">
+        <div class="panel-heading"><h4>Logging</h4></div>
+        <div class="panel-body">
+            <a href="#request" class="btn btn-info" data-toggle="collapse">Show request</a>
+            <div id="request" class="collapse">
+                <div class="form-group">
+                    <label for="requestText">Request</label>
+                    <textarea id="requestText" name="request" rows="7" class="form-control"></textarea>
+                </div>
+            </div>
+            <a href="#response" class="btn btn-info" data-toggle="collapse">Show response</a>
+            <div id="response" class="collapse">
+                <div class="form-group">
+                    <label for="responseText">Response</label>
+                    <textarea id="responseText" name="response" rows="7" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="host">Host</label>
+                <div class="input-group">
+                    <div class="input-group-addon">URL</div>
+                    <input id="host" name="host" type="text" class="form-control" value="">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="token">Token key</label>
+                <textarea id="token" name="token" class="form-control" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-info save-key-host">Save key and host</button>
+</div>
+
+<script>
+    $( document ).ready(function() {
+        if (!navigator.cookieEnabled) alert("Cookies disabled. For proper work please enable.");
+
+        $('button.save-key-host').on('click', function(){
+            var host = $('input[name=host]').val();
+            var token = $('textarea[name=token]').val();
+            if (host.length != 0 & token.length != 0) {
+                var user = $.cookie('user');
+                $.cookie(user, token, { expires : 1, path: '/'});
+                var host = host.match(/https:\/\/([\da-zA-z\.-]+)\//);
+                $.cookie('host', host[1], { expires : 1, path: '/'});
+                alert('Credentials saved!');
+            } else alert('Host or key field is empty');
+
+        });
+    });
+</script>

@@ -3,9 +3,9 @@
         properties([[$class: 'ParametersDefinitionProperty',
             parameterDefinitions: [
                 [$class: 'StringParameterDefinition', defaultValue: '4.0.0.qacore.processmaker.net', description: 'Domain for PMCore installation', name : 'PMCOREHOST'],
-                [$class: 'StringParameterDefinition', defaultValue: 'Default user key', description: 'Auth key for user Test', name : 'KEY_TEST'],
-                [$class: 'StringParameterDefinition', defaultValue: 'Bob key', description: 'Auth key for user Bob', name: 'KEY_BOB'],
-                [$class: 'StringParameterDefinition', defaultValue: 'Alice key', description: 'Auth key for user Alice', name: 'KEY_ALICE']
+                [$class: 'StringParameterDefinition', defaultValue: 'Default_user_key', description: 'Auth key for user Test', name : 'KEY_TEST'],
+                [$class: 'StringParameterDefinition', defaultValue: 'Bob_key', description: 'Auth key for user Bob', name: 'KEY_BOB'],
+                [$class: 'StringParameterDefinition', defaultValue: 'Alice_key', description: 'Auth key for user Alice', name: 'KEY_ALICE']
             ]
         ]]);
 
@@ -55,7 +55,7 @@ try {
         stage('Acceptance Test') {
         wrap([$class: 'AnsiColorBuildWrapper']) {
 
-            def result = sh(script: "curl -v ${deploydomain}/index.php |grep '${actual_key}'", returnStdout: true).trim();
+            def result = sh(script: "curl -v '${deploydomain}/?host=${params.PMCOREHOST}&Test=${actual_key}' |grep '${actual_key}'", returnStdout: true).trim();
             echo 'Key found: ' + result
             if (result == '') {
                 throw new Exception('Cannot find Access Key in E2E scenario')
@@ -74,7 +74,8 @@ try {
             )
     }
 } catch(error) {
-        echo error
+        println(error.getMessage());
+
     currentBuild.result = "FAILED"
     hipchatSend (color: 'RED', notify: true, room: 'pm.io', textFormat: false, failOnError: false,
         message: "<img src='http://i.istockimg.com/file_thumbview_approve/86219539/3/stock-illustration-86219539-cute-cartoon-piggy.jpg' width=50 height=50 align='left'>$env.JOB_NAME [#${env.BUILD_NUMBER}] - FAILED (<a href='${env.BUILD_URL}'>Open</a>)"

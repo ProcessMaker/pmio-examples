@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.2">
+  <bpmn:signal id="Signal_17c7miq" name="SlackResponse" />
+  <bpmn:message id="Message_02k11y1" name="sent_approval" />
+  <bpmn:message id="Message_1hchchk" name="sent_decline" />
+  <bpmn:collaboration id="Collaboration_00h2138">
+    <bpmn:participant id="Participant_1bdrytd" name="Approver" processRef="Process_1" />
+    <bpmn:participant id="Participant_07gu6c2" name="Requester" processRef="Process_0z32vgd" />
+    <bpmn:participant id="Participant_1gz1ayk" name="Slack Action Receiver" processRef="Process_0q74p8e" />
+    <bpmn:messageFlow id="MessageFlow_1s50jkj" sourceRef="StartEvent_0k1d9oy" targetRef="StartEvent_1tw2w9k" />
+    <bpmn:messageFlow id="MessageFlow_06gnket" sourceRef="StartEvent_1su1n95" targetRef="IntermediateThrowEvent_0c4x1vs" />
+    <bpmn:messageFlow id="MessageFlow_0vdg1p7" sourceRef="StartEvent_1vrac1o" targetRef="IntermediateThrowEvent_0qdx3vk" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" name="Approver" isExecutable="false">
+    <bpmn:sequenceFlow id="SequenceFlow_0rronwh" name="No" sourceRef="ExclusiveGateway_1vx9o3l" targetRef="Task_1j28ste">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[status="rejected"]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:startEvent id="StartEvent_1tw2w9k" name="Approve Request">
+      <bpmn:outgoing>SequenceFlow_1f0z2xr</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_11qolhi" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0mg1hp0" sourceRef="StartEvent_1su1n95" targetRef="EndEvent_0olytzh" />
+    <bpmn:endEvent id="EndEvent_0olytzh" name="End">
+      <bpmn:incoming>SequenceFlow_0mg1hp0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateThrowEvent id="StartEvent_1su1n95" name="Decision made">
+      <bpmn:extensionElements>
+        <camunda:field name="AppNumber">        <camunda:string>{AppNumber}</camunda:string>
+</camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_06677ii</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1o48sjf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0mg1hp0</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1s3cle3">
+        <bpmn:extensionElements>
+          <camunda:connector>
+            <camunda:inputOutput>
+              <camunda:inputParameter name="AppNumber">{AppNumber}</camunda:inputParameter>
+            </camunda:inputOutput>
+            <camunda:connectorId>CorrelationKeys</camunda:connectorId>
+          </camunda:connector>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1f0z2xr" sourceRef="StartEvent_1tw2w9k" targetRef="IntermediateThrowEvent_0qdx3vk" />
+    <bpmn:sequenceFlow id="SequenceFlow_1je6gza" sourceRef="IntermediateThrowEvent_0qdx3vk" targetRef="ExclusiveGateway_1vx9o3l" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1vx9o3l" name="Approved?">
+      <bpmn:incoming>SequenceFlow_1je6gza</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rronwh</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1wipuj3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0qdx3vk" name="Got Slack Response">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="status" />
+          <camunda:outputParameter name="username" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1f0z2xr</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1je6gza</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_171vqg5" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1wipuj3" name="Yes" sourceRef="ExclusiveGateway_1vx9o3l" targetRef="Task_0k3k4nc">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[status="approved"]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_06677ii" sourceRef="Task_0k3k4nc" targetRef="StartEvent_1su1n95" />
+    <bpmn:sequenceFlow id="SequenceFlow_1o48sjf" sourceRef="Task_1j28ste" targetRef="StartEvent_1su1n95" />
+    <bpmn:serviceTask id="Task_0k3k4nc" name="Send Approval" camunda:asyncBefore="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="text"><![CDATA[Hello {user_name},
+
+We just wanted to let you know, you have the best boss in the world!
+
+Your request for time off, from {TimeOffDateStart} until {TimeOffDateEnd} has been approved by {username}!
+
+For your records, the case number is {AppNumber}.
+
+Enjoy your time off!
+]]></camunda:inputParameter>
+            <camunda:inputParameter name="api_url">https://slack.com/api/chat.postMessage</camunda:inputParameter>
+            <camunda:inputParameter name="channel">@{user_name}</camunda:inputParameter>
+            <camunda:inputParameter name="token">{bot_token}</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Slack\ApiConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1wipuj3</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_06677ii</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_1j28ste" name="Send Decline" camunda:asyncBefore="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="api_url">https://slack.com/api/chat.postMessage</camunda:inputParameter>
+            <camunda:inputParameter name="text"><![CDATA[Hello {user_name},
+
+We regret to inform you that your have the bad boss!
+
+Your request for time off has been rejected by {username}.
+
+For your records, the case number is {AppNumber}.
+
+Better luck next time!]]></camunda:inputParameter>
+            <camunda:inputParameter name="channel">@{user_name}</camunda:inputParameter>
+            <camunda:inputParameter name="token">{bot_token}</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Slack\ApiConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0rronwh</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1o48sjf</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:process id="Process_0z32vgd" name="Requester" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Time Off Request">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_1qiz5yv</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1qiz5yv" sourceRef="StartEvent_1" targetRef="Task_0dugmcj" />
+    <bpmn:sequenceFlow id="SequenceFlow_0dvvjws" sourceRef="StartEvent_0k1d9oy" targetRef="Task_08nvxov" />
+    <bpmn:sequenceFlow id="SequenceFlow_1klkw3l" sourceRef="IntermediateThrowEvent_0c4x1vs" targetRef="EndEvent_1gn47r9" />
+    <bpmn:endEvent id="EndEvent_1gn47r9" name="End">
+      <bpmn:incoming>SequenceFlow_1klkw3l</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateThrowEvent id="StartEvent_0k1d9oy" name="Slack Request Sent">
+      <bpmn:extensionElements>
+        <camunda:field name="original_instance_id">        <camunda:string>{my_process_instance_id}</camunda:string>
+</camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_185qup9</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0dvvjws</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_11qolhi" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:serviceTask id="Task_0ue583n" name="Send Time Off Request" camunda:asyncBefore="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="api_url">https://slack.com/api/chat.postMessage</camunda:inputParameter>
+            <camunda:inputParameter name="text"><![CDATA[Hello BigBoss,
+A new request for Time Off has been initiated by {user_name}.
+{user_name} has requested to take time off from {TimeOffDateStart} until {TimeOffDateEnd}.
+
+For your records, the case number is {AppNumber}.
+]]></camunda:inputParameter>
+            <camunda:inputParameter name="attachments"><![CDATA[[{"text":"Would you like to approve or reject this request?",
+"callback_id": "{AppNumber}",
+"actions": [
+                {
+                    "name": "status",
+                    "text": "Approve",
+                    "type": "button",
+                    "value": "approved"
+                },
+                {
+                    "name": "status",
+                    "text": "Reject",
+                    "type": "button",
+                    "value": "rejected"
+                }
+]
+}]]]></camunda:inputParameter>
+            <camunda:inputParameter name="token">{bot_token}</camunda:inputParameter>
+            <camunda:inputParameter name="channel">{channel_name}</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Slack\ApiConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1rnrdrp</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_185qup9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="Task_0dugmcj" name="Initiate SlackBot" scriptFormat="LUA">
+      <bpmn:incoming>SequenceFlow_1qiz5yv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1rnrdrp</bpmn:outgoing>
+      <bpmn:script><![CDATA[math.randomseed( os.time() )
+aData.AppNumber=math.random(100000,999999)
+
+             function explode(div,str)
+                  if (div=='') then return false end
+                  local pos,arr = 0,{}
+                  for st,sp in function() return string.find(str,div,pos,true) end do
+                    table.insert(arr,string.sub(str,pos,st-1))
+                    pos = sp + 1
+                  end
+                  table.insert(arr,string.sub(str,pos))
+                  return arr
+             end
+             aTime = explode(" ", aData.text)
+             aData.TimeOffDateStart = aTime[1]
+             aData.TimeOffDateEnd = aTime[2]
+
+aData.bot_token="xoxb-161650023927-8rz0xMGgrwsgbGUJj5lMaWiH";
+
+aData.channel_name="#testprocess";]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0c4x1vs" name="Slack Decision Received">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="status" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0222yrj</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1klkw3l</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1s3cle3" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0222yrj" sourceRef="Task_08nvxov" targetRef="IntermediateThrowEvent_0c4x1vs" />
+    <bpmn:serviceTask id="Task_08nvxov" name="Send Confirmation Request Accepted">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="webhook_url">{response_url}</camunda:inputParameter>
+            <camunda:inputParameter name="text"><![CDATA[Your request is under review.
+
+For your records, the case number is {AppNumber}.
+
+]]></camunda:inputParameter>
+            <camunda:inputParameter name="options"><![CDATA[{"ignore_exception":true}]]></camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Slack\SendMessageConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0dvvjws</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0222yrj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1rnrdrp" sourceRef="Task_0dugmcj" targetRef="Task_0ue583n" />
+    <bpmn:sequenceFlow id="SequenceFlow_185qup9" sourceRef="Task_0ue583n" targetRef="StartEvent_0k1d9oy" />
+  </bpmn:process>
+  <bpmn:process id="Process_0q74p8e" name="Slack Action Receiver" isExecutable="false">
+    <bpmn:sequenceFlow id="SequenceFlow_17bkbxn" sourceRef="StartEvent_06vhk1l" targetRef="Task_0m8vm53" />
+    <bpmn:sequenceFlow id="SequenceFlow_0fxna2d" sourceRef="Task_0m8vm53" targetRef="StartEvent_1vrac1o" />
+    <bpmn:sequenceFlow id="SequenceFlow_1nu6onc" sourceRef="StartEvent_1vrac1o" targetRef="Task_0q10cso" />
+    <bpmn:intermediateThrowEvent id="StartEvent_1vrac1o" name="Got Slack Callback">
+      <bpmn:extensionElements>
+        <camunda:field name="AppNumber">        <camunda:string>{AppNumber}</camunda:string>
+</camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0fxna2d</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1nu6onc</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_171vqg5">
+        <bpmn:extensionElements>
+          <camunda:connector>
+            <camunda:inputOutput>
+              <camunda:inputParameter name="AppNumber">{AppNumber}</camunda:inputParameter>
+            </camunda:inputOutput>
+            <camunda:connectorId>CorrelationKeys</camunda:connectorId>
+          </camunda:connector>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:scriptTask id="Task_0m8vm53" name="Parse Payload" scriptFormat="LUA">
+      <bpmn:incoming>SequenceFlow_17bkbxn</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0fxna2d</bpmn:outgoing>
+      <bpmn:script><![CDATA[
+
+local json = {}
+
+
+-- Internal functions.
+
+local function kind_of(obj)
+  if type(obj) ~= 'table' then return type(obj) end
+  local i = 1
+  for _ in pairs(obj) do
+    if obj[i] ~= nil then i = i + 1 else return 'table' end
+  end
+  if i == 1 then return 'table' else return 'array' end
+end
+
+local function escape_str(s)
+  local in_char  = {'\\', '"', '/', '\b', '\f', '\n', '\r', '\t'}
+  local out_char = {'\\', '"', '/',  'b',  'f',  'n',  'r',  't'}
+  for i, c in ipairs(in_char) do
+    s = s:gsub(c, '\\' .. out_char[i])
+  end
+  return s
+end
+
+-- Returns pos, did_find; there are two cases:
+-- 1. Delimiter found: pos = pos after leading space + delim; did_find = true.
+-- 2. Delimiter not found: pos = pos after leading space;     did_find = false.
+-- This throws an error if err_if_missing is true and the delim is not found.
+local function skip_delim(str, pos, delim, err_if_missing)
+  pos = pos + #str:match('^%s*', pos)
+  if str:sub(pos, pos) ~= delim then
+    if err_if_missing then
+      error('Expected ' .. delim .. ' near position ' .. pos)
+    end
+    return pos, false
+  end
+  return pos + 1, true
+end
+
+-- Expects the given pos to be the first character after the opening quote.
+-- Returns val, pos; the returned pos is after the closing quote character.
+local function parse_str_val(str, pos, val)
+  val = val or ''
+  local early_end_error = 'End of input found while parsing string.'
+  if pos > #str then error(early_end_error) end
+  local c = str:sub(pos, pos)
+  if c == '"'  then return val, pos + 1 end
+  if c ~= '\\' then return parse_str_val(str, pos + 1, val .. c) end
+  -- We must have a \ character.
+  local esc_map = {b = '\b', f = '\f', n = '\n', r = '\r', t = '\t'}
+  local nextc = str:sub(pos + 1, pos + 1)
+  if not nextc then error(early_end_error) end
+  return parse_str_val(str, pos + 2, val .. (esc_map[nextc] or nextc))
+end
+
+-- Returns val, pos; the returned pos is after the number's final character.
+local function parse_num_val(str, pos)
+  local num_str = str:match('^-?%d+%.?%d*[eE]?[+-]?%d*', pos)
+  local val = tonumber(num_str)
+  if not val then error('Error parsing number at position ' .. pos .. '.') end
+  return val, pos + #num_str
+end
+
+
+-- Public values and functions.
+
+json.null = {}  -- This is a one-off table to represent the null value.
+
+function json.parse(str, pos, end_delim)
+  pos = pos or 1
+  if pos > #str then error('Reached unexpected end of input.') end
+  local pos = pos + #str:match('^%s*', pos)  -- Skip whitespace.
+  local first = str:sub(pos, pos)
+  if first == '{' then  -- Parse an object.
+    local obj, key, delim_found = {}, true, true
+    pos = pos + 1
+    while true do
+      key, pos = json.parse(str, pos, '}')
+      if key == nil then return obj, pos end
+      if not delim_found then error('Comma missing between object items.') end
+      pos = skip_delim(str, pos, ':', true)  -- true -> error if missing.
+      obj[key], pos = json.parse(str, pos)
+      pos, delim_found = skip_delim(str, pos, ',')
+    end
+  elseif first == '[' then  -- Parse an array.
+    local arr, val, delim_found = {}, true, true
+    pos = pos + 1
+    while true do
+      val, pos = json.parse(str, pos, ']')
+      if val == nil then return arr, pos end
+      if not delim_found then error('Comma missing between array items.') end
+      arr[#arr + 1] = val
+      pos, delim_found = skip_delim(str, pos, ',')
+    end
+  elseif first == '"' then  -- Parse a string.
+    return parse_str_val(str, pos + 1)
+  elseif first == '-' or first:match('%d') then  -- Parse a number.
+    return parse_num_val(str, pos)
+  elseif first == end_delim then  -- End of an object or array.
+    return nil, pos + 1
+  else  -- Parse true, false, or null.
+    local literals = {['true'] = true, ['false'] = false, ['null'] = json.null}
+    for lit_str, lit_val in pairs(literals) do
+      local lit_end = pos + #lit_str - 1
+      if str:sub(pos, lit_end) == lit_str then return lit_val, lit_end + 1 end
+    end
+    local pos_info_str = 'position ' .. pos .. ': ' .. str:sub(pos, pos + 10)
+    error('Invalid json syntax starting at ' .. pos_info_str)
+  end
+end
+
+
+ aData.payload=json.parse(aData.payload)
+
+--$payload = json_decode($aData['payload']);
+--aData.payload2 = ""
+
+aData.AppNumber=aData.payload.callback_id;
+aData.status=aData.payload.actions[1].value;
+aData.response_url=aData.payload.response_url;
+aData.username=aData.payload.user.name;
+
+aData.payload = nul
+]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:startEvent id="StartEvent_06vhk1l" name="Slack Response Received">
+      <bpmn:outgoing>SequenceFlow_17bkbxn</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0kwuh29" sourceRef="Task_0q10cso" targetRef="EndEvent_0m674wr" />
+    <bpmn:endEvent id="EndEvent_0m674wr" name="End">
+      <bpmn:incoming>SequenceFlow_0kwuh29</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_0q10cso" name="Response Confirmation" camunda:asyncBefore="true">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="webhook_url">{response_url}</camunda:inputParameter>
+            <camunda:inputParameter name="text">:hot_pepper: @{username} responded, thanks for your decision!</camunda:inputParameter>
+            <camunda:inputParameter name="options"><![CDATA[{"ignore_exception":true}]]></camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Slack\SendMessageConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1nu6onc</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0kwuh29</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_1s3cle3" name="slack_approve_decision" />
+  <bpmn:message id="Message_171vqg5" name="slack_response" />
+  <bpmn:message id="Message_11qolhi" name="initiate_request" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_00h2138">
+      <bpmndi:BPMNShape id="Participant_1bdrytd_di" bpmnElement="Participant_1bdrytd">
+        <dc:Bounds x="105" y="260" width="798" height="429" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="168" y="123" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="143" y="159" width="86" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_06vhk1l_di" bpmnElement="StartEvent_06vhk1l">
+        <dc:Bounds x="173" y="771" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="149" y="807" width="83" height="25" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_09x85a5_di" bpmnElement="Task_0m8vm53">
+        <dc:Bounds x="295" y="749" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0vywg9x_di" bpmnElement="Task_0k3k4nc">
+        <dc:Bounds x="519" y="341" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_16a1i1o_di" bpmnElement="Task_1j28ste">
+        <dc:Bounds x="519" y="494" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0olytzh_di" bpmnElement="EndEvent_0olytzh">
+        <dc:Bounds x="826" y="430" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="834" y="466" width="20" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1vx9o3l_di" bpmnElement="ExclusiveGateway_1vx9o3l" isMarkerVisible="true">
+        <dc:Bounds x="427" y="423" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="425" y="473" width="54" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0e50a94_di" bpmnElement="Task_0ue583n">
+        <dc:Bounds x="381" y="101" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0m674wr_di" bpmnElement="EndEvent_0m674wr">
+        <dc:Bounds x="725" y="771" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="733" y="807" width="20" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fxna2d_di" bpmnElement="SequenceFlow_0fxna2d">
+        <di:waypoint xsi:type="dc:Point" x="395" y="789" />
+        <di:waypoint xsi:type="dc:Point" x="464" y="789" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="430" y="774" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1nu6onc_di" bpmnElement="SequenceFlow_1nu6onc">
+        <di:waypoint xsi:type="dc:Point" x="500" y="789" />
+        <di:waypoint xsi:type="dc:Point" x="556" y="789" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="528" y="774" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_07gu6c2_di" bpmnElement="Participant_07gu6c2">
+        <dc:Bounds x="105" y="8" width="799" height="328" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1gz1ayk_di" bpmnElement="Participant_1gz1ayk">
+        <dc:Bounds x="105" y="693" width="693" height="199" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_17bkbxn_di" bpmnElement="SequenceFlow_17bkbxn">
+        <di:waypoint xsi:type="dc:Point" x="209" y="789" />
+        <di:waypoint xsi:type="dc:Point" x="295" y="789" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="252" y="774" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0rronwh_di" bpmnElement="SequenceFlow_0rronwh">
+        <di:waypoint xsi:type="dc:Point" x="452" y="473" />
+        <di:waypoint xsi:type="dc:Point" x="452" y="534" />
+        <di:waypoint xsi:type="dc:Point" x="519" y="534" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="459" y="492.8697916666667" width="15" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1qiz5yv_di" bpmnElement="SequenceFlow_1qiz5yv">
+        <di:waypoint xsi:type="dc:Point" x="204" y="141" />
+        <di:waypoint xsi:type="dc:Point" x="240" y="141" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="222" y="126" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_19c240r_di" bpmnElement="StartEvent_1tw2w9k">
+        <dc:Bounds x="160" y="430" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="135" y="466" width="85" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_1k1fcld_di" bpmnElement="StartEvent_0k1d9oy">
+        <dc:Bounds x="528" y="123" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="509" y="159" width="74" height="25" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_1s50jkj_di" bpmnElement="MessageFlow_1s50jkj">
+        <di:waypoint xsi:type="dc:Point" x="546" y="159" />
+        <di:waypoint xsi:type="dc:Point" x="546" y="295" />
+        <di:waypoint xsi:type="dc:Point" x="181.24613402061857" y="295" />
+        <di:waypoint xsi:type="dc:Point" x="181" y="431" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="364" y="280" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0dfp18u_di" bpmnElement="StartEvent_1su1n95">
+        <dc:Bounds x="742" y="430" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="723" y="466" width="73" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0mg1hp0_di" bpmnElement="SequenceFlow_0mg1hp0">
+        <di:waypoint xsi:type="dc:Point" x="778" y="448" />
+        <di:waypoint xsi:type="dc:Point" x="826" y="448" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="802" y="433" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dvvjws_di" bpmnElement="SequenceFlow_0dvvjws">
+        <di:waypoint xsi:type="dc:Point" x="564" y="141" />
+        <di:waypoint xsi:type="dc:Point" x="596" y="141" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="580" y="126" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1gn47r9_di" bpmnElement="EndEvent_1gn47r9">
+        <dc:Bounds x="821.1813246471227" y="123" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="830" y="159" width="20" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_03thyvw_di" bpmnElement="StartEvent_1vrac1o">
+        <dc:Bounds x="464" y="771" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="456" y="807" width="51" height="25" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1klkw3l_di" bpmnElement="SequenceFlow_1klkw3l">
+        <di:waypoint xsi:type="dc:Point" x="770" y="141" />
+        <di:waypoint xsi:type="dc:Point" x="821" y="141" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="796" y="126" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_140h7n6_di" bpmnElement="IntermediateThrowEvent_0c4x1vs">
+        <dc:Bounds x="734" y="123" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="714" y="159" width="76" height="25" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_06gnket_di" bpmnElement="MessageFlow_06gnket">
+        <di:waypoint xsi:type="dc:Point" x="760" y="430" />
+        <di:waypoint xsi:type="dc:Point" x="760" y="295" />
+        <di:waypoint xsi:type="dc:Point" x="745" y="295" />
+        <di:waypoint xsi:type="dc:Point" x="745" y="157" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="753" y="280" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_0crvu5w_di" bpmnElement="IntermediateThrowEvent_0qdx3vk">
+        <dc:Bounds x="300" y="430" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="292" y="466" width="52" height="25" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1f0z2xr_di" bpmnElement="SequenceFlow_1f0z2xr">
+        <di:waypoint xsi:type="dc:Point" x="196" y="448" />
+        <di:waypoint xsi:type="dc:Point" x="300" y="448" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="248" y="433" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1je6gza_di" bpmnElement="SequenceFlow_1je6gza">
+        <di:waypoint xsi:type="dc:Point" x="336" y="448" />
+        <di:waypoint xsi:type="dc:Point" x="427" y="448" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="382" y="433" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_0vdg1p7_di" bpmnElement="MessageFlow_0vdg1p7">
+        <di:waypoint xsi:type="dc:Point" x="482" y="771" />
+        <di:waypoint xsi:type="dc:Point" x="482" y="619" />
+        <di:waypoint xsi:type="dc:Point" x="313" y="619" />
+        <di:waypoint xsi:type="dc:Point" x="313" y="465" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="398" y="604" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_14djeo9_di" bpmnElement="Task_0dugmcj">
+        <dc:Bounds x="240" y="101" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0222yrj_di" bpmnElement="SequenceFlow_0222yrj">
+        <di:waypoint xsi:type="dc:Point" x="696" y="141" />
+        <di:waypoint xsi:type="dc:Point" x="734" y="141" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="715" y="126" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1gco7je_di" bpmnElement="Task_08nvxov">
+        <dc:Bounds x="596" y="101" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0kwuh29_di" bpmnElement="SequenceFlow_0kwuh29">
+        <di:waypoint xsi:type="dc:Point" x="656" y="789" />
+        <di:waypoint xsi:type="dc:Point" x="725" y="789" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="691" y="774" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0fueb0t_di" bpmnElement="Task_0q10cso">
+        <dc:Bounds x="556" y="749" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1rnrdrp_di" bpmnElement="SequenceFlow_1rnrdrp">
+        <di:waypoint xsi:type="dc:Point" x="340" y="141" />
+        <di:waypoint xsi:type="dc:Point" x="381" y="141" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="361" y="116" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1wipuj3_di" bpmnElement="SequenceFlow_1wipuj3">
+        <di:waypoint xsi:type="dc:Point" x="452" y="423" />
+        <di:waypoint xsi:type="dc:Point" x="452" y="381" />
+        <di:waypoint xsi:type="dc:Point" x="519" y="381" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="458" y="393.61538461538464" width="18" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_06677ii_di" bpmnElement="SequenceFlow_06677ii">
+        <di:waypoint xsi:type="dc:Point" x="619" y="381" />
+        <di:waypoint xsi:type="dc:Point" x="681" y="381" />
+        <di:waypoint xsi:type="dc:Point" x="681" y="448" />
+        <di:waypoint xsi:type="dc:Point" x="742" y="448" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="696" y="414.5" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1o48sjf_di" bpmnElement="SequenceFlow_1o48sjf">
+        <di:waypoint xsi:type="dc:Point" x="619" y="534" />
+        <di:waypoint xsi:type="dc:Point" x="681" y="534" />
+        <di:waypoint xsi:type="dc:Point" x="681" y="448" />
+        <di:waypoint xsi:type="dc:Point" x="742" y="448" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="696" y="491" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_185qup9_di" bpmnElement="SequenceFlow_185qup9">
+        <di:waypoint xsi:type="dc:Point" x="481" y="141" />
+        <di:waypoint xsi:type="dc:Point" x="528" y="141" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="505" y="116" width="0" height="0" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
