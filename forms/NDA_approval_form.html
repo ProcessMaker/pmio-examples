@@ -55,7 +55,7 @@
             $('input[name=host]').val(host);
             $('textarea[name=token]').val(token);
 
-            var delegated_url = host+"task_instances/delegated?per_page=100&include=data_model";
+            var delegated_url = host+"/task_instances/delegated?per_page=100&include=data_model";
             $.ajax({
                 'url':delegated_url,
                 dataType: 'json',
@@ -96,7 +96,7 @@
                     return;
                 }
                 /* Getting DATA from server */
-                var url = host+"task_instances/"+instance+"?include=data_model";
+                var url = host+"/task_instances/"+instance+"?include=data_model";
                 $.ajax({
                     'url':url,
                     dataType: 'json',
@@ -117,7 +117,7 @@
 
             $('body').on('click','a.confirm',function(){
                 var task_instance = $('body').find('select[name=task_instances]').val();
-                var instance_update_url = host+"task_instances/"+task_instance;
+                var instance_update_url = host+"/task_instances/"+task_instance;
                 var items = {};
                 items['signed'] = Number($(this).data('confirm'));
                 //Making our request body and COMPLETE task_instance
@@ -195,7 +195,7 @@
             <a  class="btn btn-success confirm" data-confirm="1" style="display: none;">Approve</a>
         </div>
         <div class="form-group text-center" >
-            <a class="btn btn-success show_logs">Show logs</a>
+            
         </div>
     </div>
 
@@ -222,7 +222,7 @@
                     <label for="host">Host</label>
                     <div class="input-group">
                         <div class="input-group-addon">URL</div>
-                        <input id="host" name="host" type="text" class="form-control" value="">
+                        <input id="host" name="host" type="text" class="form-control" value="" placeholder="https://22qvknfa.api.processmaker.io/api/v1">
 
                     </div>
                 </div>
