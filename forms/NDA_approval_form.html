@@ -146,7 +146,7 @@
                     /*Logging response*/
                     $('textarea[name=response]').html('').val('Response from: \n'+instance_update_url+'\nData in JSON: \n'+JSON.stringify(response.data));
                     /*Logging response*/
-                    window.location.replace("check_nda_status.html?example=nda");
+                    window.location.replace("https://processmaker.github.io/pmio-examples/forms/NDA_approval_form.html");
                 }).error(function(response){
                     if (typeof response.responseJSON != 'undefined') {
                         alert('Request error.\nStatusCode: '+response.responseJSON.errors[0].code+'\nDetails: '+response.responseJSON.errors[0].detail);
@@ -178,7 +178,6 @@
 </head>
 <body>
 
-<?php include "header.php";?>
 <div class="text-center">
     <h3>Check NDA status</h3>
 
