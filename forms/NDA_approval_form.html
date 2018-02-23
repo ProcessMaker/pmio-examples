@@ -203,6 +203,35 @@
         <div class="panel panel-default ">
             <div class="panel-heading"><h4>Settings</h4></div>
             <div class="panel-body">
+                <div class="col-xs-12">
+                    In the ProcessMaker I/O "NDA Request" use case example, this page displays all NDA requests by email address as well as a link to each requester's NDA. Use this page as an NDA requester to view your generated NDA, and then either deny or approve the NDA.
+                </div>
+                <div class="col-xs-12">
+                    <ol>
+                    <li> Verify that the NDA is generated and placed into your Google Drive in a folder called "NDA docx result". The NDA in that folder is named "NDA_docx_result.docx".
+                    </li>
+                        <li>
+                    In the API URL field, enter the URL to your ProcessMaker I/O Environment.</li>
+                        <li>
+                    In the Token key field, enter your ProcessMaker I/O Environment token.</li>
+                        <li>
+                    Click the Save API URL and key button to save these settings.</li>
+                        <li>
+                    Refresh the page.
+                        </li>
+                        <li>
+                    From the Check NDA status list box, select the email address corresponding with your NDA request.
+                        </li>
+                        <li>
+                    Click on the link to open the generated NDA document that is personalized with the information you entered for that process case.
+                        </li>
+                        <li>
+                    Approve or deny the NDA.
+                        </li>
+                        <li>
+                    Return to your Google Drive and look at the how the NDA has been renamed in the "NDA docx resul"` folder. Notice how the NDA has been renamed to "{Requester Full Name}_NDA_docx_result_Signed.docx" or "{Requester Full Name}_NDA_docx_result_Unsigned.docx", depending on whether you approved or declined the NDA.</li>
+                    </ol>
+                </div>
                 <div class="form-group">
                     <label for="host">ProcessMaker I/O Environment</label>
                     <div class="input-group">
