@@ -19,6 +19,8 @@
         //Change this demo data for your own credentials if needed
 
         $(document).ready(function () {
+            $('div.alert').fadeOut();
+            $('button.send').fadeOut();
 
             //Get params from url
             $.urlParam = function(name){
@@ -36,10 +38,10 @@
 
             //Get task for step 3
 
-            if (instanceId !== 'null') {
-
+            if (instanceId !== 'null' && instanceId !== '0') {
+                console.log(instanceId);
                 client
-                    .get('instances/'+instanceId+'/tasks/Task_clarify/task_instances/delegated', { params: {
+                    .get('instances/'+instanceId+'/tasks/RequesterModify/task_instances/delegated', { params: {
                             per_page:1,
                             include:'data_model'
                         }
@@ -67,7 +69,12 @@
                                     $('form').find('input[name='+key+'_search]').attr('checked', prefilledData[key].search);
                                     $('form').find('input[name='+key+'_search]').attr('disabled', 'disabled');
                                 }
+                                $('button.send').fadeIn(300);
 
+
+                            } else {
+                                $('div.alert').addClass('alert-info').html('No data found.').fadeIn(300);
+                                $('form').fadeOut();
                             }
 
                         }
@@ -77,6 +84,9 @@
 
                     });
 
+            } else {
+                 $('div.alert').addClass('alert-warning').html('Please pass instance_id as GET param.').fadeIn(300);
+                $('form').fadeOut();
             }
 
 
@@ -108,10 +118,12 @@
                     .patch('task_instances/'+taskInstanceId+'?include=data_model', data)
                     .then(function (response) {
                         console.log(response);
+                        $('div.alert').addClass('alert-success').html('Data successfully sent.').fadeIn(300);
 
                     })
                     .catch(function (response) {
                         console.log(response);
+                        $('div.alert').addClass('alert-warning').html('Something gonna wrong, please check js console to investigate.').fadeIn(300);
                     });
             });
 
@@ -139,7 +151,7 @@
                     <!--Change this navigation links before publish forms in some other place-->
                     <li><a href="index.html">Request form</a></li>
                     <li ><a href="index1.html">Review Request<span class="sr-only">(current)</span></a></li>
-                    <li class="active"><a href="index2.html">Clarification from the Requestor</a></li>
+                    <li class="active"><a href="index2.html">Requester clarify</a></li>
                     <li><a href="index3.html">Review Information</a></li>
                     <li><a href="index4.html">Review PII Information</a></li>
                     <li><a href="index5.html">Review DSAR Information</a></li>
@@ -149,6 +161,9 @@
         </div><!-- /.container-fluid -->
     </nav>
     <div id="review-request" class="col-xs-6 col-xs-offset-3">
+        <div class="alert " role="alert" style="display: none;">
+
+        </div>
         <form>
             <div class="form-group">
                 <label>First Name</label>

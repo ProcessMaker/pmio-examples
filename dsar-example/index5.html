@@ -16,13 +16,13 @@
         <div class="pull-right">
 
                         <label>
-                            <input type="radio" name="Document_state_${$index+1}" value="keep" checked="checked"> Keep
+                            <input type="radio" name="Document_state_${$index+1}" value="keep"  {%if ($value.Document_state == "keep") %} checked="checked" {%/if%}> Keep
                         </label>
                          <label>
-                            <input type="radio" name="Document_state_${$index+1}" value="modify"> Modify
+                            <input type="radio" name="Document_state_${$index+1}" value="modify" {%if ($value.Document_state == "modify") %} checked="checked" {%/if%} > Modify
                         </label>
                          <label>
-                            <input type="radio" name="Document_state_${$index+1}" value="delete"> Delete
+                            <input type="radio" name="Document_state_${$index+1}" value="delete" {%if ($value.Document_state == "delete") %} checked="checked" {%/if%}> Delete
                         </label>
                     </div>
         </div>
@@ -89,15 +89,33 @@
                 'Authorization': 'Bearer ' + accessToken
             }
         });
-        var responseItems;
+        var item;
         //Change this demo data for your own credentials if needed
 
         $(document).ready(function () {
-            $('div.alert').fadeOut(300);
-            $('button.send').fadeOut(300);
+            $('div.alert').fadeOut();
+            $('button.send').fadeOut();
+
+            //Get params from url
+            $.urlParam = function(name){
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results==null){
+                    return null;
+                }
+                else{
+                    return results[1] || 0;
+                }
+            }
+
+
+            var instanceId = decodeURIComponent($.urlParam('instance_id'));
+
+            //Get task for step 3
+
+            if (instanceId != 'null' && instanceId != 0) {
 
                 client
-                    .get('tasks/ReviewInformation/task_instances/delegated', { params: {
+                    .get('instances/'+instanceId+'/tasks/ManuallyDeleteOrModify/task_instances/delegated', { params: {
                             per_page:1,
                             include:'data_model'
                         }
@@ -111,51 +129,39 @@
                             taskInstanceId = response.data.data[0].id;
 
                             //Check data in datamodel
-                            if (response.data.included[0].attributes.dataModel.request) {
-                                responseItems = response.data.included[0].attributes.dataModel.response_from_classidocs;
-                                console.log(responseItems);
+                            if (response.data.included[0].attributes.dataModel.item) {
+                                item = response.data.included[0].attributes.dataModel.item;
+                                console.log(item);
                                 //convert to list of objects
                                 var result = [];
 
-                                for (var key in responseItems) {
-                                    result.push(responseItems[key]);
-                                }
+                                result.push(item);
                                 console.log(result);
 
                                 $('#classiDocsTmpl').tmpl({result}).appendTo('#objects');
+                                $('input').attr('disabled','disabled');
                                 $('button.send').fadeIn(300);
 
-                            } else {
-
-                                $('div.alert').addClass('alert-info').html('No data found.').fadeIn(300);
                             }
 
+                        } else {
+                            $('.comment').fadeOut();
+
+                            $('div.alert').addClass('alert-info').html('No data found.').fadeIn(300);
                         }
                     })
                     .catch(function(response){
                         console.log(response);
-                        $('div.alert').addClass('alert-warning').html('Something gonna wrong, please check js console to investigate.').fadeIn(300);
+
                     });
 
-        //    }
+            } else {
+                $('div.alert').addClass('alert-warning').html('Please pass instance_id as GET param.').fadeIn(300);
+                $('.comment').fadeOut();
+            }
 
 
             $(document).on('click', 'button.send',function () {
-
-                for (var key in responseItems) {
-                    responseItems[key].Document_state = $('form#objects').find('input[name=Document_state_'+key+']:checked').val();
-
-                    responseItems[key].currentDocument.name = $('form#objects').find('input[name=currentDocument_name_'+key+']').val();
-                    responseItems[key].currentDocument.filePath = $('form#objects').find('input[name=currentDocument_filePath_'+key+']').val();
-                    responseItems[key].currentDocument.workstation = $('form#objects').find('input[name=currentDocument_workstation_'+key+']').val();
-
-
-                    responseItems[key].previousDocument.name = $('form#objects').find('input[name=previousDocument_name_'+key+']').val();
-                    responseItems[key].previousDocument.filePath = $('form#objects').find('input[name=previousDocument_filePath_'+key+']').val();
-                    responseItems[key].previousDocument.workstation = $('form#objects').find('input[name=previousDocument_workstation_'+key+']').val();
-
-                }
-                console.log(responseItems);
 
                 var data = {
                     'data': {
@@ -163,7 +169,7 @@
                         'attributes': {
                             'status':'COMPLETE',
                             'content':{
-                                'response_from_classidocs' : responseItems
+                                'task_6_comment' : $('textarea[name=comment]').val()
                             }
                         }
                     }
@@ -206,9 +212,9 @@
                     <li><a href="index.html">Request form</a></li>
                     <li ><a href="index1.html">Review Request<span class="sr-only">(current)</span></a></li>
                     <li ><a href="index2.html">Requester clarify</a></li>
-                    <li class="active"><a href="index3.html">Review Information</a></li>
-                    <li><a href="index4.html">Review PII Information</a></li>
-                    <li><a href="index5.html">Review DSAR Information</a></li>
+                    <li ><a href="index3.html">Review Information</a></li>
+                    <li ><a href="index4.html">Review PII Information</a></li>
+                    <li class="active"><a href="index5.html">Review DSAR Information</a></li>
                     <!--Change this navigation links before publish forms in some other place-->
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -222,7 +228,14 @@
 
 
         </form>
-        <center><button type="button" class="btn btn-primary send">Submit</button></center>
+        <div class="form-group comment" >
+        <label>Comment</label>
+        <textarea name="comment" class="form-control"></textarea>
+        </div>
+        <center>
+            <button type="button" class="btn btn-success send">Route someone</button>
+            <button type="button" class="btn btn-warning send">Remove</button>
+        </center>
     </div>
 </div>
 </body>
