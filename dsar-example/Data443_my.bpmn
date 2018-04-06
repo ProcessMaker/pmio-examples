@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
   <bpmn:collaboration id="Collaboration_0ww3sic">
     <bpmn:participant id="Participant_0spw19j" name="DSAR Request" processRef="Process_1" />
     <bpmn:participant id="Participant_1qooos1" name="DSAR Internal Follow Up" processRef="Follow_up" />
@@ -213,25 +213,25 @@ aData.response_from_classidocs =
         {
             previousDocument = {
                 name = "runs[1].htm",
-                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
+                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_12345678\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
                 workstation = "JASON-HP-LAPTOP"
             },
             currentDocument = {
                 name = "runs[1].htm",
-                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
+                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_2222222bwe\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
                 workstation = "JASON-HP-LAPTOP"
             }
         },
 
  {
             previousDocument = {
-                name = "runs[1].htm",
-                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
+                name = "runs[2].htm",
+                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_87654321e\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
                 workstation = "JASON-HP-LAPTOP"
             },
             currentDocument = {
-                name = "runs[1].htm",
-                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
+                name = "runs[2].htm",
+                filePath = "c:\\users\\JasonR\\AppData\\Local\\Packages\\Microsoft.MicrosoftEdge_111111111bwe\\AC\\#!001\\MicrosoftEdge\\Cache\\K9TA30F4",
                 workstation = "JASON-HP-LAPTOP"
             }
         }
@@ -257,8 +257,9 @@ Click to review: https://processmaker.github.io/pmio-examples/dsar-example/index
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_0wg46y4" sourceRef="ServiceTask_1q4ikzt" targetRef="ReviewInformation" />
     <bpmn:association id="Association_1gow1tx" sourceRef="StartEvent" targetRef="TextAnnotation_0fx0r6u" />
-    <bpmn:textAnnotation id="TextAnnotation_0fx0r6u">    <bpmn:text>First Name, Last Name, Email, City, State, custom field like Account Number</bpmn:text>
-</bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0fx0r6u">
+      <bpmn:text>First Name, Last Name, Email, City, State, custom field like Account Number</bpmn:text>
+    </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:process id="Follow_up" isExecutable="false">
     <bpmn:startEvent id="StartEvent_0orop3l" name="Start Item Case">
@@ -266,10 +267,7 @@ Click to review: https://processmaker.github.io/pmio-examples/dsar-example/index
       <bpmn:messageEventDefinition messageRef="Message_0ngzuvu" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0nrlkm1" sourceRef="StartEvent_0orop3l" targetRef="ServiceTask_1dpbcwb" />
-    <bpmn:sequenceFlow id="SequenceFlow_03vb6fe" sourceRef="ManuallyDeleteOrModify" targetRef="EndEvent_1aj571n" />
-    <bpmn:endEvent id="EndEvent_1aj571n" name="Follow up end">
-      <bpmn:incoming>SequenceFlow_03vb6fe</bpmn:incoming>
-    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_03vb6fe" sourceRef="ManuallyDeleteOrModify" targetRef="ExclusiveGateway_0l1p16j" />
     <bpmn:userTask id="ManuallyDeleteOrModify" name="Manually delete of modify" camunda:candidateUsers="admin">
       <bpmn:incoming>SequenceFlow_0ryvejd</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_03vb6fe</bpmn:outgoing>
@@ -293,6 +291,8 @@ Previous Document:
 {item.previousDocument.filePath}
 {item.previousDocument.name}
 
+Click to process the request: 
+https://processmaker.github.io/pmio-examples/dsar-example/index5.html?instance_id={pmio_instance_id}
 ]]></camunda:inputParameter>
             <camunda:inputParameter name="options"><![CDATA[{"ignore_exception":true}]]></camunda:inputParameter>
           </camunda:inputOutput>
@@ -303,6 +303,87 @@ Previous Document:
       <bpmn:outgoing>SequenceFlow_0ryvejd</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_0ryvejd" sourceRef="ServiceTask_1dpbcwb" targetRef="ManuallyDeleteOrModify" />
+    <bpmn:serviceTask id="ServiceTask_0yc3rrn" name="Slack: DSAR re-route">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="webhook_url">https://hooks.slack.com/services/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</camunda:inputParameter>
+            <camunda:inputParameter name="text"><![CDATA[*Result of follow-up case for {item.email}, action: {item.Document_state}*
+
+Item: 
+
+Current Document:
+{item.currentDocument.workstation}
+{item.currentDocument.filePath}
+{item.currentDocument.name}
+
+Previous Document:
+{item.previousDocument.workstation}
+{item.previousDocument.filePath}
+{item.previousDocument.name}
+
+Comment: {task_6_comment}
+Status: {status}
+
+Thanks for your request!
+]]></camunda:inputParameter>
+            <camunda:inputParameter name="options"><![CDATA[{"ignore_exception":true}]]></camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Slack\SendMessageConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1el79s7</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_06nudgf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_06nudgf" sourceRef="ServiceTask_0yc3rrn" targetRef="EndEvent_1aj571n" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0l1p16j" default="SequenceFlow_0a6rn1o">
+      <bpmn:incoming>SequenceFlow_03vb6fe</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1el79s7</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0a6rn1o</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1el79s7" name="Route someone" sourceRef="ExclusiveGateway_0l1p16j" targetRef="ServiceTask_0yc3rrn">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[status="Route someone"]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="ServiceTask_1fr427u" name="Slack: DSAR item deleted">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="webhook_url">https://hooks.slack.com/services/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</camunda:inputParameter>
+            <camunda:inputParameter name="text"><![CDATA[*Result of follow-up case for {item.email}, action: {item.Document_state}*
+
+Item: 
+
+Current Document:
+{item.currentDocument.workstation}
+{item.currentDocument.filePath}
+{item.currentDocument.name}
+
+Previous Document:
+{item.previousDocument.workstation}
+{item.previousDocument.filePath}
+{item.previousDocument.name}
+
+Comment: {task_6_comment}
+Status: {status}
+
+Thanks for your request!
+]]></camunda:inputParameter>
+            <camunda:inputParameter name="options"><![CDATA[{"ignore_exception":true}]]></camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>Slack\SendMessageConnector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0a6rn1o</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0r3sv1w</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0a6rn1o" sourceRef="ExclusiveGateway_0l1p16j" targetRef="ServiceTask_1fr427u" />
+    <bpmn:endEvent id="EndEvent_0clb8ct" name="Follow up end">
+      <bpmn:incoming>SequenceFlow_0r3sv1w</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0r3sv1w" sourceRef="ServiceTask_1fr427u" targetRef="EndEvent_0clb8ct" />
+    <bpmn:endEvent id="EndEvent_1aj571n" name="Re-routed">
+      <bpmn:incoming>SequenceFlow_06nudgf</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_0ngzuvu" name="new_item" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -459,7 +540,7 @@ Previous Document:
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_1qooos1_di" bpmnElement="Participant_1qooos1">
-        <dc:Bounds x="-56.25101214574897" y="610.2685560053981" width="600" height="250" />
+        <dc:Bounds x="-56" y="610" width="981" height="328" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_0orop3l_di" bpmnElement="StartEvent_0orop3l" bioc:stroke="#1E88E5" bioc:fill="#BBDEFB">
         <dc:Bounds x="3" y="708" width="36" height="36" />
@@ -470,10 +551,10 @@ Previous Document:
       <bpmndi:BPMNShape id="UserTask_1vvvcnr_di" bpmnElement="ManuallyDeleteOrModify">
         <dc:Bounds x="277" y="686" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_1aj571n_di" bpmnElement="EndEvent_1aj571n" bioc:stroke="#43A047" bioc:fill="#C8E6C9">
-        <dc:Bounds x="433.748987854251" y="708" width="36" height="36" />
+      <bpmndi:BPMNShape id="EndEvent_1aj571n_di" bpmnElement="EndEvent_1aj571n" bioc:stroke="#FB8C00" bioc:fill="#FFE0B2">
+        <dc:Bounds x="831" y="708" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="419" y="747" width="69" height="13" />
+          <dc:Bounds x="826" y="755" width="69" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0nrlkm1_di" bpmnElement="SequenceFlow_0nrlkm1">
@@ -485,9 +566,9 @@ Previous Document:
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_03vb6fe_di" bpmnElement="SequenceFlow_03vb6fe">
         <di:waypoint xsi:type="dc:Point" x="377" y="726" />
-        <di:waypoint xsi:type="dc:Point" x="434" y="726" />
+        <di:waypoint xsi:type="dc:Point" x="468" y="726" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="405.5" y="704.5" width="0" height="13" />
+          <dc:Bounds x="377.5" y="704.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_1r3o1y9_di" bpmnElement="MessageFlow_1r3o1y9">
@@ -562,6 +643,53 @@ Previous Document:
         <di:waypoint xsi:type="dc:Point" x="836" y="440" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="805" y="418" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0yc3rrn_di" bpmnElement="ServiceTask_0yc3rrn">
+        <dc:Bounds x="656" y="686" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_06nudgf_di" bpmnElement="SequenceFlow_06nudgf">
+        <di:waypoint xsi:type="dc:Point" x="756" y="726" />
+        <di:waypoint xsi:type="dc:Point" x="831" y="726" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="793.5" y="704.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0l1p16j_di" bpmnElement="ExclusiveGateway_0l1p16j" isMarkerVisible="true">
+        <dc:Bounds x="468.0282131661442" y="701" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="493.0282131661442" y="754" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1el79s7_di" bpmnElement="SequenceFlow_1el79s7">
+        <di:waypoint xsi:type="dc:Point" x="518" y="726" />
+        <di:waypoint xsi:type="dc:Point" x="656" y="726" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="548" y="704" width="78" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1fr427u_di" bpmnElement="ServiceTask_1fr427u">
+        <dc:Bounds x="656" y="802" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0a6rn1o_di" bpmnElement="SequenceFlow_0a6rn1o">
+        <di:waypoint xsi:type="dc:Point" x="493" y="751" />
+        <di:waypoint xsi:type="dc:Point" x="493" y="842" />
+        <di:waypoint xsi:type="dc:Point" x="656" y="842" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="508" y="789.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0clb8ct_di" bpmnElement="EndEvent_0clb8ct" bioc:stroke="#43A047" bioc:fill="#C8E6C9">
+        <dc:Bounds x="831" y="824" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="816" y="863" width="69" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0r3sv1w_di" bpmnElement="SequenceFlow_0r3sv1w">
+        <di:waypoint xsi:type="dc:Point" x="756" y="842" />
+        <di:waypoint xsi:type="dc:Point" x="831" y="842" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="793.5" y="820" width="0" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
