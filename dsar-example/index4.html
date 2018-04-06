@@ -123,7 +123,7 @@
                     .then(function(response){
                         console.log(response);
                         if (response.data.meta.pagination.count >= 1)
-                            $('button.send').fadeOut(300);
+
                         //Get prefilled data and set to form io and get task instace id
                         {
 
@@ -149,6 +149,9 @@
                                 $('div.alert').addClass('alert-info').html('No data found.').fadeIn(300);
                             }
 
+                        } else {
+
+                            $('div.alert').addClass('alert-info').html('No data found.').fadeIn(300);
                         }
                     })
                     .catch(function(response){

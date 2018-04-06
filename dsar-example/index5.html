@@ -142,6 +142,10 @@
                                 $('input').attr('disabled','disabled');
                                 $('button.send').fadeIn(300);
 
+                            } else {
+                                $('.comment').fadeOut();
+
+                                $('div.alert').addClass('alert-info').html('No data found.').fadeIn(300);
                             }
 
                         } else {
@@ -169,6 +173,7 @@
                         'attributes': {
                             'status':'COMPLETE',
                             'content':{
+                                'status':$(this).data('send'),
                                 'task_6_comment' : $('textarea[name=comment]').val()
                             }
                         }
@@ -233,8 +238,8 @@
         <textarea name="comment" class="form-control"></textarea>
         </div>
         <center>
-            <button type="button" class="btn btn-success send">Route someone</button>
-            <button type="button" class="btn btn-warning send">Remove</button>
+            <button type="button" class="btn btn-success send" data-send="Route someone">Route someone</button>
+            <button type="button" class="btn btn-warning send" data-send="Remove">Remove</button>
         </center>
     </div>
 </div>
