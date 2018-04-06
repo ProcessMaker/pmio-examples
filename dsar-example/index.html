@@ -1,0 +1,103 @@
+<html>
+<head>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type='text/javascript'>
+        //Change this demo data for your own credentials if needed
+        var webhookUrl = 'https://xoo4u8fn.api.processmaker.io/api/v1/processes/Process_1/events/StartEvent/webhook';
+
+        //Change this demo data for your own credentials if needed
+        $(document).on('click','button.run-webhook', function () {
+            var formData = $('form#start-form').serializeArray();
+            var request = {};
+            console.log(formData);
+            formData.forEach(function(val){
+                request[val.name] = {'req_clarify':false, 'search':false, 'value':val.value};
+
+            });
+            console.log(request);
+            //Make request to Webhook
+            axios
+                .post(webhookUrl, {
+                    'request':request
+                })
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        });
+
+    </script>
+</head>
+<body>
+<div class="col-xs-10 col-xs-offset-1">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Data 443 use case</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <!--Change this navigation links before publish forms in some other place-->
+                    <li class="active"><a href="index.html">Request form<span class="sr-only">(current)</span></a></li>
+                    <li><a href="index1.html">Review Request</a></li>
+                    <li><a href="index2.html">Clarification from the Requestor</a></li>
+                    <li><a href="index3.html">Review Information</a></li>
+                    <li><a href="index4.html">Review PII Information</a></li>
+                    <li><a href="index5.html">Review DSAR Information</a></li>
+                    <!--Change this navigation links before publish forms in some other place-->
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div class="col-xs-6 col-xs-offset-3">
+        <form id="start-form">
+        <div class="form-group">
+            <label>First Name</label>
+            <input class="form-control" value="First Name" name="firstName">
+        </div>
+        <div class="form-group">
+            <label>Last Name</label>
+            <input class="form-control"  value="Last Name" name="lastName">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input class="form-control" value="Email@email.com" name="email">
+        </div>
+        <div class="form-group">
+            <label>Phone number</label>
+            <input class="form-control" value="+38011111111" name="phoneNumber">
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <input class="form-control" value="Some address here" name="address">
+        </div>
+        <div class="form-group">
+            <label>City </label>
+            <input class="form-control" value="Some city"  name="city" >
+        </div>
+        <div class="form-group">
+            <label>State</label>
+            <input class="form-control" value="Some state" name="state">
+        </div>
+        <div class="form-group">
+            <label>Account Number</label>
+            <input class="form-control" value="12321242342354" name="accountNumber">
+        </div>
+        <center><button type="button" class="btn btn-primary run-webhook">Submit</button></center>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<html>
+<head>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type='text/javascript'>
+        //Change this demo data for your own credentials if needed
+        var envUrl = 'https://xoo4u8fn.api.processmaker.io/api/v1/';
+        var accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImYzMDhhZjE4NmVhNmNmODEwYWFlMjNkOWEzZjBmMzcxYTQxMDU2ZmUyMTVmYmUyNDlhZjVjYjZkNGMyMDg5ZTY2MWM3NThjNWIxNGYwMWE3In0.eyJhdWQiOiI0MjE2MjU4MyIsImp0aSI6ImYzMDhhZjE4NmVhNmNmODEwYWFlMjNkOWEzZjBmMzcxYTQxMDU2ZmUyMTVmYmUyNDlhZjVjYjZkNGMyMDg5ZTY2MWM3NThjNWIxNGYwMWE3IiwiaWF0IjoxNTIzMDE5OTQ1LCJuYmYiOjE1MjMwMTk5NDUsImV4cCI6MTU1NDU1NTk0NSwic3ViIjoiMSIsInNjb3BlcyI6W119.WcrMlZp4Qu7-TLFyNnShIH_ilx8CpKV6DDwOZkVrqdBu7zDrO5AgTaDu4WcuNTVBRFTc9ZRq7twP2lzaLk8OislzqDXzJp2gt4vjRm6dtQVdtrqGDlGcSt_HiMPmDYjqVhA9lqie11Ng4xLekxP7i1NwcoVKVT8CPvST9P2kJsCPsBu2kb1wVmeVxs9AcbrkCaj2sTblMRKDd4aAfq-TmVnPjJPLpIMlrBzmvdJd5bfMpFw0EJyBca-m6cbvDLM8cxEuHuohL1yZob__BJgiyDsLb5OWtdAm5xDZkTgcMBp_lvsA2spZPfli-fBPG2bXmF2mJCTXAJw6zALs7EEsXq6nfE6LtDtnablm6D2asNMKVeQ2gqlfzJN3JxwYur-QgsQ_c3Y_gWNPWT4F6uKlfrvvKcPXVLtp7FsCXR5AnmnYjOF9BPhFf6a3N1DubDrryhLWv7cDT_B6_geXdwlbpHCT_y8rEnAgs3qEGf1aXTjMuan-roGYkN6C1GEi2l-3rLbMgUjUxRpojG71VpyfY9Yim8_9qyLIgeIrlKMjYH_q4ul4YqYGuRIQda9KOvNU9qugxhvuVY0ri7OVXV9oTTmLvhOg24OOJH7arNZ9zko8s01mHhkHi_9mZEfPk9PhMIMc0-_hAlm3XC6wzFGIQlm_P79vEHaTojt2_zOrdpM';
+        var client = new axios.create({
+            baseURL: envUrl,
+            headers: {
+                "content-type": "application/json",
+                "Accept": "application/json",
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+        var prefilledData;
+        //Change this demo data for your own credentials if needed
+
+        $(document).ready(function () {
+
+            //Get params from url
+            $.urlParam = function(name){
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results==null){
+                    return null;
+                }
+                else{
+                    return results[1] || 0;
+                }
+            }
+
+
+            var instanceId = decodeURIComponent($.urlParam('instance_id'));
+
+            //Get task for step 3
+
+            if (instanceId !== 'null') {
+
+                client
+                    .get('instances/'+instanceId+'/tasks/Task_clarify/task_instances/delegated', { params: {
+                            per_page:1,
+                            include:'data_model'
+                        }
+                    })
+                    .then(function(response){
+                        console.log(response);
+                        if (response.data.meta.pagination.count >= 1)
+                        //Get prefilled data and set to form io and get task instace id
+                        {
+
+                            taskInstanceId = response.data.data[0].id;
+
+                            //Check data in datamodel
+                            if (response.data.included[0].attributes.dataModel.request) {
+                                prefilledData = response.data.included[0].attributes.dataModel.request;
+                                console.log(prefilledData);
+                                //Fill in form
+                                for (var key in prefilledData) {
+                                    $('form').find('input[name='+key+']').val(prefilledData[key].value);
+                                    if (prefilledData[key].req_clarify == false) $('form').find('input[name='+key+']').attr('disabled', 'disabled');
+
+                                    $('form').find('input[name='+key+'_req_clarify]').attr('checked', prefilledData[key].req_clarify);
+                                    $('form').find('input[name='+key+'_req_clarify]').attr('disabled', 'disabled');
+
+                                    $('form').find('input[name='+key+'_search]').attr('checked', prefilledData[key].search);
+                                    $('form').find('input[name='+key+'_search]').attr('disabled', 'disabled');
+                                }
+
+                            }
+
+                        }
+                    })
+                    .catch(function(response){
+                        console.log(response);
+
+                    });
+
+            }
+
+
+            $(document).on('click', 'button.send',function () {
+                var required_clarification = 'no';
+                for (var key in prefilledData) {
+                    prefilledData[key].value = $('form').find('input[name='+key+']').val();
+                    prefilledData[key].req_clarify = $('form').find('input[name='+key+'_req_clarify]').is(":checked");
+                    //Check that we should clarify data from requester
+                    if (prefilledData[key].req_clarify == true) required_clarification = 'yes';
+                    prefilledData[key].search = $('form').find('input[name='+key+'_search]').is(":checked");
+
+                }
+                console.log(prefilledData);
+                var data = {
+                    'data': {
+                        'type':'task_instance',
+                        'attributes': {
+                            'status':'COMPLETE',
+                            'content':{
+                                'request' : prefilledData,
+                                'required_clarification':required_clarification
+                            }
+                        }
+                    }
+                };
+
+                client
+                    .patch('task_instances/'+taskInstanceId+'?include=data_model', data)
+                    .then(function (response) {
+                        console.log(response);
+
+                    })
+                    .catch(function (response) {
+                        console.log(response);
+                    });
+            });
+
+        });
+
+
+    </script>
+</head>
+<body>
+<div class="col-xs-10 col-xs-offset-1">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Data 443 use case</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <!--Change this navigation links before publish forms in some other place-->
+                    <li><a href="index.html">Request form</a></li>
+                    <li ><a href="index1.html">Review Request<span class="sr-only">(current)</span></a></li>
+                    <li class="active"><a href="index2.html">Clarification from the Requestor</a></li>
+                    <li><a href="index3.html">Review Information</a></li>
+                    <li><a href="index4.html">Review PII Information</a></li>
+                    <li><a href="index5.html">Review DSAR Information</a></li>
+                    <!--Change this navigation links before publish forms in some other place-->
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div id="review-request" class="col-xs-6 col-xs-offset-3">
+        <form>
+            <div class="form-group">
+                <label>First Name</label>
+                <div class="input-group">
+                    <input class="form-control" name="firstName" >
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="firstName_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="firstName_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <div class="input-group">
+                    <input class="form-control" name="lastName">
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="lastName_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="lastName_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <div class="input-group">
+                    <input class="form-control" type="email" name="email" >
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="email_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="email_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Phone number</label>
+                <div class="input-group">
+                    <input class="form-control" name="phoneNumber" >
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="phoneNumber_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="phoneNumber_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <div class="input-group">
+                    <input class="form-control" name="address" >
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="address_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="address_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>City </label>
+                <div class="input-group">
+                    <input class="form-control" name="city" >
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="city_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="city_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <div class="input-group">
+                    <input class="form-control" name="state" >
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="state_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="state_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <div class="input-group">
+                    <input class="form-control" name="accountNumber" >
+                    <div class="input-group-addon">
+                        <label>
+                            <input type="checkbox" name="accountNumber_req_clarify"> Required Clarification</label>
+                        <label>
+                            <input type="checkbox" name="accountNumber_search"> Search
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <center><button type="button" class="btn btn-primary send">Submit</button></center>
+        </form>
+    </div>
+</div>
+</body>
+</html>
